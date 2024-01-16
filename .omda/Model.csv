@@ -1,0 +1,153 @@
+Package;name;;;;;;;;;;
+Enum;name;acronym;;;;;;;;;description
+Value;name;;;;;;;;;;description
+Entity;name;acronym;parent;type;;dependency;transient;;;;description
+Attribute;name;acronym;type;size;scale;referredDomain;referredEntity;dependency;multiValued;required;description
+#Constraint;type;acronym;;user;;;;;;;description
+#Field;path;sequence;;;;;;;;;description
+;;;;;;;;;;;
+Package;System;;;;;;;;;;
+;;;;;;;;;;;
+Package;Model;om;eu.intix.omda;;;;;;;;The meta model. This model defines the object model of the application, including sub-models, entities and relations.
+;;;;;;;;;;;
+Enum;Entity Type;ntt_tp;;;;;;;;;Types for entities. This domain defines the different type of entities.
+Value;Static;1;;;;;;;;;The data for static entities are populated at installation time and do not change, unless subject to an upgrade to a more recent version of the solution.
+Value;Dynamic;2;;;;;;;;;The data for dynamic entities are managed by the user, administrator, operator or end user.
+Value;Singleton;3;;;;;;;;;A singleton entity supports only a single instance. It is typically used for configuration data at the level of the model.
+Value;Mixin;4;;;;;;;;;A mixin is an entity that represents a kind of template for other entities, adding attributes and behaviour to these entities through inheritance.
+;;;;;;;;;;;
+Enum;Attribute Type;att_tp;;;;;;;;;Data types for attributes. This domain defines the generic data types supported for attributes.
+Value;String;1;;;;;;;;;Textual values.
+Value;Integer;2;;;;;;;;;Integer numbers.
+Value;Decimal;3;;;;;;;;;Floating-point numbers.
+Value;Boolean;4;;;;;;;;;Boolean values.
+Value;Date;5;;;;;;;;;Date values.
+Value;Timestamp;6;;;;;;;;;Date-time values.
+Value;Time;7;;;;;;;;;Time values, without a date component.
+Value;Entity;8;;;;;;;;;Values that are instances of an entity.
+Value;Domain;9;;;;;;;;;Values that are part of a domain.
+Value;Text;10;;;;;;;;;Large textual values.
+Value;Blob;11;;;;;;;;;Binary large objects.
+;;;;;;;;;;;
+Enum;Dependency;dpc;;;;;;;;;Dependency for relations. This domain defines the possible dependencies for relations between entities.
+Value;Aggregate;1;;;;;;;;;The life cycle of the referred entity is independent of the life cycle of the referring entity.
+Value;Composite;2;;;;;;;;;The life cycle of the referred entity coincides with the life cycle of the referring entity.
+;;;;;;;;;;;
+Enum;Constraint Type;cst_tp;;;;;;;;;Contraint types. This domain defines the different types of contraints or indices on an entity.
+Value;Unique;1;;;;;;;;;The constraint imposes uniqueness of the combination of values for the constraint fields.
+Value;Index;2;;;;;;;;;The constraint does not impose uniqueness of the combination of values for the constraint fields, but makes the fields searchable.
+Value;Equal;3;;;;;;;;;The constraint imposes equality of values for the constraint fields.
+;;;;;;;;;;;
+Entity;Package;pkg;;Static;;Composite;;;;;Constitutes a sub-model of the application. A model groups a collection of domains and entities that make up the sub-model. Typically, entities of the same model are semantically related, and cover a particular subset of the application domain.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the model.
+Attribute;Acronym;snm;String;255;;;;;;TRUE;The acronym for the model.
+Attribute;Package Name;pck_nm;String;255;;;;;;TRUE;The java package name for the model.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the model.
+;;;;;;;;;;;
+Constraint;Unique;nm;;TRUE;;;;;;;Primary user key. The name of a model should be unique.
+Field;Model/Model/Name;1;;;;;;;;;The name of the model.
+;;;;;;;;;;;
+Entity;Enum;en;;Static;;Composite;;;;;Represents an enumeration type. A domain is a data type that enumerates a fixed set of simple textual values.
+Attribute;Model;mod;Entity;;;;Model/Model;Master;;TRUE;The model to which the domain belongs.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the domain.
+Attribute;Acronym;snm;String;255;;;;;;TRUE;The acronym for the domain.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the domain.
+;;;;;;;;;;;
+Constraint;Unique;en_nm;;TRUE;;;;;;;Primary user key. The name of a domain should be unique in the context of a model.
+Field;Model/Domain/Model;1;;;;;;;;;The model to which the domain belongs.
+Field;Model/Domain/Name;2;;;;;;;;;The name of the domain.
+;;;;;;;;;;;
+Constraint;Unique;en_snm;;;;;;;;;Technical key. The acronym of a domain should be unique in the context of a model.
+Field;Model/Domain/Model;1;;;;;;;;;The model to which the domain belongs.
+Field;Model/Domain/Acronym;2;;;;;;;;;The acronym for the domain.
+;;;;;;;;;;;
+Entity;Value;en_val;;Static;;Composite;;;;;Represents an enumeration constant. A particular value of a domain.
+Attribute;Domain;dom;Entity;;;;Model/Domain;Master;;TRUE;The domain to which the value belongs.
+Attribute;Identifier;idr;Integer;;;;;;;TRUE;The identifier used to refer to this domain value from database tables. It is immutable, even when values are added, removed or reordered.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the value.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the value.
+;;;;;;;;;;;
+Constraint;Unique;en_val_nm;;TRUE;;;;;;;Primary user key. The name of a value should be unique in the context of a domain.
+Field;Model/Value/Domain;1;;;;;;;;;The domain to which the value belongs.
+Field;Model/Value/Name;2;;;;;;;;;The name of the value.
+;;;;;;;;;;;
+Entity;Entity;ntt;;Static;;Composite;;;;;The definition of a type of object. An entity represents an object with its characteristics and relations to other objects.
+Attribute;Model;mod;Entity;;;;Model/Model;Master;;TRUE;The model to which the entity belongs.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the model entity.
+Attribute;Acronym;snm;String;255;;;;;;TRUE;The acronym of the model entity.
+Attribute;Type;tp;Domain;;;Model/Entity Type;;;;TRUE;The type of model entity determines under which circumstances instances can be created or modified.
+Attribute;Transient;trans;Boolean;;;;;;;TRUE;Specifies whether the entity can be stored on database or not.
+Attribute;Dependency;dpc;Domain;;;Model/Dependency;;;;TRUE;Specifies whether the life cycle of the entity is dependent on other entities or not.
+Attribute;Parent;prt_ntt;Entity;;;;Model/Entity;;;;The parent entity. The parent relation supports inheritance for entities.
+Attribute;Validator;vali;String;255;;;;;;;The validator used to validate instances of this entity. The Entity validator will be executed after any Attribute validators.
+Attribute;Validator Parameters;vali_prm;String;2048;;;;;;;A Daisy expression containing any parameters the entity validator needs. Validator specific.
+Attribute;Display Value;dsp_val;String;255;;;;;;;A Daisy expression which takes an instance of the entity and produces a textual representation. The entity is present in the Daisy context with the name 'entity'.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the entity.
+;;;;;;;;;;;
+Constraint;Unique;mod_nm;;TRUE;;;;;;;Primary user key. The name of an entity should be unique in the context of a model.
+Field;Model/Entity/Model;1;;;;;;;;;The model to which the entity belongs.
+Field;Model/Entity/Name;2;;;;;;;;;The name of the entity.
+;;;;;;;;;;;
+Constraint;Unique;mod_snm;;;;;;;;;Technical key. The acronym of an entity should be unique in the context of a model.
+Field;Model/Entity/Model;1;;;;;;;;;The model to which the entity belongs.
+Field;Model/Entity/Acronym;2;;;;;;;;;The acronym for the entity.
+;;;;;;;;;;;
+Constraint;Index;prt;;;;;;;;;Access by parent.
+Field;Model/Entity/Parent;1;;;;;;;;;The parent entity.
+;;;;;;;;;;;
+Entity;Attribute;att;;Static;;Composite;;;;;Defines a characteristic of an entity. An attribute represents an object characteristic, including type information and some other simple constraints.
+Attribute;Entity;ntt;Entity;;;;Model/Entity;Master;;TRUE;The entity to which the attribute belongs.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the attribute.
+Attribute;Acronym;snm;String;255;;;;;;TRUE;The acronym for the attribute.
+Attribute;Type;tp;Domain;;;Model/Attribute Type;;;;TRUE;The type of the attribute.
+Attribute;Sequence;seq;Integer;;;;;;;TRUE;The sequence number of the attribute.
+Attribute;Size;sz;Integer;;;;;;;;The size of the values for the attribute, if any.
+Attribute;Scale;sc;Integer;;;;;;;;The scale of the values for the attribute, if any.
+Attribute;Referred Domain;ref_dom;Entity;;;;Model/Domain;;;;The referred domain, if the attribute is of the type domain.
+Attribute;Referred Entity;ref_ntt;Entity;;;;Model/Entity;;;;The referred entity, if the attribute is of the type entity.
+Attribute;Encryption;enc;Domain;;;Model/Encryption;;;;;The encryption used to store the value of the value attribute.
+Attribute;Dependency;dpc;Domain;;;Model/Dependency;;;;;The dependency of the referred entity, if the attribute is of the type entity.
+Attribute;Multi Valued;mul_val;Boolean;;;;;;;;The multiplicity of the referred entity, if the attribute is of the type entity.
+Attribute;Required;rqd;Boolean;;;;;;;TRUE;Specifies whether the attribute is required.
+Attribute;Internal;itl;Boolean;;;;;;;;Specifies whether the attribute is an internal attribute.
+Attribute;Format;fmt;String;255;;;;;;;The display format for the attribute.
+Attribute;Default Value;def_val;String;255;;;;;;;The default value (Daisy expression) is used when no other value is provided. This has no effect if the value is NOT required. The entity is present in the Daisy context with the name 'entity'. 
+Attribute;Validator;vali;String;255;;;;;;;The validator used to validate this attribute.
+Attribute;Validator Parameters;vali_prm;String;2048;;;;;;;A Daisy expression containing any parameters the attribute validator needs. Validator specific.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the attribute.
+;;;;;;;;;;;
+Constraint;Unique;ntt_nm;;TRUE;;;;;;;Primary user key. The name of an attribute should be unique in the context of an entity.
+Field;Model/Attribute/Entity;1;;;;;;;;;The entity to which the attribute belongs.
+Field;Model/Attribute/Name;2;;;;;;;;;The name of the attribute.
+;;;;;;;;;;;
+Constraint;Unique;ntt_snm;;;;;;;;;Technical key. The acronym of an attribute should be unique in the context of an entity.
+Field;Model/Attribute/Entity;1;;;;;;;;;The entity to which the attribute belongs.
+Field;Model/Attribute/Acronym;2;;;;;;;;;The acronym for the attribute.
+;;;;;;;;;;;
+Constraint;Index;ref_ntt;;;;;;;;;Index for attribute lookup based on referred entity.
+Field;Model/Attribute/Referred Entity;1;;;;;;;;;The referred entity.
+;;;;;;;;;;;
+Entity;Constraint;cst;;Static;;Composite;;;;;Defines a constraint on an entity. A constraint specifies the uniqueness of a combination of attributes, or whether the combination can be used as search criterion on the entity.
+Attribute;Entity;ntt;Entity;;;;Model/Entity;Master;;TRUE;The entity to which the constraint belongs.
+Attribute;Type;tp;Domain;;;Model/Constraint Type;;;;TRUE;The type of constraint.
+Attribute;Acronym;snm;String;255;;;;;;TRUE;The acronym for the constraint.
+Attribute;User;usr;Boolean;;;;;;;;Specifies whether the constraint is the default user constraint.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the constraint.
+;;;;;;;;;;;
+Constraint;Unique;cst_snm;;TRUE;;;;;;;Technical key. The acronym of a constraint should be unique in the context of an entity.
+Field;Model/Constraint/Entity;1;;;;;;;;;The entity to which the constraint applies.
+Field;Model/Constraint/Acronym;2;;;;;;;;;The acronym for the constraint.
+;;;;;;;;;;;
+Entity;Field;fld;;Static;;Composite;;;;;Specifies an attribute of a constraint.
+Attribute;Constraint;cst;Entity;;;;Model/Constraint;Master;;TRUE;The constraint to which the field belongs.
+Attribute;Path;pth;String;255;;;;;;TRUE;The path to the attribute that contributes to the constraint.
+Attribute;Sequence;seq;Integer;;;;;;;TRUE;The sequence number of the field in the constraint.
+Attribute;Description;dsc;Text;2048;;;;;;;A short description of the field.
+;;;;;;;;;;;
+Constraint;Unique;cst_seq_no;;TRUE;;;;;;;Primary user key. The field sequence number should be unique in the context of a constraint.
+Field;Model/Field/Constraint;1;;;;;;;;;The constraint to which the field applies.
+Field;Model/Field/Sequence;2;;;;;;;;;The sequence number of the field in the constraint.
+;;;;;;;;;;;
+Constraint;Unique;cst_pth;;;;;;;;;Technical key. An attribute should be unique in the context of a constraint.
+Field;Model/Field/Constraint;1;;;;;;;;;The constraint to which the field applies.
+Field;Model/Field/Path;2;;;;;;;;;The path to the attribute that constributes to the constraint..
