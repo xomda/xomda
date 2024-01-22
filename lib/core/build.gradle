@@ -1,0 +1,44 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'eclipse'
+}
+
+group "org.xomda"
+
+java {
+    version = libs.versions.xomda.get()
+    sourceCompatibility = 17
+    targetCompatibility = 17
+    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    api libs.commons.math3
+    api libs.commons.csv
+
+    api libs.log4j
+    api libs.log4j.slf4j
+
+    api project(":lib:api")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/generated/java'
+        }
+    }
+}
+
+tasks.named('test') { useJUnitPlatform() }
+
+tasks.withType(JavaCompile) { options.compilerArgs += ['-Xlint:unchecked'] }

@@ -1,0 +1,44 @@
+plugins {
+    id 'maven-publish'
+}
+
+allprojects {
+    group "org.xomda"
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+}
+
+subprojects {
+
+    if (project.name.equals("lib") || project.name.equals("plugin")) return
+
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+
+    publishing {
+        publications {
+            // will be published be "pluginMaven"
+            if (project.name.equals("plugin-gradle")) return
+            maven(MavenPublication) {
+                version = libs.versions.xomda.get()
+                group 'org.xomda'
+                from components.java
+            }
+        }
+
+        repositories {
+            mavenLocal()
+            maven {
+                url = "https://maven.pkg.github.com/xomda/xomda"
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                    password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
+}

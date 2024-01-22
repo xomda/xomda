@@ -1,0 +1,43 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'eclipse'
+}
+
+group "org.xomda"
+
+java {
+    version = libs.versions.xomda.get()
+    sourceCompatibility = 17
+    targetCompatibility = 17
+    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    runtimeOnly project(":lib:cli")
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/generated/java'
+        }
+    }
+}
+
+tasks.register('generateXOmdaModel', JavaExec) {
+    group = "XOMDA"
+    description = "Generate the XOMDA model"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "org.xomda.cli.Main"
+    workingDir = projectDir
+    args = [
+        "--models", file("src/xomda/config/Model.csv"), //rootProject.file(".xomda/Model.csv"),
+        "--out", file("src/generated/java"),
+    ]
+}
