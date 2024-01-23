@@ -4,7 +4,7 @@
 [versions]
 commons-math3 = "3.6.1"
 commons-csv = "1.10.0"
-guava = "32.1.2-jre"
+guava = "33.0.0-jre"
 junit-jupiter = "5.10.0"
 log4j = "3.0.0-beta1"
 
