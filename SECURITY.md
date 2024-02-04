@@ -2,20 +2,15 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+This is a fresh project. We still support all versions. 🙂
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 0.0.x   | :white_check_mark: |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+We are scanning the repo for vurnerabilities on a regular base. 
+Action is taken immediatelly when an issue is raised, to ensure maximum reliability.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+If you do happen to detect an issue, please send us a message.
