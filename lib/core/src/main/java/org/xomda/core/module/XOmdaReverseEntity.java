@@ -9,14 +9,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.xomda.shared.util.ReflectionUtils;
-import org.xomda.shared.util.StringUtils;
 import org.xomda.core.csv.CsvObject;
 import org.xomda.core.csv.CsvSchema;
 import org.xomda.core.csv.CsvSchemaObject;
 import org.xomda.core.extension.CsvObjectProcessor;
 import org.xomda.core.extension.CsvSchemaProcessor;
 import org.xomda.core.util.ParseContext;
+import org.xomda.shared.util.ReflectionUtils;
+import org.xomda.shared.util.StringUtils;
 
 public class XOmdaReverseEntity implements CsvObjectProcessor, CsvSchemaProcessor {
 

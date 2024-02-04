@@ -21,7 +21,7 @@ public class CliOptionsTest {
             .map(Class::getName)
             .collect(Collectors.joining(","));
 
-        final String out = "../../omda";
+        final String out = "../../xomda";
 
         final Configuration config = CommandLineOptions.parse(
             "--out", out,

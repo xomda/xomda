@@ -5,11 +5,15 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * A CSV Object is the result of a single line of CSV that has been parsed into an object.
+ * It's an instance of one of the objects defined in the {@link CsvSchema}.
+ */
 public class CsvObject {
 
     final Class<?>[] classes;
 
-    private final org.xomda.core.csv.CsvObjectState state = new org.xomda.core.csv.CsvObjectState();
+    private final CsvObjectState state = new CsvObjectState();
 
     private Object proxy;
 
@@ -24,7 +28,7 @@ public class CsvObject {
         this(new Class<?>[]{clazz});
     }
 
-    public org.xomda.core.csv.CsvObjectState getState() {
+    public CsvObjectState getState() {
         return state;
     }
 

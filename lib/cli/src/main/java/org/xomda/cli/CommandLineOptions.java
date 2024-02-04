@@ -22,7 +22,10 @@ import org.xomda.core.config.Configuration;
 import org.xomda.core.config.ConfigurationBuilder;
 import org.xomda.shared.exception.SneakyThrow;
 
-@SuppressWarnings("serial")
+/**
+ * The command-line parameters for the XOMDA CLI.
+ * It will create a {@link Configuration} out of it.
+ */
 public class CommandLineOptions extends Options {
 
     private static final String COMMAND = "xomda";

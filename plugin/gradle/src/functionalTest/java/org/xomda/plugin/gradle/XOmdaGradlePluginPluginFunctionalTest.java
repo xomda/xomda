@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**
- * A simple functional test for the 'omda.gradle.plugin.greeting' plugin.
+ * A simple functional test for the XOMDA Gradle plugin.
  */
 class XOmdaGradlePluginPluginFunctionalTest {
     @TempDir

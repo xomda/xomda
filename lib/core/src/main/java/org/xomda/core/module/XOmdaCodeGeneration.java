@@ -7,7 +7,6 @@ import org.xomda.core.extension.XOmdaModule;
 import org.xomda.core.module.template.GenerateEntityTemplate;
 import org.xomda.core.module.template.GenerateEnumTemplate;
 
-@SuppressWarnings("serial")
 public class XOmdaCodeGeneration extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
     public XOmdaCodeGeneration() {
         super(2);

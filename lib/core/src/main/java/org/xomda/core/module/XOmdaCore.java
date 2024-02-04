@@ -5,7 +5,6 @@ import java.util.HashSet;
 import org.xomda.core.extension.XOmdaExtension;
 import org.xomda.core.extension.XOmdaModule;
 
-@SuppressWarnings("serial")
 public class XOmdaCore extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
 
     public XOmdaCore() {

@@ -9,12 +9,12 @@ import org.xomda.core.config.Configuration;
 import org.xomda.core.csv.CsvObject;
 import org.xomda.core.extension.XOmdaExtension;
 
-public class ParseContext implements org.xomda.core.util.InternalParseContext {
+public class ParseContext implements InternalParseContext {
 
     private final Configuration config;
     private final List<? extends XOmdaExtension> extensions;
     private final List<CsvObject> cache = new ArrayList<>();
-    private final org.xomda.core.util.DeferredActions deferredActions = new org.xomda.core.util.DeferredActions();
+    private final DeferredActions deferredActions = new DeferredActions();
 
     public ParseContext(Configuration config) {
         this.config = config;

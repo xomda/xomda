@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 import org.xomda.core.csv.type.ValueParser;
 
-public class EnumParserProvider extends org.xomda.core.csv.type.parser.AbstractValueParserProvider.Nullable {
+public class EnumParserProvider extends AbstractValueParserProvider.Nullable {
 
     public EnumParserProvider() {
         super(Class::isEnum, null);
