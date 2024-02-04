@@ -1,21 +1,5 @@
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'eclipse'
-}
-
-group "org.xomda"
-
-java {
-    version = libs.versions.xomda.get()
-    sourceCompatibility = 17
-    targetCompatibility = 17
-    toolchain { languageVersion = JavaLanguageVersion.of(17) }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+    id 'xomda-java-library'
 }
 
 dependencies {

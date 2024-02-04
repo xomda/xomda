@@ -1,28 +1,8 @@
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'eclipse'
-}
-
-group "org.xomda"
-
-
-java {
-    version = libs.versions.xomda.get()
-    sourceCompatibility = 17
-    targetCompatibility = 17
-    toolchain { languageVersion = JavaLanguageVersion.of(17) }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
+    id 'xomda-java-library'
 }
 
 dependencies {
-    testImplementation libs.junit.jupiter
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     implementation libs.commons.cli
     implementation libs.log4j
     implementation libs.log4j.slf4j
@@ -30,5 +10,3 @@ dependencies {
     implementation project(":lib:api")
     implementation project(":lib:core")
 }
-
-tasks.named('test') { useJUnitPlatform() }
