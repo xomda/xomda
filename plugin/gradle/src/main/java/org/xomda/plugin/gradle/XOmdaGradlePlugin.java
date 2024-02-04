@@ -23,8 +23,9 @@ import org.xomda.plugin.gradle.util.SourceSetUtils;
 import org.xomda.shared.logging.LogService;
 
 /**
- * The OMDA Gradle plugin
+ * The XOMDA Gradle plugin
  */
+@SuppressWarnings("unused")
 public class XOmdaGradlePlugin implements Plugin<Project> {
 
     public void apply(Project project) {
@@ -38,7 +39,7 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
             .register(XOMDA_CONFIGURATION)
             .get();
 
-        // add Omda Core dependency to the "xomda" configuration
+        // add XOMDA Core dependency to the "xomda" configuration
         // the version should be the same as the version of the plugin
         project.getBuildscript().getConfigurations()
             .stream().flatMap(c -> c.getDependencies().stream())
