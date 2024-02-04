@@ -1,6 +1,5 @@
 package org.xomda.shared.exception;
 
-import java.io.IOException;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -37,7 +36,7 @@ public class SneakyThrow {
             }
         }
 
-        R applyThrowing(T t) throws E, IOException;
+        R applyThrowing(T t) throws E;
 
     }
 
@@ -52,7 +51,7 @@ public class SneakyThrow {
             }
         }
 
-        void acceptThrowing(T t) throws E, IOException;
+        void acceptThrowing(T t) throws E;
 
     }
 
@@ -67,7 +66,7 @@ public class SneakyThrow {
             }
         }
 
-        void acceptThrowing(T t, U u) throws E, IOException;
+        void acceptThrowing(T t, U u) throws E;
 
     }
 
