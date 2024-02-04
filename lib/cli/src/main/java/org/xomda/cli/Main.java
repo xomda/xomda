@@ -8,10 +8,15 @@ import java.util.stream.Stream;
 
 import org.apache.commons.cli.ParseException;
 import org.xomda.core.XOmda;
-import org.xomda.shared.logging.LogService;
 import org.xomda.core.config.Configuration;
 import org.xomda.core.template.TemplateContext;
+import org.xomda.shared.logging.LogService;
 
+/**
+ * The main command-line entry point for XOMDA.
+ * <p>
+ * Run it with "<code>--help</code>" to see the available command-line options.
+ */
 public class Main {
 
     public static void main(final String[] args) throws IOException, ParseException {
@@ -19,7 +24,6 @@ public class Main {
         Configuration config = CommandLineOptions.tryBuild(args)
             .withDefaultOmdaExtensions()
             .build();
-
         // set the log level
         LogService.setDefaultLogLevel(config.getLogLevel());
         // parse each model

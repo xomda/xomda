@@ -5,10 +5,10 @@ import java.io.IOException;
 import org.xomda.core.template.TemplateContext;
 import org.xomda.model.Entity;
 
-public class XOmdaCodeTemplate extends org.xomda.core.module.template.PackageTemplate {
+public class XOmdaCodeTemplate extends PackageTemplate {
 
-    private final org.xomda.core.module.template.GenerateEnumTemplate enumTemplate = new org.xomda.core.module.template.GenerateEnumTemplate();
-    private final org.xomda.core.module.template.GenerateEntityTemplate entityTemplate = new org.xomda.core.module.template.GenerateEntityTemplate();
+    private final GenerateEnumTemplate enumTemplate = new GenerateEnumTemplate();
+    private final GenerateEntityTemplate entityTemplate = new GenerateEntityTemplate();
 
     @Override
     public void generate(final org.xomda.model.Enum enm, final TemplateContext context) throws IOException {

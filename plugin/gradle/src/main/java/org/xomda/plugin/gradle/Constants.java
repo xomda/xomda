@@ -5,7 +5,7 @@ public interface Constants extends org.xomda.core.Constants {
     String XOMDA_PLUGIN_ID = XOMDA_GROUP + ".gradle";
 
     // the name of the Gradle Configuration
-    // but also "src/[OMDA_CONFIGURATION]/java"
+    // but also "src/[XOMDA_CONFIGURATION]/java"
     String XOMDA_CONFIGURATION = XOMDA;
 
     // gradle tasks

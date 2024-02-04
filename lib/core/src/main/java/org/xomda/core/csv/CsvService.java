@@ -18,6 +18,9 @@ import org.xomda.core.extension.Loggable;
 import org.xomda.core.util.Extensions;
 import org.xomda.core.util.ParseContext;
 
+/**
+ * The CSV Service reads CSV files into parsed objects (proxies).
+ */
 public class CsvService implements Loggable {
 
     public static final String DEFAULT_CSV_DELIMITER = ";";
@@ -56,7 +59,7 @@ public class CsvService implements Loggable {
             final Iterator<CSVRecord> it = parser.iterator();
 
             // init the schema and let the extensions know
-            final org.xomda.core.csv.CsvSchema schema = org.xomda.core.csv.CsvSchema.load(it, context);
+            final CsvSchema schema = CsvSchema.load(it, context);
             Extensions.process(context, schema);
 
             // read the schema
@@ -67,7 +70,7 @@ public class CsvService implements Loggable {
             getLogger().trace("Reading model definitions");
             while (it.hasNext() && null != (record = it.next())) {
                 if (isEmpty(record)) continue;
-                final org.xomda.core.csv.CsvObject obj = schema.readObject(record, context);
+                final CsvObject obj = schema.readObject(record, context);
                 if (null == obj) {
                     getLogger().error("Couldn't parse {}", record.toList());
                     continue;

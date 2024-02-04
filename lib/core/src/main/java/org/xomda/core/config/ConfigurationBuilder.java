@@ -16,7 +16,9 @@ import org.xomda.core.module.template.XOmdaCodeTemplate;
 import org.xomda.shared.util.ReflectionUtils;
 
 /**
- * This class will help creating a Configuration
+ * Builder for {@link Configuration}.
+ * It has helper methods for handling collections,
+ * because the {@link Configuration} works with bare arrays.
  */
 public final class ConfigurationBuilder implements Loggable {
 

@@ -8,6 +8,6 @@ import org.xomda.core.extension.XOmdaExtension;
 @FunctionalInterface
 public interface Template<T> extends XOmdaExtension, Loggable {
 
-    void generate(T o, org.xomda.core.template.TemplateContext context) throws IOException;
+    void generate(T o, TemplateContext context) throws IOException;
 
 }

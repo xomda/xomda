@@ -4,7 +4,9 @@ import java.lang.reflect.Proxy;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 
-@SuppressWarnings("serial")
+/**
+ * This object is a {@link java.util.Map Map&lt;String, Object&gt;} which holds all properties of a .
+ */
 public class CsvObjectState extends ConcurrentHashMap<String, Object> {
 
     @Override

@@ -20,7 +20,7 @@ public class JavaImportService {
     private final List<String> sortOrder = Arrays.asList("static java.", "static", "java.");
 
     public JavaImportService(String localClass) {
-        if (!org.xomda.core.java.JavaUtils.isValidClassName(localClass)) {
+        if (!JavaUtils.isValidClassName(localClass)) {
             throw new IllegalArgumentException("Invalid class name:" + localClass);
         }
         this.localClass = localClass;
@@ -59,9 +59,9 @@ public class JavaImportService {
     public String addImport(String fullyQualifiedClassName, boolean isStatic) {
         Objects.requireNonNull(fullyQualifiedClassName);
 
-        if (!org.xomda.core.java.JavaUtils.hasPackage(fullyQualifiedClassName)) return fullyQualifiedClassName;
+        if (!JavaUtils.hasPackage(fullyQualifiedClassName)) return fullyQualifiedClassName;
 
-        String className = org.xomda.core.java.JavaUtils.getClassName(fullyQualifiedClassName);
+        String className = JavaUtils.getClassName(fullyQualifiedClassName);
         String registeredClassName = (isStatic ? "static " : "") + fullyQualifiedClassName;
 
         if (imports.containsKey(className)) {
@@ -70,7 +70,7 @@ public class JavaImportService {
                 : fullyQualifiedClassName;
         }
 
-        boolean isJavaLang = org.xomda.core.java.JavaUtils.isGlobal(fullyQualifiedClassName);
+        boolean isJavaLang = JavaUtils.isGlobal(fullyQualifiedClassName);
         boolean existsInJavaLang = existsInJavaLang(fullyQualifiedClassName);
 
         // Return full Class names which also exist in java.lang
@@ -100,12 +100,12 @@ public class JavaImportService {
 
     boolean existsInJavaLang(String className) {
         return ReflectionUtils
-            .findClass("java.lang." + org.xomda.core.java.JavaUtils.getClassName(className))
+            .findClass("java.lang." + JavaUtils.getClassName(className))
             .isPresent();
     }
 
     boolean isSamePackage(String className) {
-        return org.xomda.core.java.JavaUtils.isSamePackage(getLocalClassName(), className);
+        return JavaUtils.isSamePackage(getLocalClassName(), className);
     }
 
     private Comparator<String> getComparator() {
@@ -117,7 +117,7 @@ public class JavaImportService {
 
     public Stream<String> stream() {
         return imports.values().stream()
-            .filter(c -> !org.xomda.core.java.JavaUtils.isSamePackage(c, getLocalClassName()))
+            .filter(c -> !JavaUtils.isSamePackage(c, getLocalClassName()))
             .sorted(getComparator());
     }
 

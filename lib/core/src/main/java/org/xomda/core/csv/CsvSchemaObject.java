@@ -11,18 +11,22 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVRecord;
-import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.core.csv.type.TypeFactory;
 import org.xomda.core.csv.type.ValueParser;
 import org.xomda.core.util.Extensions;
 import org.xomda.core.util.ParseContext;
+import org.xomda.shared.util.ReflectionUtils;
 
+/**
+ * Represents a single CSV line in the {@link CsvSchema}.
+ * It also knows which java interface it's bound to.
+ */
 public class CsvSchemaObject {
 
     private final Class<?> clazz;
     private final String name;
 
-    private final List<org.xomda.core.csv.CsvSchemaObjectAttribute> attributes = new ArrayList<>();
+    private final List<CsvSchemaObjectAttribute> attributes = new ArrayList<>();
 
     CsvSchemaObject(final CSVRecord record, final ParseContext context) {
         if (record.size() < 1)
@@ -47,7 +51,7 @@ public class CsvSchemaObject {
                         ? type.get()
                         : String.class
                 );
-                final org.xomda.core.csv.CsvSchemaObjectAttribute attr = new org.xomda.core.csv.CsvSchemaObjectAttribute(propName, i, valueParser);
+                final CsvSchemaObjectAttribute attr = new CsvSchemaObjectAttribute(propName, i, valueParser);
                 attributes.add(attr);
             });
     }
@@ -70,11 +74,11 @@ public class CsvSchemaObject {
             .map(Function.identity());
     }
 
-    public List<org.xomda.core.csv.CsvSchemaObjectAttribute> getAttributes() {
+    public List<CsvSchemaObjectAttribute> getAttributes() {
         return attributes;
     }
 
-    public boolean isInstance(final org.xomda.core.csv.CsvObject obj) {
+    public boolean isInstance(final CsvObject obj) {
         return Stream
             .of(obj.getClasses())
             .anyMatch(Predicate.isEqual(getObjectClass()));

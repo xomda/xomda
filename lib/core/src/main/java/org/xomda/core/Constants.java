@@ -10,14 +10,14 @@ public interface Constants {
     String XOMDA = "xomda";
     String XOMDA_GROUP = "org.xomda";
 
-    // .omda
+    // .xomda
     String DOT_XOMDA = "." + XOMDA;
 
     // The directories where to find the model CSV's
     Path XOMDA_DOT_PATH = Paths.get(DOT_XOMDA);
     Path XOMDA_CSV_CONFIG_PATH = Paths.get("src", XOMDA, "config");
 
-    // The directories where to find OMDA Java code
+    // The directories where to find XOMDA Java code
     Path XOMDA_JAVA_PATH = Paths.get("src", XOMDA, "java");
     Path XOMDA_GENERATED_PATH = Paths.get("src", XOMDA, "generated");
 

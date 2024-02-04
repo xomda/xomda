@@ -12,54 +12,65 @@ import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
+import org.xomda.core.csv.type.ValueParser;
+import org.xomda.core.util.ParseContext;
 import org.xomda.shared.logging.LogService;
 import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.shared.util.StringUtils;
-import org.xomda.core.csv.type.ValueParser;
-import org.xomda.core.util.ParseContext;
 
-public class CsvSchema implements Iterable<org.xomda.core.csv.CsvSchemaObject> {
+/**
+ * The CSV Schema is parsed out of the first lines of a CSV file (followed by a empty CSV line).
+ * It's an {@link Iterable} of {@link CsvSchemaObject}s which are then used later on
+ * to figure out how to parse CSV lines into {@link CsvObject}s.
+ */
+public class CsvSchema implements Iterable<CsvSchemaObject> {
 
     private static final Logger logger = LogService.getLogger(CsvSchema.class);
 
-    private final List<org.xomda.core.csv.CsvSchemaObject> objects = new ArrayList<>();
+    private final List<CsvSchemaObject> objects = new ArrayList<>();
 
-    private final Map<org.xomda.core.csv.CsvSchemaObject, List<org.xomda.core.csv.CsvSchemaObject>> rev = new ConcurrentHashMap<>();
+    private final Map<CsvSchemaObject, List<CsvSchemaObject>> rev = new ConcurrentHashMap<>();
 
     @Override
-    public Iterator<org.xomda.core.csv.CsvSchemaObject> iterator() {
+    public Iterator<CsvSchemaObject> iterator() {
         return objects.iterator();
     }
 
-    public Stream<org.xomda.core.csv.CsvSchemaObject> stream() {
+    public Stream<CsvSchemaObject> stream() {
         return objects.stream();
     }
 
-    public void addModel(final org.xomda.core.csv.CsvSchemaObject schemaObject) {
+    public void addModel(final CsvSchemaObject schemaObject) {
         objects.add(schemaObject);
     }
 
-    public org.xomda.core.csv.CsvObject readObject(final CSVRecord record, final ParseContext context) {
+    public CsvObject readObject(final CSVRecord record, final ParseContext context) {
         final String name = record.get(0);
-        final org.xomda.core.csv.CsvSchemaObject csvSchemaObject = stream()
-            .filter((org.xomda.core.csv.CsvSchemaObject obj) -> name.equals(obj.getName()))
+        final CsvSchemaObject csvSchemaObject = stream()
+            .filter((CsvSchemaObject obj) -> name.equals(obj.getName()))
             .findFirst()
             .orElse(null);
 
         if (null == csvSchemaObject) return null;
 
-        final org.xomda.core.csv.CsvObject obj = new org.xomda.core.csv.CsvObject(csvSchemaObject.getObjectClass());
+        final CsvObject obj = new CsvObject(csvSchemaObject.getObjectClass());
 
         IntStream
             .range(0, csvSchemaObject.getAttributes().size())
             .forEach(i -> {
-                final org.xomda.core.csv.CsvSchemaObjectAttribute attr = csvSchemaObject.getAttributes().get(i);
+                final CsvSchemaObjectAttribute attr = csvSchemaObject.getAttributes().get(i);
                 final int csvIndex = attr.getIndex();
                 final String value = record.isSet(csvIndex) ? record.get(csvIndex) : "";
                 ValueParser valueParser = attr.getSetter();
                 Runnable setVal = valueParser instanceof ValueParser.Optional
-                    ? () -> ((Optional<?>) valueParser.apply(value.isEmpty() ? null : value)).ifPresent(v -> obj.setValue(attr.getName(), v))
-                    : () -> obj.setValue(attr.getName(), valueParser.apply(value.isEmpty() ? null : value));
+                    ? () -> ((Optional<?>) valueParser
+                    .apply(value.isEmpty() ? null : value))
+                    .ifPresent(v -> obj.setValue(attr.getName(), v))
+                    : () -> obj
+                    .setValue(
+                        attr.getName(),
+                        valueParser.apply(value.isEmpty() ? null : value)
+                    );
                 if (valueParser instanceof ValueParser.Primitive) {
                     setVal.run();
                 } else {
@@ -76,7 +87,7 @@ public class CsvSchema implements Iterable<org.xomda.core.csv.CsvSchemaObject> {
         CSVRecord record = null;
 
         // skip empty lines
-        while (it.hasNext() && org.xomda.core.csv.CsvService.isEmpty(record = it.next())) {
+        while (it.hasNext() && CsvService.isEmpty(record = it.next())) {
             // noop, skip empty lines
         }
 
@@ -85,16 +96,16 @@ public class CsvSchema implements Iterable<org.xomda.core.csv.CsvSchemaObject> {
 
         // process the schema
         do {
-            final org.xomda.core.csv.CsvSchemaObject schemaObject = new org.xomda.core.csv.CsvSchemaObject(record, context);
+            final CsvSchemaObject schemaObject = new CsvSchemaObject(record, context);
             logger.debug("Found {} ({})", schemaObject.getName(), schemaObject.getObjectClass());
             schema.addModel(schemaObject);
-        } while (it.hasNext() && !org.xomda.core.csv.CsvService.isEmpty(record = it.next()));
+        } while (it.hasNext() && !CsvService.isEmpty(record = it.next()));
 
         // reverse master
-        schema.objects.forEach((final org.xomda.core.csv.CsvSchemaObject schemaObject) -> {
+        schema.objects.forEach((final CsvSchemaObject schemaObject) -> {
             final String name = schemaObject.getName();
             final String identifier = StringUtils.toPascalCase(name + " List");
-            schema.objects.forEach((final org.xomda.core.csv.CsvSchemaObject otherObject) -> ReflectionUtils
+            schema.objects.forEach((final CsvSchemaObject otherObject) -> ReflectionUtils
                 .getGetter(otherObject.getObjectClass(), identifier)
                 .ifPresent((final Method method) ->
                     schema.rev.computeIfAbsent(schemaObject, o -> new ArrayList<>())
