@@ -1,0 +1,7 @@
+// This plugin extends the xomda-java-base configuration and turns a project into a java library
+plugins {
+    id('xomda-java-base')
+    id('java-library')
+    id('maven-publish')
+}
+

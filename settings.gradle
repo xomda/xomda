@@ -1,9 +1,19 @@
+
+pluginManagement {
+    includeBuild('gradle/projectPlugins')
+}
+
 plugins {
     // Apply the foojay-resolver plugin to allow automatic download of JDKs
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
 rootProject.name = 'xomda'
+
+dependencyResolutionManagement {
+    repositories.mavenLocal()
+    repositories.mavenCentral()
+}
 
 include(
     'lib:cli',
@@ -16,3 +26,4 @@ include(
 
 // update the plugin names
 project(":plugin").children.each { p -> p.name = "plugin-" + p.name }
+

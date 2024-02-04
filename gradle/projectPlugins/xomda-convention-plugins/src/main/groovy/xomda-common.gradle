@@ -1,0 +1,5 @@
+// Stuff common to all types of xomda projects
+plugins {
+    id('eclipse')
+}
+

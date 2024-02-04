@@ -1,34 +1,12 @@
 plugins {
-    id 'java-gradle-plugin'
-    id 'maven-publish'
-    id 'eclipse'
-}
-
-group "org.xomda"
-
-java {
-    version = libs.versions.xomda.get()
-    sourceCompatibility = 17
-    targetCompatibility = 17
-    toolchain { languageVersion = JavaLanguageVersion.of(17) }
-}
-
-repositories {
-    // Use Maven Central for resolving dependencies.
-    mavenCentral()
+    id 'xomda-gradle-plugin'
 }
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation libs.junit.jupiter
-
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     implementation project(":lib:core")
 }
 
 gradlePlugin {
-
     // Define the plugin
     plugins {
         xomda {
@@ -63,9 +41,4 @@ gradlePlugin.testSourceSets.add(sourceSets.functionalTest)
 tasks.named('check') {
     // Run the functional tests as part of `check`
     dependsOn(tasks.functionalTest)
-}
-
-tasks.named('test') {
-    // Use JUnit Jupiter for unit tests.
-    useJUnitPlatform()
 }
