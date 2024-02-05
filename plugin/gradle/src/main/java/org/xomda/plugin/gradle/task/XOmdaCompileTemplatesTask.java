@@ -41,7 +41,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 		task.setSource(omdaSourceSet.getJava().getFiles());
 	}
 
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List<Class<Template>> getUserClasses(Task someTask) {
 		Project project = someTask.getProject();
 		JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
@@ -51,12 +51,12 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 		Map<String, URL> map = compiledClasses.stream().map(File::toPath)
 				.collect(Collectors.toMap((Path p) -> taskDestinationPath.relativize(p).toString()
 						.replaceAll("\\/", ".").replaceAll("\\.class$", ""), (Path p) -> {
-					try {
-						return p.toUri().toURL();
-					} catch (MalformedURLException e) {
-						throw new RuntimeException(e);
-					}
-				}));
+							try {
+								return p.toUri().toURL();
+							} catch (MalformedURLException e) {
+								throw new RuntimeException(e);
+							}
+						}));
 
 		try {
 			URL[] deps = Stream.concat(Stream.of(task.getDestinationDirectory().get().getAsFile().toURI().toURL()),
@@ -92,7 +92,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 				Template<T> c = clazz.getDeclaredConstructor().newInstance();
 				c.generate(t, templateContext);
 			} catch (IOException | InstantiationException | IllegalAccessException | InvocationTargetException
-					 | NoSuchMethodException e) {
+					| NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			}
 		}).toList();

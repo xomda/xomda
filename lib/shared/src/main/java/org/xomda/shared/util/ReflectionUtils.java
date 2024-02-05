@@ -41,7 +41,7 @@ public class ReflectionUtils {
 	}
 
 	public static Function<Object, Object> getGetterFunction(final Class<?> clazz, final String name) {
-		return getGetter(clazz, name).<Function<Object, Object>>map(method -> (final Object obj) -> {
+		return getGetter(clazz, name).<Function<Object, Object>> map(method -> (final Object obj) -> {
 			try {
 				return method.invoke(obj);
 			} catch (final IllegalAccessException | InvocationTargetException e) {
@@ -54,17 +54,17 @@ public class ReflectionUtils {
 
 	}
 
-	@SuppressWarnings({"rawtypes"})
+	@SuppressWarnings({ "rawtypes" })
 	public static Predicate<Class> extendsFrom(final Class generic) {
 		return (final Class clz) -> extendsFrom(clz, generic);
 	}
 
-	@SuppressWarnings({"rawtypes"})
+	@SuppressWarnings({ "rawtypes" })
 	public static boolean extendsFrom(final Class clz, final Class generic) {
 		return clz == generic
 				|| Stream.concat(Stream.of(clz.getGenericSuperclass()), Stream.of(clz.getGenericInterfaces()))
-				.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
-				.anyMatch(extendsFrom(generic));
+						.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
+						.anyMatch(extendsFrom(generic));
 	}
 
 	public static Optional<Method> getGetter(final Class<?> clazz, final String name) {

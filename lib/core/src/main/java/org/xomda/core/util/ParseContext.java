@@ -16,20 +16,19 @@ public class ParseContext implements InternalParseContext {
 	private final List<CsvObject> cache = new ArrayList<>();
 	private final DeferredActions deferredActions = new DeferredActions();
 
-	public ParseContext(Configuration config) {
+	public ParseContext(final Configuration config) {
 		this.config = config;
-		this.extensions = Arrays.stream(config.getExtensions()).map(Class.class::cast).map(c -> {
+		extensions = Arrays.stream(config.getExtensions()).map(Class.class::cast).map(c -> {
 			@SuppressWarnings("unchecked")
-			Class<? super XOmdaExtension> extensionClass = c;
+			final Class<? super XOmdaExtension> extensionClass = c;
 			return ParseContext.createExtension(extensionClass);
 		}).toList();
 	}
 
-	static XOmdaExtension createExtension(Class<? super XOmdaExtension> clazz) {
+	static XOmdaExtension createExtension(final Class<? super XOmdaExtension> clazz) {
 		try {
 			return (XOmdaExtension) clazz.getDeclaredConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
-				 | NoSuchMethodException e) {
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -49,15 +48,15 @@ public class ParseContext implements InternalParseContext {
 
 	public <T> List<T> getObjects() {
 		@SuppressWarnings("unchecked")
-		List<T> objects = (List<T>) getCache().stream().map(CsvObject::getProxy).toList();
+		final List<T> objects = (List<T>) getCache().stream().map(CsvObject::getProxy).toList();
 		return objects;
 	}
 
-	public void add(CsvObject object) {
+	public void add(final CsvObject object) {
 		cache.add(object);
 	}
 
-	public void runDeferred(Runnable action) {
+	public void runDeferred(final Runnable action) {
 		deferredActions.add(action);
 	}
 
