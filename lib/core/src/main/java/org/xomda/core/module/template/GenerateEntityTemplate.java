@@ -75,14 +75,17 @@ public class GenerateEntityTemplate extends PackageTemplate {
 		while (null != root.getPackage()) {
 			root = root.getPackage();
 		}
-		return getAllEntities(entity.getPackage()).filter(e -> stream(e::getAttributeList).anyMatch(a -> Dependency.Composite.equals(a.getDependency()) && entity.equals(a.getEntityRef())));
+		return getAllEntities(entity.getPackage()).filter(e -> stream(e::getAttributeList)
+				.anyMatch(a -> Dependency.Composite.equals(a.getDependency()) && entity.equals(a.getEntityRef())));
 	}
 
 	private static Stream<Entity> getAllEntities(final Package pkg) {
-		return null == pkg ? Stream.empty()
+		return null == pkg
+				? Stream.empty()
 				: Stream.concat(
-				stream(pkg::getPackageList).flatMap(GenerateEntityTemplate::getAllEntities),
-				stream(pkg::getEntityList));
+						stream(pkg::getPackageList).flatMap(GenerateEntityTemplate::getAllEntities),
+						stream(pkg::getEntityList)
+				);
 	}
 
 	private static <T> Stream<T> stream(final Supplier<Collection<T>> supplier) {
