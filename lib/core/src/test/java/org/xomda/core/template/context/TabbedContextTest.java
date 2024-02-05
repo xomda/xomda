@@ -36,15 +36,19 @@ public class TabbedContextTest {
 		assertEquals("    ok\n\n\n\n\n    ok\n", withContext(2, ctx -> ctx.println("ok\n\n\n\n\nok")));
 	}
 
-	static String withContext(int tabCount, Consumer<TabbableContext<JavaTemplateContext>> supplier) {
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream();
-			 BufferedOutputStream bos = new BufferedOutputStream(os);
-			 JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos).tab(tabCount)) {
+	static String withContext(final int tabCount, final Consumer<TabbableContext<JavaTemplateContext>> supplier) {
+		try (
+				final ByteArrayOutputStream os = new ByteArrayOutputStream();
+				final BufferedOutputStream bos = new BufferedOutputStream(os);
+				final JavaTemplateContext context = JavaTemplateContext
+						.create("com.example.Class", bos)
+						.tab(tabCount)
+		) {
 			context.setTabCharacter("  ");
 			supplier.accept(context);
 			context.flush();
 			return os.toString();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			SneakyThrow.throwSneaky(e);
 			return null;
 		}

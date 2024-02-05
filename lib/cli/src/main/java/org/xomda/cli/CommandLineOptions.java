@@ -34,23 +34,45 @@ public class CommandLineOptions extends Options {
 
 	private static final String COMMAND = "xomda";
 
-	private final static Option OPT_EXTENSION = Option.builder("e").longOpt("extensions").hasArg(true)
-			.argName("EXTENSIONS").desc("Specify a comma-separated list of extensions.").build();
-
-	private final static Option OPT_MODELS = Option.builder("m").longOpt("models").hasArg(true).argName("MODELS")
-			.desc("Specify one or more model files, separated by comma.").build();
-
-	private final static Option OPT_OUT_DIR = Option.builder("o").longOpt("out").hasArg(true).argName("DIR")
-			.desc("Specify the output directory.").build();
-
-	private final static Option OPT_CLASSPATHS = Option.builder("c").longOpt("classpath").hasArg(true)
-			.argName("CLASSPATH").desc("Specify one or more packages to scan for interfaces, separated by comma.")
+	private final static Option OPT_EXTENSION = Option.builder("e")
+			.longOpt("extensions")
+			.hasArg(true)
+			.argName("EXTENSIONS")
+			.desc("Specify a comma-separated list of extensions.")
 			.build();
 
-	private final static Option OPT_LOG_LEVEL = Option.builder("l").longOpt("level").hasArg(true).argName("LOG-LEVEL")
-			.desc("Specify the log-level.").build();
+	private final static Option OPT_MODELS = Option.builder("m")
+			.longOpt("models")
+			.hasArg(true)
+			.argName("MODELS")
+			.desc("Specify one or more model files, separated by comma.")
+			.build();
 
-	private final static Option OPT_HELP = Option.builder("h").longOpt("help").desc("Show this help").build();
+	private final static Option OPT_OUT_DIR = Option.builder("o")
+			.longOpt("out")
+			.hasArg(true)
+			.argName("DIR")
+			.desc("Specify the output directory.")
+			.build();
+
+	private final static Option OPT_CLASSPATHS = Option.builder("c")
+			.longOpt("classpath")
+			.hasArg(true)
+			.argName("CLASSPATH")
+			.desc("Specify one or more packages to scan for interfaces, separated by comma.")
+			.build();
+
+	private final static Option OPT_LOG_LEVEL = Option.builder("l")
+			.longOpt("level")
+			.hasArg(true)
+			.argName("LOG-LEVEL")
+			.desc("Specify the log-level.")
+			.build();
+
+	private final static Option OPT_HELP = Option.builder("h")
+			.longOpt("help")
+			.desc("Show this help")
+			.build();
 
 	public CommandLineOptions() {
 		addOption(OPT_EXTENSION);
@@ -79,8 +101,7 @@ public class CommandLineOptions extends Options {
 		return null;
 	}
 
-	public static ConfigurationBuilder parse(final ConfigurationBuilder builder, final String... args)
-			throws ParseException {
+	public static ConfigurationBuilder parse(final ConfigurationBuilder builder, final String... args) throws ParseException {
 		final CommandLineParser parser = new DefaultParser();
 		final CommandLine line = parser.parse(new CommandLineOptions(), args);
 
@@ -90,8 +111,12 @@ public class CommandLineOptions extends Options {
 		}
 
 		if (line.hasOption(OPT_OUT_DIR)) {
-			Optional.ofNullable(line.getOptionValue(OPT_OUT_DIR)).filter(Predicate.not(String::isBlank)).map(Paths::get)
-					.map(p -> p.isAbsolute() ? p : p.toAbsolutePath()).map(Path::toString)
+			Optional
+					.ofNullable(line.getOptionValue(OPT_OUT_DIR))
+					.filter(Predicate.not(String::isBlank))
+					.map(Paths::get)
+					.map(p -> p.isAbsolute() ? p : p.toAbsolutePath())
+					.map(Path::toString)
 					.ifPresent(builder::withOutDir);
 		}
 
@@ -100,18 +125,31 @@ public class CommandLineOptions extends Options {
 		}
 
 		if (line.hasOption(OPT_EXTENSION)) {
-			builder.addExtensions(stream(line.getOptionValues(OPT_EXTENSION)).toArray(Object[]::new));
+			builder.addExtensions(
+					stream(line.getOptionValues(OPT_EXTENSION))
+							.toArray(Object[]::new));
 		}
 
-		builder.withModels(line.hasOption(OPT_MODELS) ? stream(line.getOptionValues(OPT_MODELS)).toList()
-				: Stream.of(Constants.XOMDA_DOT_PATH, Constants.XOMDA_CSV_CONFIG_PATH).filter(Files::exists)
-				.flatMap(SneakyThrow.sneaky(Files::list)).filter(Predicate.not(Files::isDirectory))
-				.filter(p -> p.getFileName().toString().endsWith(".csv")).map(Path::toAbsolutePath)
-				.map(Path::toString).toList());
+		builder.withModels(
+				line.hasOption(OPT_MODELS)
+						? stream(line.getOptionValues(OPT_MODELS)).toList()
+						: Stream.of(
+								Constants.XOMDA_DOT_PATH,
+								Constants.XOMDA_CSV_CONFIG_PATH)
+								.filter(Files::exists)
+								.flatMap(SneakyThrow.sneaky(Files::list))
+								.filter(Predicate.not(Files::isDirectory))
+								.filter(p -> p.getFileName().toString().endsWith(".csv"))
+								.map(Path::toAbsolutePath)
+								.map(Path::toString)
+								.toList());
 
 		if (line.hasOption(OPT_LOG_LEVEL)) {
-			Optional.ofNullable(line.getOptionValue(OPT_LOG_LEVEL)).filter(Predicate.not(String::isBlank))
-					.map(Level::getLevel).ifPresent(builder::withLogLevel);
+			Optional
+					.ofNullable(line.getOptionValue(OPT_LOG_LEVEL))
+					.filter(Predicate.not(String::isBlank))
+					.map(Level::getLevel)
+					.ifPresent(builder::withLogLevel);
 		}
 
 		return builder;
@@ -119,7 +157,10 @@ public class CommandLineOptions extends Options {
 
 	static Stream<String> stream(final String[] args) {
 		return null == args ? Stream.empty()
-				: Stream.of(args).map(v -> v.split(",")).flatMap(Stream::of).map(String::trim);
+				: Stream.of(args)
+						.map(v -> v.split(","))
+						.flatMap(Stream::of)
+						.map(String::trim);
 	}
 
 	static Collection<String> list(final String[] args) {
