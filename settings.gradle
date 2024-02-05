@@ -1,4 +1,3 @@
-
 pluginManagement {
     includeBuild('gradle/projectPlugins')
 }
@@ -16,11 +15,11 @@ dependencyResolutionManagement {
 }
 
 include(
+    'lib:api',
     'lib:cli',
     'lib:core',
     'lib:model',
     'lib:shared',
-    'lib:api',
     'plugin:gradle'
 )
 

@@ -1,6 +1,7 @@
 package org.xomda.cli;
 
 import java.io.PrintWriter;
+import java.io.Serial;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,6 +28,9 @@ import org.xomda.shared.exception.SneakyThrow;
  * It will create a {@link Configuration} out of it.
  */
 public class CommandLineOptions extends Options {
+
+    @Serial
+    private static final long serialVersionUID = 5676028176302066094L;
 
     private static final String COMMAND = "xomda";
 

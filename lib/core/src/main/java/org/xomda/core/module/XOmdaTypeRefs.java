@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -13,9 +12,7 @@ import org.xomda.core.csv.CsvSchema;
 import org.xomda.core.csv.type.ValueParser;
 import org.xomda.core.extension.CsvSchemaProcessor;
 import org.xomda.core.extension.ValueParserProvider;
-import org.xomda.core.util.InternalParseContext;
 import org.xomda.core.util.ParseContext;
-import org.xomda.shared.util.ReflectionUtils;
 
 public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 
@@ -52,20 +49,6 @@ public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
     }
 
     private <T> T resolve(final Class<?> type, String ref) {
-        Function<Object, String> fn = ((InternalParseContext) context).getCache().stream()
-            .map(o -> {
-                Class<?> oClz = o.getClasses() == null || o.getClasses().length < 1
-                    ? null
-                    : o.getClasses()[0];
-                Function<?, ?> nameGetter = ReflectionUtils.getGetterFunction(oClz, "Name");
-                @SuppressWarnings("unchecked")
-                Function<Object, String> result = (Function<Object, String>) nameGetter;
-                return result;
-            })
-            .filter(Objects::nonNull)
-            .findFirst()
-            .orElse((Object o) -> "");
-
         String[] parts = ref.split("\\/");
         List<CsvObject> objects = context.getCache();
 

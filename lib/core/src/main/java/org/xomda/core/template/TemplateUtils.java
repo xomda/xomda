@@ -7,7 +7,6 @@ import org.xomda.core.java.JavaUtils;
 import org.xomda.model.Attribute;
 import org.xomda.model.AttributeType;
 import org.xomda.model.Entity;
-import org.xomda.model.Enum;
 import org.xomda.shared.util.StringUtils;
 
 public class TemplateUtils {
