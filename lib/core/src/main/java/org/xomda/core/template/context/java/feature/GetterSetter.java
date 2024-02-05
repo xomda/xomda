@@ -137,8 +137,12 @@ public class GetterSetter {
 		writeTo(ctx, ctx);
 	}
 
-	public static GetterSetter create(final String type, final String name) {
-		return new GetterSetter().withType(type).withName(name);
+	public static GetterSetter create(final CharSequence type, final CharSequence name) {
+		Objects.requireNonNull(type);
+		Objects.requireNonNull(name);
+		return new GetterSetter()
+				.withType(type.toString())
+				.withName(name.toString());
 	}
 
 }

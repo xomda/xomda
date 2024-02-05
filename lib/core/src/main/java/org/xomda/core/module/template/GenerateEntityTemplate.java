@@ -27,10 +27,12 @@ public class GenerateEntityTemplate extends PackageTemplate {
 
 		try (
 				@SuppressWarnings("resource")
-				JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
+				final JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
 						.withHeaders(
 								"// THIS FILE WAS AUTOMATICALLY GENERATED",
-								"");) {
+								""
+						);
+		) {
 			ctx
 					.println("public interface " + interfaceName + " {").tab(tabbed -> tabbed
 							.println()
@@ -39,33 +41,10 @@ public class GenerateEntityTemplate extends PackageTemplate {
 							.forEach(entity::getAttributeList, (final Attribute attribute) -> {
 								final String attributeName = StringUtils.toPascalCase(attribute.getName());
 								final String fullyQualifiedType = ctx.addImport(TemplateUtils.getJavaType(attribute));
-								final String identifier = TemplateUtils.getJavaIdentifier(StringUtils.toCamelCase(attribute.getName()));
-
 								GetterSetter.create(fullyQualifiedType, attributeName)
 										.declareOnly()
 										.withJavaDoc(attribute.getDescription())
 										.writeTo(tabbed);
-
-								/*
-								tabbed
-										// getter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(attribute.getDescription())) {
-												return;
-											}
-											doc.println(attribute.getDescription());
-										})
-										.println("{0} get{1}();", fullyQualifiedType, attributeName)
-										// setter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(attribute.getDescription())) {
-												return;
-											}
-											doc.println(attribute.getDescription());
-										})
-										.println("void set{0}(final {1} {2});", attributeName, fullyQualifiedType, identifier)
-										.println();
-										*/
 							})
 
 							// generate the reverse entity attributes
@@ -74,28 +53,14 @@ public class GenerateEntityTemplate extends PackageTemplate {
 								final CharSequence fullyQualifiedType = WritableContext.format(
 										"{0}<{1}>",
 										ctx.addImport(List.class),
-										ctx.addImport(TemplateUtils.getJavaType(e)));
-								final String identifier = TemplateUtils.getJavaIdentifier(StringUtils.toCamelCase(e.getName()));
-
-								tabbed
-										// getter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(entity.getDescription())) {
-												return;
-											}
-											doc.println(entity.getDescription());
-										})
-										.println("{0} get{1}();", fullyQualifiedType, attributeName)
-										// setter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(entity.getDescription())) {
-												return;
-											}
-											doc.println(entity.getDescription());
-										})
-										.println("void set{0}(final {1} {2});", attributeName, fullyQualifiedType, identifier)
-										.println();
+										ctx.addImport(TemplateUtils.getJavaType(e))
+								);
+								GetterSetter.create(fullyQualifiedType, attributeName)
+										.declareOnly()
+										.withJavaDoc(entity.getDescription())
+										.writeTo(tabbed);
 							}))
+
 					.println("}");
 
 			ctx.writeFile(context.outDir());
@@ -116,8 +81,8 @@ public class GenerateEntityTemplate extends PackageTemplate {
 	private static Stream<Entity> getAllEntities(final Package pkg) {
 		return null == pkg ? Stream.empty()
 				: Stream.concat(
-						stream(pkg::getPackageList).flatMap(GenerateEntityTemplate::getAllEntities),
-						stream(pkg::getEntityList));
+				stream(pkg::getPackageList).flatMap(GenerateEntityTemplate::getAllEntities),
+				stream(pkg::getEntityList));
 	}
 
 	private static <T> Stream<T> stream(final Supplier<Collection<T>> supplier) {
