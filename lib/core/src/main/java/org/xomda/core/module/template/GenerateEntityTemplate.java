@@ -10,6 +10,7 @@ import org.xomda.core.template.TemplateContext;
 import org.xomda.core.template.TemplateUtils;
 import org.xomda.core.template.context.WritableContext;
 import org.xomda.core.template.context.java.JavaClassWriter;
+import org.xomda.core.template.context.java.feature.GetterSetter;
 import org.xomda.model.Attribute;
 import org.xomda.model.Dependency;
 import org.xomda.model.Entity;
@@ -26,7 +27,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 
 		try (
 				@SuppressWarnings("resource")
-				JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
+				final JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
 						.withHeaders(
 								"// THIS FILE WAS AUTOMATICALLY GENERATED",
 								""
@@ -40,25 +41,10 @@ public class GenerateEntityTemplate extends PackageTemplate {
 							.forEach(entity::getAttributeList, (final Attribute attribute) -> {
 								final String attributeName = StringUtils.toPascalCase(attribute.getName());
 								final String fullyQualifiedType = ctx.addImport(TemplateUtils.getJavaType(attribute));
-								final String identifier = TemplateUtils.getJavaIdentifier(StringUtils.toCamelCase(attribute.getName()));
-								tabbed
-										// getter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(attribute.getDescription())) {
-												return;
-											}
-											doc.println(attribute.getDescription());
-										})
-										.println("{0} get{1}();", fullyQualifiedType, attributeName)
-										// setter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(attribute.getDescription())) {
-												return;
-											}
-											doc.println(attribute.getDescription());
-										})
-										.println("void set{0}(final {1} {2});", attributeName, fullyQualifiedType, identifier)
-										.println();
+								GetterSetter.create(fullyQualifiedType, attributeName)
+										.declareOnly()
+										.withJavaDoc(attribute.getDescription())
+										.writeTo(tabbed);
 							})
 
 							// generate the reverse entity attributes
@@ -67,27 +53,14 @@ public class GenerateEntityTemplate extends PackageTemplate {
 								final CharSequence fullyQualifiedType = WritableContext.format(
 										"{0}<{1}>",
 										ctx.addImport(List.class),
-										ctx.addImport(TemplateUtils.getJavaType(e)));
-								final String identifier = TemplateUtils.getJavaIdentifier(StringUtils.toCamelCase(e.getName()));
-								tabbed
-										// getter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(entity.getDescription())) {
-												return;
-											}
-											doc.println(entity.getDescription());
-										})
-										.println("{0} get{1}();", fullyQualifiedType, attributeName)
-										// setter
-										.addDocs(doc -> {
-											if (StringUtils.isNullOrBlank(entity.getDescription())) {
-												return;
-											}
-											doc.println(entity.getDescription());
-										})
-										.println("void set{0}(final {1} {2});", attributeName, fullyQualifiedType, identifier)
-										.println();
+										ctx.addImport(TemplateUtils.getJavaType(e))
+								);
+								GetterSetter.create(fullyQualifiedType, attributeName)
+										.declareOnly()
+										.withJavaDoc(entity.getDescription())
+										.writeTo(tabbed);
 							}))
+
 					.println("}");
 
 			ctx.writeFile(context.outDir());
@@ -102,14 +75,17 @@ public class GenerateEntityTemplate extends PackageTemplate {
 		while (null != root.getPackage()) {
 			root = root.getPackage();
 		}
-		return getAllEntities(entity.getPackage()).filter(e -> stream(e::getAttributeList).anyMatch(a -> Dependency.Composite.equals(a.getDependency()) && entity.equals(a.getEntityRef())));
+		return getAllEntities(entity.getPackage()).filter(e -> stream(e::getAttributeList)
+				.anyMatch(a -> Dependency.Composite.equals(a.getDependency()) && entity.equals(a.getEntityRef())));
 	}
 
 	private static Stream<Entity> getAllEntities(final Package pkg) {
-		return null == pkg ? Stream.empty()
+		return null == pkg
+				? Stream.empty()
 				: Stream.concat(
 						stream(pkg::getPackageList).flatMap(GenerateEntityTemplate::getAllEntities),
-						stream(pkg::getEntityList));
+						stream(pkg::getEntityList)
+				);
 	}
 
 	private static <T> Stream<T> stream(final Supplier<Collection<T>> supplier) {

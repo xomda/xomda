@@ -10,8 +10,14 @@ public interface WritableContext<R extends WritableContext<R>> {
 
 	PrintWriter getWriter();
 
+	/**
+	 * @return whether we're on a fresh new line (after <code>\r</code> or <code>\n</code>), or in the middle of a previous line.
+	 */
 	boolean isNewLine();
 
+	/**
+	 * @see #isNewLine()
+	 */
 	void setNewLine(boolean state);
 
 	static CharSequence format(final CharSequence pattern, final Object... args) {
