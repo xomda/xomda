@@ -15,7 +15,8 @@ import org.xomda.shared.util.StringUtils;
 
 public class GenerateEnumTemplate extends org.xomda.core.module.template.PackageTemplate {
 
-	public void generate(org.xomda.model.Enum enm, TemplateContext context) throws IOException {
+	@Override
+	public void generate(final org.xomda.model.Enum enm, final TemplateContext context) throws IOException {
 		final Path root = Paths.get(context.outDir());
 		final String pkg = TemplateUtils.getJavaPackage(enm.getPackage());
 		final String enumName = StringUtils.toPascalCase(enm.getName());
@@ -25,13 +26,15 @@ public class GenerateEnumTemplate extends org.xomda.core.module.template.Package
 		final Path outFile = root.resolve(TemplateUtils.getEnumPath(enm));
 		Files.createDirectories(outFile.getParent());
 
-		try (final FileOutputStream fos = new FileOutputStream(outFile.toFile());
+		try (
+				final FileOutputStream fos = new FileOutputStream(outFile.toFile());
 				final BufferedOutputStream bos = new BufferedOutputStream(fos);
-				final JavaTemplateContext ctx = new JavaTemplateContext(fullyQualifiedName, bos)) {
+				final JavaTemplateContext ctx = new JavaTemplateContext(fullyQualifiedName, bos);
+		) {
 			ctx.println("// THIS FILE WAS AUTOMATICALLY GENERATED").println().println("package " + pkg + ";").println()
 					.println("public enum " + enumName + " {")
 					.tab(tabbed -> tabbed.forEach(enm::getValueList,
-							(Value value) -> tabbed.println("{0}, ", StringUtils.toPascalCase(value.getName()))))
+							(final Value value) -> tabbed.println("{0}, ", StringUtils.toPascalCase(value.getName()))))
 					.println("}");
 		}
 	}

@@ -52,7 +52,7 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 
 		// Inherit dependencies
 		Stream.of(omdaSourceSet.getCompileClasspathConfigurationName(),
-				omdaSourceSet.getRuntimeClasspathConfigurationName()).map(project.getConfigurations()::getAt)
+						omdaSourceSet.getRuntimeClasspathConfigurationName()).map(project.getConfigurations()::getAt)
 				.forEach(confImp -> confImp.extendsFrom(conf));
 
 		// plugin extension (config)

@@ -29,7 +29,7 @@ public class ParseContext implements InternalParseContext {
 		try {
 			return (XOmdaExtension) clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
-				| NoSuchMethodException e) {
+				 | NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
 	}

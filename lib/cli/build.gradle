@@ -19,7 +19,7 @@ tasks.register('generateXOmdaModel', JavaExec) {
 	mainClass = "org.xomda.cli.Main"
 	workingDir = modelProject.projectDir
 	args = [
-		"--models", modelProject.file("src/xomda/config/Model.csv"),
-		"--out", modelProject.file("src/generated/java"),
+			"--models", modelProject.file("src/xomda/config/Model.csv"),
+			"--out", modelProject.file("src/generated/java"),
 	]
 }

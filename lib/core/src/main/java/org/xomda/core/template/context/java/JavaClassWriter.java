@@ -59,7 +59,7 @@ public class JavaClassWriter extends JavaTemplateContext {
 		final List<String> imports = getImports();
 
 		try (final OutputStream os = Files.newOutputStream(outFile);
-				final PrintStream ps = new PrintStream(os, false, StandardCharsets.UTF_8)) {
+			 final PrintStream ps = new PrintStream(os, false, StandardCharsets.UTF_8)) {
 			if (null != headers) {
 				headers.forEach(ps::println);
 			}

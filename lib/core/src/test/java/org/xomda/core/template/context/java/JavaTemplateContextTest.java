@@ -83,8 +83,8 @@ public class JavaTemplateContextTest {
 
 	static String withContext(String tabCharacter, Consumer<JavaTemplateContext> supplier) {
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream();
-				BufferedOutputStream bos = new BufferedOutputStream(os);
-				JavaTemplateContext context = new JavaTemplateContext("com.example.com", bos)) {
+			 BufferedOutputStream bos = new BufferedOutputStream(os);
+			 JavaTemplateContext context = new JavaTemplateContext("com.example.com", bos)) {
 			context.setTabCharacter(tabCharacter);
 			supplier.accept(context);
 			context.flush();

@@ -62,7 +62,7 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 			ValueParser valueParser = attr.getSetter();
 			Runnable setVal = valueParser instanceof ValueParser.Optional
 					? () -> ((Optional<?>) valueParser.apply(value.isEmpty() ? null : value))
-							.ifPresent(v -> obj.setValue(attr.getName(), v))
+					.ifPresent(v -> obj.setValue(attr.getName(), v))
 					: () -> obj.setValue(attr.getName(), valueParser.apply(value.isEmpty() ? null : value));
 			if (valueParser instanceof ValueParser.Primitive) {
 				setVal.run();

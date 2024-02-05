@@ -33,7 +33,7 @@ public class PackageTemplate implements Template<org.xomda.model.Package> {
 	}
 
 	static <D, C extends Collection<D>> void processList(Supplier<C> supplier, BiConsumer<D, TemplateContext> consumer,
-			TemplateContext context) {
+														 TemplateContext context) {
 		Optional.ofNullable(supplier.get()).ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
 	}
 }

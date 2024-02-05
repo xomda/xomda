@@ -15,12 +15,12 @@ dependencyResolutionManagement {
 }
 
 include(
-	'lib:api',
-	'lib:cli',
-	'lib:core',
-	'lib:model',
-	'lib:shared',
-	'plugin:gradle'
+		'lib:api',
+		'lib:cli',
+		'lib:core',
+		'lib:model',
+		'lib:shared',
+		'plugin:gradle'
 )
 
 // update the plugin names

@@ -11,7 +11,7 @@ public class StringUtils {
 	public static String toPascalCase(final String in) {
 		return null == in || in.isEmpty() ? in
 				: Arrays.stream(in.split("\\s+")).map(String::toLowerCase).map(StringUtils::toUpper1)
-						.collect(Collectors.joining());
+				.collect(Collectors.joining());
 	}
 
 	/**

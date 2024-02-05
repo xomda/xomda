@@ -13,33 +13,35 @@ import org.xomda.shared.logging.LogService;
 
 public class ReflectionUtils {
 
-	public static <T> Optional<Class<T>> findClass(String className) {
+	public static <T> Optional<Class<T>> findClass(final String className) {
 		try {
 			@SuppressWarnings("unchecked")
-			Class<T> found = (Class<T>) Class.forName(className);
+			final Class<T> found = (Class<T>) Class.forName(className);
 			return Optional.of(found);
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			return Optional.empty();
 		}
 	}
 
-	public static <T> Optional<Class<T>> findClass(String className, boolean initialize, ClassLoader classLoader) {
+	public static <T> Optional<Class<T>> findClass(final String className, final boolean initialize, final ClassLoader classLoader) {
 		try {
 			@SuppressWarnings("unchecked")
-			Class<T> found = (Class<T>) Class.forName(className, initialize, classLoader);
+			final Class<T> found = (Class<T>) Class.forName(className, initialize, classLoader);
 			return Optional.of(found);
-		} catch (ClassNotFoundException e) {
-			LogService.getLogger(ReflectionUtils.class).debug("Failed to load {}", className);
+		} catch (final ClassNotFoundException e) {
+			LogService
+					.getLogger(ReflectionUtils.class)
+					.debug("Failed to load {}", className);
 			return Optional.empty();
 		}
 	}
 
-	public static <T> Optional<Class<T>> findClass(String className, ClassLoader classLoader) {
+	public static <T> Optional<Class<T>> findClass(final String className, final ClassLoader classLoader) {
 		return findClass(className, true, classLoader);
 	}
 
 	public static Function<Object, Object> getGetterFunction(final Class<?> clazz, final String name) {
-		return getGetter(clazz, name).<Function<Object, Object>> map(method -> (final Object obj) -> {
+		return getGetter(clazz, name).<Function<Object, Object>>map(method -> (final Object obj) -> {
 			try {
 				return method.invoke(obj);
 			} catch (final IllegalAccessException | InvocationTargetException e) {
@@ -52,17 +54,17 @@ public class ReflectionUtils {
 
 	}
 
-	@SuppressWarnings({ "rawtypes" })
-	public static Predicate<Class> extendsFrom(Class generic) {
-		return (Class clz) -> extendsFrom(clz, generic);
+	@SuppressWarnings({"rawtypes"})
+	public static Predicate<Class> extendsFrom(final Class generic) {
+		return (final Class clz) -> extendsFrom(clz, generic);
 	}
 
-	@SuppressWarnings({ "rawtypes" })
-	public static boolean extendsFrom(Class clz, Class generic) {
+	@SuppressWarnings({"rawtypes"})
+	public static boolean extendsFrom(final Class clz, final Class generic) {
 		return clz == generic
 				|| Stream.concat(Stream.of(clz.getGenericSuperclass()), Stream.of(clz.getGenericInterfaces()))
-						.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
-						.anyMatch(extendsFrom(generic));
+				.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
+				.anyMatch(extendsFrom(generic));
 	}
 
 	public static Optional<Method> getGetter(final Class<?> clazz, final String name) {
@@ -75,12 +77,12 @@ public class ReflectionUtils {
 	}
 
 	private static Predicate<Method> isGetter(final String methodName) {
-		return (Method method) -> method.getParameterCount() == 0 && method.getName().equals(methodName);
+		return (final Method method) -> method.getParameterCount() == 0 && method.getName().equals(methodName);
 	}
 
-	public static <P> P unchecked(Object p) {
+	public static <P> P unchecked(final Object p) {
 		@SuppressWarnings("unchecked")
-		P r = (P) p;
+		final P r = (P) p;
 		return r;
 	}
 
@@ -88,7 +90,7 @@ public class ReflectionUtils {
 	 * Resolves array types. ie, <code>Class&lt;T[]&gt;</code> becomes
 	 * <code>Class&lt;T&gt;</code>
 	 */
-	public static <C> Class<?> getBareType(Class<?> clazz) {
+	public static <C> Class<?> getBareType(final Class<?> clazz) {
 		return null == clazz ? null : clazz.isArray() ? clazz.getComponentType() : clazz;
 	}
 }

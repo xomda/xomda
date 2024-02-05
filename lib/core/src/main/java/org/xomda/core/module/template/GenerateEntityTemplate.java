@@ -25,7 +25,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 		final String fullyQualifiedName = pkg + "." + interfaceName;
 
 		try (@SuppressWarnings("resource")
-		JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
+			 JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
 				.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "")) {
 			ctx.println("public interface " + interfaceName + " {").tab(tabbed -> tabbed.println()
 
@@ -92,7 +92,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 	private static Stream<Entity> getAllEntities(final Package pkg) {
 		return null == pkg ? Stream.empty()
 				: Stream.concat(stream(pkg::getPackageList).flatMap(GenerateEntityTemplate::getAllEntities),
-						stream(pkg::getEntityList));
+				stream(pkg::getEntityList));
 	}
 
 	private static <T> Stream<T> stream(final Supplier<Collection<T>> supplier) {

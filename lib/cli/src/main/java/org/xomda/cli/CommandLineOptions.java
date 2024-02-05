@@ -105,9 +105,9 @@ public class CommandLineOptions extends Options {
 
 		builder.withModels(line.hasOption(OPT_MODELS) ? stream(line.getOptionValues(OPT_MODELS)).toList()
 				: Stream.of(Constants.XOMDA_DOT_PATH, Constants.XOMDA_CSV_CONFIG_PATH).filter(Files::exists)
-						.flatMap(SneakyThrow.sneaky(Files::list)).filter(Predicate.not(Files::isDirectory))
-						.filter(p -> p.getFileName().toString().endsWith(".csv")).map(Path::toAbsolutePath)
-						.map(Path::toString).toList());
+				.flatMap(SneakyThrow.sneaky(Files::list)).filter(Predicate.not(Files::isDirectory))
+				.filter(p -> p.getFileName().toString().endsWith(".csv")).map(Path::toAbsolutePath)
+				.map(Path::toString).toList());
 
 		if (line.hasOption(OPT_LOG_LEVEL)) {
 			Optional.ofNullable(line.getOptionValue(OPT_LOG_LEVEL)).filter(Predicate.not(String::isBlank))

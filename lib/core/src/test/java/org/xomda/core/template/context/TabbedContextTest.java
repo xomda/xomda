@@ -38,8 +38,8 @@ public class TabbedContextTest {
 
 	static String withContext(int tabCount, Consumer<TabbableContext<JavaTemplateContext>> supplier) {
 		try (ByteArrayOutputStream os = new ByteArrayOutputStream();
-				BufferedOutputStream bos = new BufferedOutputStream(os);
-				JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos).tab(tabCount)) {
+			 BufferedOutputStream bos = new BufferedOutputStream(os);
+			 JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos).tab(tabCount)) {
 			context.setTabCharacter("  ");
 			supplier.accept(context);
 			context.flush();

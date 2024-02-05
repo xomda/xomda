@@ -22,8 +22,8 @@ public class WritableContextTest {
 
 	static String withContext(Consumer<WritableContext<JavaTemplateContext>> supplier) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				BufferedOutputStream bos = new BufferedOutputStream(baos);
-				JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos)) {
+			 BufferedOutputStream bos = new BufferedOutputStream(baos);
+			 JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos)) {
 			supplier.accept(context);
 			context.flush();
 			return baos.toString();

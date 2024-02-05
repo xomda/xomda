@@ -19,7 +19,7 @@ public class JavaImportService {
 
 	private final List<String> sortOrder = Arrays.asList("static java.", "static", "java.");
 
-	public JavaImportService(String localClass) {
+	public JavaImportService(final String localClass) {
 		if (!JavaUtils.isValidClassName(localClass)) {
 			throw new IllegalArgumentException("Invalid class name:" + localClass);
 		}
@@ -30,40 +30,41 @@ public class JavaImportService {
 		return localClass;
 	}
 
-	public String addImport(Class<?> clazz) {
+	public String addImport(final Class<?> clazz) {
 		Objects.requireNonNull(clazz);
 		return addImport(ReflectionUtils.getBareType(clazz).getName());
 	}
 
-	public String addImport(String fullyQualifiedClassName) {
+	public String addImport(final String fullyQualifiedClassName) {
 		return addImport(fullyQualifiedClassName, false);
 	}
 
-	public String addStaticImport(String methodName) {
+	public String addStaticImport(final String methodName) {
 		return addImport(methodName, true);
 	}
 
-	public String addStaticImport(Class<?> clazz, String methodName) {
+	public String addStaticImport(final Class<?> clazz, final String methodName) {
 		Objects.requireNonNull(clazz);
 		Objects.requireNonNull(methodName);
 		return addStaticImport(ReflectionUtils.getBareType(clazz).getName() + "." + methodName);
 	}
 
-	public String addImport(String fullyQualifiedClassName, boolean isStatic) {
+	public String addImport(final String fullyQualifiedClassName, final boolean isStatic) {
 		Objects.requireNonNull(fullyQualifiedClassName);
 
-		if (!JavaUtils.hasPackage(fullyQualifiedClassName))
+		if (!JavaUtils.hasPackage(fullyQualifiedClassName)) {
 			return fullyQualifiedClassName;
+		}
 
-		String className = JavaUtils.getClassName(fullyQualifiedClassName);
-		String registeredClassName = (isStatic ? "static " : "") + fullyQualifiedClassName;
+		final String className = JavaUtils.getClassName(fullyQualifiedClassName);
+		final String registeredClassName = (isStatic ? "static " : "") + fullyQualifiedClassName;
 
 		if (imports.containsKey(className)) {
 			return imports.get(className).equals(fullyQualifiedClassName) ? className : fullyQualifiedClassName;
 		}
 
-		boolean isJavaLang = JavaUtils.isGlobal(fullyQualifiedClassName);
-		boolean existsInJavaLang = existsInJavaLang(fullyQualifiedClassName);
+		final boolean isJavaLang = JavaUtils.isGlobal(fullyQualifiedClassName);
+		final boolean existsInJavaLang = existsInJavaLang(fullyQualifiedClassName);
 
 		// Return full Class names which also exist in java.lang
 		if (!isJavaLang && existsInJavaLang) {
@@ -90,11 +91,11 @@ public class JavaImportService {
 		return sortOrder;
 	}
 
-	boolean existsInJavaLang(String className) {
+	boolean existsInJavaLang(final String className) {
 		return ReflectionUtils.findClass("java.lang." + JavaUtils.getClassName(className)).isPresent();
 	}
 
-	boolean isSamePackage(String className) {
+	boolean isSamePackage(final String className) {
 		return JavaUtils.isSamePackage(getLocalClassName(), className);
 	}
 
@@ -108,16 +109,16 @@ public class JavaImportService {
 				.sorted(getComparator());
 	}
 
-	public void forEach(Consumer<String> consumer) {
+	public void forEach(final Consumer<String> consumer) {
 		forEach(consumer, () -> {
 			/* noop */
 		});
 	}
 
-	public void forEach(Consumer<String> consumer, Runnable newGroupHandler) {
-		AtomicReference<String> lastRef = new AtomicReference<>();
-		stream().forEach((String imp) -> {
-			String last = lastRef.getAndUpdate(s -> imp);
+	public void forEach(final Consumer<String> consumer, final Runnable newGroupHandler) {
+		final AtomicReference<String> lastRef = new AtomicReference<>();
+		stream().forEach((final String imp) -> {
+			final String last = lastRef.getAndUpdate(s -> imp);
 			if (last != null && getSortOrder().stream().anyMatch(s -> last.startsWith(s) && !imp.startsWith(s))) {
 				newGroupHandler.run();
 			}
@@ -131,8 +132,8 @@ public class JavaImportService {
 
 	private static Comparator<String> compareBeginsWith(final String startsWith) {
 		return (a, b) -> {
-			boolean isA = a.startsWith(startsWith);
-			boolean isB = b.startsWith(startsWith);
+			final boolean isA = a.startsWith(startsWith);
+			final boolean isB = b.startsWith(startsWith);
 			return isA ? isB ? a.compareTo(b) : -1 : isB ? 1 : 0;
 		};
 	}
