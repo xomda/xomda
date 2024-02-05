@@ -6,21 +6,21 @@ import java.util.function.Consumer;
 
 public interface TabbableContext<R extends TabbableContext<R>> extends WritableContext<R> {
 
-    String DEFAULT_TAB_CHARACTER = "  ";
+	String DEFAULT_TAB_CHARACTER = "\t";
 
-    default R tab() {
-        return tab(1);
-    }
+	default R tab() {
+		return tab(1);
+	}
 
-    R tab(int count);
+	R tab(int count);
 
-    default R tab(Consumer<R> consumer) {
-        return tab(1, consumer);
-    }
+	default R tab(Consumer<R> consumer) {
+		return tab(1, consumer);
+	}
 
-    default R tab(int count, Consumer<R> consumer) {
-        consumer.accept(tab(count));
-        return unchecked(this);
-    }
+	default R tab(int count, Consumer<R> consumer) {
+		consumer.accept(tab(count));
+		return unchecked(this);
+	}
 
 }

@@ -4,9 +4,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.xomda.shared.util.Predicates;
 import org.xomda.core.csv.type.ValueParser;
 import org.xomda.core.extension.ValueParserProvider;
+import org.xomda.shared.util.Predicates;
 
 public abstract class AbstractValueParserProvider implements ValueParserProvider {
 

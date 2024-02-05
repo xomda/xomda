@@ -1,5 +1,6 @@
 package org.xomda.core.module;
 
+import java.io.Serial;
 import java.util.HashSet;
 
 import org.xomda.core.extension.XOmdaExtension;
@@ -8,11 +9,15 @@ import org.xomda.core.module.template.GenerateEntityTemplate;
 import org.xomda.core.module.template.GenerateEnumTemplate;
 
 public class XOmdaCodeGeneration extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
-    public XOmdaCodeGeneration() {
-        super(2);
-        // code generation
-        add(GenerateEnumTemplate.class);
-        add(GenerateEntityTemplate.class);
-    }
+
+	@Serial
+	private static final long serialVersionUID = -1573308256999316945L;
+
+	public XOmdaCodeGeneration() {
+		super(2);
+		// code generation
+		add(GenerateEnumTemplate.class);
+		add(GenerateEntityTemplate.class);
+	}
 
 }

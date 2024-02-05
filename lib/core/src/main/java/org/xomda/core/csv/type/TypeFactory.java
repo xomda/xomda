@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import org.xomda.shared.registry.Registry;
 import org.xomda.core.csv.type.parser.BooleanParserProvider;
 import org.xomda.core.csv.type.parser.DateParserProvider;
 import org.xomda.core.csv.type.parser.DoubleParserProvider;
@@ -20,6 +19,7 @@ import org.xomda.core.csv.type.parser.PrimitiveIntegerParserProvider;
 import org.xomda.core.csv.type.parser.PrimitiveLongParserProvider;
 import org.xomda.core.csv.type.parser.StringParserProvider;
 import org.xomda.core.extension.ValueParserProvider;
+import org.xomda.shared.registry.Registry;
 
 /**
  * Extensible Parser Factory. Additional Parsers can be registered.
