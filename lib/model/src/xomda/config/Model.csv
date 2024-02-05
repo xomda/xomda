@@ -4,9 +4,9 @@ Value;name;;;;;;;;;;description
 Entity;name;identifier;parent;type;;dependency;transient;;;;description
 Attribute;name;identifier;type;size;scale;enumRef;entityRef;dependency;multiValued;required;description
 ;;;;;;;;;;;
-Package;XOMDA;org.xomda;;;;;;;;;
+Package;XOMDA;org.xomda;;;;;;;;;The XOMDA root package.
 ;;;;;;;;;;;
-Package;Core;model;;;;;;;;;
+Package;Core;model;;;;;;;;;The XOMDA Object Model package.
 ;;;;;;;;;;;
 Enum;Entity Type;ntt_tp;;;;;;;;;
 Value;Static;1;;;;;;;;;
@@ -48,15 +48,15 @@ Attribute;Identifier;idr;Integer;;;;;;;TRUE;
 Attribute;Name;nm;String;255;;;;;;TRUE;
 Attribute;Description;dsc;Text;2048;;;;;;;
 ;;;;;;;;;;;
-Entity;Entity;ntt;;Static;;Aggregate;;;;;
-Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;
-Attribute;Name;nm;String;255;;;;;;TRUE;
-Attribute;Identifier;idr;String;255;;;;;;TRUE;
-Attribute;Type;tp;Enum;;;XOMDA/Core/Entity Type;;;;TRUE;
-Attribute;Transient;trans;Boolean;;;;;;;TRUE;
+Entity;Entity;ntt;;Static;;Aggregate;;;;;Entity represents an object in the Object Model.
+Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;The package to which the entity belongs.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the Entity.
+Attribute;Identifier;idr;String;255;;;;;;TRUE;The unique identifier of the Entity.
+Attribute;Type;tp;Enum;;;XOMDA/Core/Entity Type;;;;TRUE;The type of Entity.
+Attribute;Transient;trans;Boolean;;;;;;;TRUE;Specifies whether the Entity is persisted, or transient.
 Attribute;Dependency;dpc;Enum;;;XOMDA/Core/Dependency;;;;TRUE;
-Attribute;Parent;prt_ntt;Entity;;;;XOMDA/Core/Entity;;;;
-Attribute;Description;dsc;Text;2048;;;;;;;
+Attribute;Parent;prt_ntt;Entity;;;;XOMDA/Core/Entity;;;;The parent Entity from which the Entity inherits.
+Attribute;Description;dsc;Text;2048;;;;;;;A meaningful description of the Entity.
 ;;;;;;;;;;;
 Entity;Attribute;att;;Static;;Aggregate;;;;;
 Attribute;Entity;ntt;Entity;;;;XOMDA/Core/Entity;Composite;;TRUE;
