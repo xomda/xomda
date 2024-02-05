@@ -1,4 +1,4 @@
-Package;name;packageName;;;;;;;;;
+Package;name;packageName;;;;;;;;;description
 Enum;name;identifier;;;;;;;;;description
 Value;name;;;;;;;;;;description
 Entity;name;identifier;parent;type;;dependency;transient;;;;description
