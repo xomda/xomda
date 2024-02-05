@@ -10,3 +10,16 @@ dependencies {
     implementation project(":lib:api")
     implementation project(":lib:core")
 }
+
+tasks.register('generateXOmdaModel', JavaExec) {
+    Project modelProject = project(":lib:model")
+    group = "XOMDA"
+    description = "Generate the XOMDA model"
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "org.xomda.cli.Main"
+    workingDir = modelProject.projectDir
+    args = [
+        "--models", modelProject.file("src/xomda/config/Model.csv"),
+        "--out", modelProject.file("src/generated/java"),
+    ]
+}

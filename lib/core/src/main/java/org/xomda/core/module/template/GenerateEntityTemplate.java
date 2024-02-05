@@ -25,7 +25,8 @@ public class GenerateEntityTemplate extends PackageTemplate {
         final String fullyQualifiedName = pkg + "." + interfaceName;
 
         try (
-            JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName).withHeaders(
+            @SuppressWarnings("resource")
+			JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName).withHeaders(
                 "// THIS FILE WAS AUTOMATICALLY GENERATED",
                 "")
         ) {
