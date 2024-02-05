@@ -42,13 +42,21 @@ public class JavaTemplateContextTest {
 	@Test
 	public void testMultiTabs() {
 		// tab consumer
-		assertEquals("    ok\n", withContext(ctx -> ctx.tab(ctx2 -> ctx2.tab(ctx3 -> ctx3.println("ok")))));
+		assertEquals("    ok\n", withContext(ctx ->
+				ctx.tab(ctx2 ->
+						ctx2.tab(ctx3 -> ctx3.println("ok"))
+				)
+		));
 	}
 
 	@Test
 	public void testCustomTabs() {
 		// tab consumer
-		assertEquals("\t\tok\n", withContext("\t", ctx -> ctx.tab(ctx2 -> ctx2.tab(ctx3 -> ctx3.println("ok")))));
+		assertEquals("\t\tok\n", withContext("\t", ctx ->
+				ctx.tab(ctx2 ->
+						ctx2.tab(ctx3 -> ctx3.println("ok"))
+				)
+		));
 	}
 
 	@Test
@@ -85,7 +93,7 @@ public class JavaTemplateContextTest {
 		try (
 				final ByteArrayOutputStream os = new ByteArrayOutputStream();
 				final BufferedOutputStream bos = new BufferedOutputStream(os);
-				final JavaTemplateContext context = JavaTemplateContext.create("com.example.com", bos)
+				final JavaTemplateContext context = JavaTemplateContext.create("com.example.com", bos);
 		) {
 			context.setTabCharacter(tabCharacter);
 			supplier.accept(context);

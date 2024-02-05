@@ -45,7 +45,9 @@ public class JavaDocWriterTest {
 		final String actual = withContext(ctx -> ctx.tab(tabCount, tab -> tab.addDocs(doc -> {
 			// make sure we got a JavaDocWriter
 			assertInstanceOf(JavaDocWriter.class, doc);
-			final JavaTemplateContext res = doc.println("Test 123").println("Test 456");
+			final JavaTemplateContext res = doc
+					.println("Test 123")
+					.println("Test 456");
 			assertInstanceOf(JavaDocWriter.class, res);
 		}).println("void test() {}")));
 

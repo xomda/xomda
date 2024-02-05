@@ -14,25 +14,25 @@ public interface WritableContext<R extends WritableContext<R>> {
 
 	void setNewLine(boolean state);
 
-	static CharSequence format(CharSequence pattern, Object... args) {
+	static CharSequence format(final CharSequence pattern, final Object... args) {
 		return TemplateFormat.format(pattern.toString(), args);
 	}
 
 	default R println() {
-		setNewLine(true);
 		getWriter().println();
-		return unchecked(this);
-	}
-
-	default R println(CharSequence text, Object... args) {
 		setNewLine(true);
-		getWriter().println(format(text, args));
 		return unchecked(this);
 	}
 
-	default R print(CharSequence text, Object... args) {
-		setNewLine(false);
+	default R println(final CharSequence text, final Object... args) {
+		getWriter().println(format(text, args));
+		setNewLine(true);
+		return unchecked(this);
+	}
+
+	default R print(final CharSequence text, final Object... args) {
 		getWriter().print(format(text, args));
+		setNewLine(false);
 		return unchecked(this);
 	}
 
