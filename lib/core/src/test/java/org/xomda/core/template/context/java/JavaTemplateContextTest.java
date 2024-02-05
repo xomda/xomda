@@ -68,7 +68,7 @@ public class JavaTemplateContextTest {
 			ctx.addStaticImport("some.other.Clazz.withSomeOtherMethod");
 			ctx.addImport("zzz.zzz.ZZZ");
 
-			List<String> imports = ctx.getImports();
+			final List<String> imports = ctx.getImports();
 
 			assertFalse(imports.isEmpty());
 			assertEquals(9, imports.size());
@@ -77,19 +77,21 @@ public class JavaTemplateContextTest {
 		});
 	}
 
-	static String withContext(Consumer<JavaTemplateContext> supplier) {
+	static String withContext(final Consumer<JavaTemplateContext> supplier) {
 		return withContext("  ", supplier);
 	}
 
-	static String withContext(String tabCharacter, Consumer<JavaTemplateContext> supplier) {
-		try (ByteArrayOutputStream os = new ByteArrayOutputStream();
-			 BufferedOutputStream bos = new BufferedOutputStream(os);
-			 JavaTemplateContext context = new JavaTemplateContext("com.example.com", bos)) {
+	static String withContext(final String tabCharacter, final Consumer<JavaTemplateContext> supplier) {
+		try (
+				final ByteArrayOutputStream os = new ByteArrayOutputStream();
+				final BufferedOutputStream bos = new BufferedOutputStream(os);
+				final JavaTemplateContext context = JavaTemplateContext.create("com.example.com", bos)
+		) {
 			context.setTabCharacter(tabCharacter);
 			supplier.accept(context);
 			context.flush();
 			return os.toString();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			SneakyThrow.throwSneaky(e);
 			return null;
 		}

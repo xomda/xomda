@@ -29,8 +29,7 @@ public class GenerateEnumTemplate extends org.xomda.core.module.template.Package
 		try (
 				final FileOutputStream fos = new FileOutputStream(outFile.toFile());
 				final BufferedOutputStream bos = new BufferedOutputStream(fos);
-				final JavaTemplateContext ctx = new JavaTemplateContext(fullyQualifiedName, bos);
-		) {
+				final JavaTemplateContext ctx = JavaTemplateContext.create(fullyQualifiedName, bos);) {
 			ctx.println("// THIS FILE WAS AUTOMATICALLY GENERATED").println().println("package " + pkg + ";").println()
 					.println("public enum " + enumName + " {")
 					.tab(tabbed -> tabbed.forEach(enm::getValueList,

@@ -26,9 +26,11 @@ public class GenerateEntityTemplate extends PackageTemplate {
 
 		try (
 				@SuppressWarnings("resource")
-				JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName).withHeaders(
-						"// THIS FILE WAS AUTOMATICALLY GENERATED",
-						""); 
+				JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
+						.withHeaders(
+								"// THIS FILE WAS AUTOMATICALLY GENERATED",
+								""
+						);
 		) {
 			ctx
 					.println("public interface " + interfaceName + " {").tab(tabbed -> tabbed

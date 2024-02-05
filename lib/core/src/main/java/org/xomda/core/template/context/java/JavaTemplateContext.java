@@ -25,19 +25,19 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 
 	private boolean lineIsOpen;
 
-	public JavaTemplateContext(String localClassName, final OutputStream out) {
+	JavaTemplateContext(final String localClassName, final OutputStream out) {
 		this.localClassName = localClassName;
-		this.outputStream = out;
-		this.writer = new PrintWriter(out);
-		this.importService = new JavaImportService(localClassName);
+		outputStream = out;
+		writer = new PrintWriter(out);
+		importService = new JavaImportService(localClassName);
 	}
 
-	JavaTemplateContext(JavaTemplateContext parent) {
-		this.localClassName = parent.localClassName;
-		this.outputStream = parent.outputStream;
-		this.writer = parent.writer;
-		this.tabCharacter = parent.tabCharacter;
-		this.importService = parent.importService;
+	JavaTemplateContext(final JavaTemplateContext parent) {
+		localClassName = parent.localClassName;
+		outputStream = parent.outputStream;
+		writer = parent.writer;
+		tabCharacter = parent.tabCharacter;
+		importService = parent.importService;
 	}
 
 	public String getClassName() {
@@ -48,25 +48,25 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 		return JavaUtils.getPackageName(localClassName);
 	}
 
-	public String addImport(String className) {
+	public String addImport(final String className) {
 		return importService.addImport(className);
 	}
 
-	public String addImport(Class<?> clazz) {
+	public String addImport(final Class<?> clazz) {
 		return importService.addImport(clazz);
 	}
 
-	public String addStaticImport(String methodName) {
+	public String addStaticImport(final String methodName) {
 		return importService.addStaticImport(methodName);
 	}
 
-	public String addStaticImport(Class<?> clazz, String methodName) {
+	public String addStaticImport(final Class<?> clazz, final String methodName) {
 		return importService.addStaticImport(clazz, methodName);
 	}
 
 	public List<String> getImports() {
-		List<String> imports = new ArrayList<>();
-		importService.forEach((String imp) -> imports.add("import " + imp + ";"), () -> imports.add(""));
+		final List<String> imports = new ArrayList<>();
+		importService.forEach((final String imp) -> imports.add("import " + imp + ";"), () -> imports.add(""));
 		return imports;
 	}
 
@@ -82,7 +82,7 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 		return tabCharacter;
 	}
 
-	public void setTabCharacter(String character) {
+	public void setTabCharacter(final String character) {
 		tabCharacter = character;
 	}
 
@@ -105,13 +105,14 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 		return new TabbedContext(this, count);
 	}
 
-	public JavaTemplateContext addDocs(Consumer<JavaDocWriter> docWriterConsumer) {
+	public JavaTemplateContext addDocs(final Consumer<JavaDocWriter> docWriterConsumer) {
 		try (JavaDocWriter docCtx = new JavaDocWriter(this);) {
 			docWriterConsumer.accept(docCtx);
 		}
 		return this;
 	}
 
+	@Override
 	public boolean isNewLine() {
 		return !lineIsOpen;
 	}
@@ -130,6 +131,10 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 	public void close() throws IOException {
 		flush();
 		getWriter().close();
+	}
+
+	public static JavaTemplateContext create(final String localClassName, final OutputStream out) {
+		return new JavaTemplateContext(localClassName, out);
 	}
 
 }
