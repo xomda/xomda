@@ -4,8 +4,8 @@ import org.xomda.core.util.ParseContext;
 
 public interface XOmdaExtension extends Loggable {
 
-    default void init(ParseContext context) {
-        // optional, just ignore it then
-    }
+	default void init(ParseContext context) {
+		// optional, just ignore it then
+	}
 
 }

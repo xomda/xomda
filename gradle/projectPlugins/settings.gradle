@@ -1,5 +1,5 @@
 dependencyResolutionManagement {
-    repositories.gradlePluginPortal()
+	repositories.gradlePluginPortal()
 }
 
 include("xomda-convention-plugins")

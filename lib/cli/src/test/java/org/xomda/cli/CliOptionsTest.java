@@ -14,21 +14,17 @@ import org.xomda.core.module.template.XOmdaCodeTemplate;
 
 public class CliOptionsTest {
 
-    @Test
-    public void test() throws ParseException {
-        final String extensions = Stream
-            .of(XOmdaReverseEntity.class, XOmdaTypeRefs.class, XOmdaCodeTemplate.class)
-            .map(Class::getName)
-            .collect(Collectors.joining(","));
+	@Test
+	public void test() throws ParseException {
+		final String extensions = Stream.of(XOmdaReverseEntity.class, XOmdaTypeRefs.class, XOmdaCodeTemplate.class)
+				.map(Class::getName).collect(Collectors.joining(","));
 
-        final String out = "../../xomda";
+		final String out = "../../xomda";
 
-        final Configuration config = CommandLineOptions.parse(
-            "--out", out,
-            "--extensions", extensions);
+		final Configuration config = CommandLineOptions.parse("--out", out, "--extensions", extensions);
 
-        assertNotNull(config);
+		assertNotNull(config);
 
-    }
+	}
 
 }

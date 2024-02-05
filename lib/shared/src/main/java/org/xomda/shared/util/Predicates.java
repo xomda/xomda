@@ -4,19 +4,19 @@ import java.util.function.Predicate;
 
 public class Predicates {
 
-    private static final Predicate<?> ALWAYS_TRUE = always(true);
-    private static final Predicate<?> ALWAYS_FALSE = always(false);
+	private static final Predicate<?> ALWAYS_TRUE = always(true);
+	private static final Predicate<?> ALWAYS_FALSE = always(false);
 
-    public static Predicate<?> always(boolean result) {
-        return (Object value) -> result;
-    }
+	public static Predicate<?> always(boolean result) {
+		return (Object value) -> result;
+	}
 
-    public static Predicate<?> alwaysTrue() {
-        return ALWAYS_TRUE;
-    }
+	public static Predicate<?> alwaysTrue() {
+		return ALWAYS_TRUE;
+	}
 
-    public static Predicate<?> alwaysFalse() {
-        return ALWAYS_FALSE;
-    }
+	public static Predicate<?> alwaysFalse() {
+		return ALWAYS_FALSE;
+	}
 
 }
