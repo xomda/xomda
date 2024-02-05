@@ -110,7 +110,8 @@ public class JavaImportService {
 
 	public void forEach(Consumer<String> consumer) {
 		forEach(consumer, () -> {
-			/* noop */ });
+			/* noop */
+		});
 	}
 
 	public void forEach(Consumer<String> consumer, Runnable newGroupHandler) {

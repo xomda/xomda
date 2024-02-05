@@ -1,8 +1,8 @@
 plugins {
-    id 'xomda-java-library'
+	id 'xomda-java-library'
 }
 
 dependencies {
-    api project(":lib:model")
-    api project(":lib:shared")
+	api project(":lib:model")
+	api project(":lib:shared")
 }

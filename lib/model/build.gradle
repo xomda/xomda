@@ -1,11 +1,11 @@
 plugins {
-    id 'xomda-java-library'
+	id 'xomda-java-library'
 }
 
 sourceSets {
-    main {
-        java {
-            srcDirs 'src/generated/java'
-        }
-    }
+	main {
+		java {
+			srcDirs 'src/generated/java'
+		}
+	}
 }
