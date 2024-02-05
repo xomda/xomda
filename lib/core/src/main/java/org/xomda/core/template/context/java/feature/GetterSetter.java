@@ -36,9 +36,8 @@ public class GetterSetter {
 	public GetterSetter withModifiers(final int... modifiers) {
 		int mod = 0;
 		for (final int modifier : modifiers) {
-			mod = mod & modifier;
+			mod = mod | modifier;
 		}
-
 		this.modifiers = mod;
 		return this;
 	}
