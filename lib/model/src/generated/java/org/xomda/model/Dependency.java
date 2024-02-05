@@ -3,6 +3,5 @@
 package org.xomda.model;
 
 public enum Dependency {
-	Aggregate, 
-	Composite, 
+	Aggregate, Composite,
 }

@@ -15,26 +15,25 @@ import org.xomda.model.Value;
 
 public class PackageTemplate implements Template<org.xomda.model.Package> {
 
-    @Override
-    public void generate(final org.xomda.model.Package pkg, TemplateContext context) throws IOException {
-        processList(pkg::getPackageList, sneaky(this::generate), context);
-        processList(pkg::getEnumList, sneaky(this::generate), context);
-        processList(pkg::getEntityList, sneaky(this::generate), context);
-    }
+	@Override
+	public void generate(final org.xomda.model.Package pkg, TemplateContext context) throws IOException {
+		processList(pkg::getPackageList, sneaky(this::generate), context);
+		processList(pkg::getEnumList, sneaky(this::generate), context);
+		processList(pkg::getEntityList, sneaky(this::generate), context);
+	}
 
-    public void generate(org.xomda.model.Enum enm, TemplateContext context) throws IOException {
-        processList(enm::getValueList, sneaky(this::generate), context);
-    }
+	public void generate(org.xomda.model.Enum enm, TemplateContext context) throws IOException {
+		processList(enm::getValueList, sneaky(this::generate), context);
+	}
 
-    public void generate(Value enumValue, TemplateContext context) throws IOException {
-    }
+	public void generate(Value enumValue, TemplateContext context) throws IOException {
+	}
 
-    public void generate(Entity entity, TemplateContext context) throws IOException {
-    }
+	public void generate(Entity entity, TemplateContext context) throws IOException {
+	}
 
-    static <D, C extends Collection<D>> void processList(Supplier<C> supplier, BiConsumer<D, TemplateContext> consumer, TemplateContext context) {
-        Optional
-            .ofNullable(supplier.get())
-            .ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
-    }
+	static <D, C extends Collection<D>> void processList(Supplier<C> supplier, BiConsumer<D, TemplateContext> consumer,
+			TemplateContext context) {
+		Optional.ofNullable(supplier.get()).ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
+	}
 }

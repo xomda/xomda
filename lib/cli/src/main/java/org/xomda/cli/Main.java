@@ -19,26 +19,25 @@ import org.xomda.shared.logging.LogService;
  */
 public class Main {
 
-    public static void main(final String[] args) throws IOException, ParseException {
-        // parse the config (from the command-line)
-        Configuration config = CommandLineOptions.tryBuild(args)
-            .withDefaultOmdaExtensions()
-            .build();
-        // set the log level
-        LogService.setDefaultLogLevel(config.getLogLevel());
-        // parse each model
-        Stream.of(config.getModels()).forEach(sneaky((String csvFilename) -> {
-            // 1) parse
-            List<?> result = XOmda.read(csvFilename, config);
-            // 2) fetch
-            final Object pkg = result.isEmpty() ? null : result.get(0);
-            if (null == pkg) return;
-            // 3) generate
-            config.getTemplates().forEach(sneaky(t -> {
-                TemplateContext templateContext = new TemplateContext(config.getOutDir());
-                t.generate(pkg, templateContext);
-            }));
-        }));
-    }
+	public static void main(final String[] args) throws IOException, ParseException {
+		// parse the config (from the command-line)
+		Configuration config = CommandLineOptions.tryBuild(args).withDefaultOmdaExtensions().build();
+		// set the log level
+		LogService.setDefaultLogLevel(config.getLogLevel());
+		// parse each model
+		Stream.of(config.getModels()).forEach(sneaky((String csvFilename) -> {
+			// 1) parse
+			List<?> result = XOmda.read(csvFilename, config);
+			// 2) fetch
+			final Object pkg = result.isEmpty() ? null : result.get(0);
+			if (null == pkg)
+				return;
+			// 3) generate
+			config.getTemplates().forEach(sneaky(t -> {
+				TemplateContext templateContext = new TemplateContext(config.getOutDir());
+				t.generate(pkg, templateContext);
+			}));
+		}));
+	}
 
 }
