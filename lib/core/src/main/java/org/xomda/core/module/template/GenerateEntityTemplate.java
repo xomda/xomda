@@ -1,8 +1,11 @@
 package org.xomda.core.module.template;
 
+import static java.util.function.Predicate.not;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -34,6 +37,11 @@ public class GenerateEntityTemplate extends PackageTemplate {
 						);
 		) {
 			ctx
+					.addDocs(docs -> Optional
+							.ofNullable(entity.getDescription())
+							.filter(not(String::isBlank))
+							.ifPresent(docs::println)
+					)
 					.println("public interface " + interfaceName + " {").tab(tabbed -> tabbed
 							.println()
 

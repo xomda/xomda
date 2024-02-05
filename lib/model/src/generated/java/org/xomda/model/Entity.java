@@ -4,6 +4,9 @@ package org.xomda.model;
 
 import java.util.List;
 
+/**
+ * Entity represents an object in the Object Model.
+ */
 public interface Entity {
 	
 	/**
