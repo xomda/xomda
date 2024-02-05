@@ -24,8 +24,8 @@ import org.xomda.core.config.ConfigurationBuilder;
 import org.xomda.shared.exception.SneakyThrow;
 
 /**
- * The command-line parameters for the XOMDA CLI.
- * It will create a {@link Configuration} out of it.
+ * The command-line parameters for the XOMDA CLI. It will create a
+ * {@link Configuration} out of it.
  */
 public class CommandLineOptions extends Options {
 
