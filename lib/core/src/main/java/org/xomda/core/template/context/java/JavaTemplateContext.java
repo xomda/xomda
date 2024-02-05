@@ -23,7 +23,7 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 	private final String localClassName;
 	private String tabCharacter = TabbedContext.DEFAULT_TAB_CHARACTER;
 
-	private boolean lineIsOpen;
+	private boolean newLine = true;
 
 	JavaTemplateContext(final String localClassName, final OutputStream out) {
 		this.localClassName = localClassName;
@@ -114,12 +114,12 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 
 	@Override
 	public boolean isNewLine() {
-		return !lineIsOpen;
+		return newLine;
 	}
 
 	@Override
 	public void setNewLine(final boolean state) {
-		lineIsOpen = state;
+		newLine = state;
 	}
 
 	@Override
