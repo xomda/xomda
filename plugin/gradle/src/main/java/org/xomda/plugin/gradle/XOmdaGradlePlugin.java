@@ -1,7 +1,7 @@
 package org.xomda.plugin.gradle;
 
+import static org.xomda.core.Constants.XOMDA_GROUP;
 import static org.xomda.plugin.gradle.Constants.XOMDA_CONFIGURATION;
-import static org.xomda.plugin.gradle.Constants.XOMDA_GROUP;
 import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_COMPILE_TEMPLATES;
 import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_GENERATE_TEMPLATE_NAME;
 
