@@ -20,7 +20,7 @@ import org.xomda.shared.logging.LogService;
  */
 public interface Configuration {
 
-	String[] DEFAULT_CLASSPATH = {Entity.class.getPackageName()};
+	String[] DEFAULT_CLASSPATH = { Entity.class.getPackageName() };
 	Level DEFAULT_LOG_LEVEL = Level.INFO;
 
 	String[] getClasspath();

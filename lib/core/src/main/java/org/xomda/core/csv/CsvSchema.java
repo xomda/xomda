@@ -20,9 +20,8 @@ import org.xomda.shared.util.StringUtils;
 
 /**
  * The CSV Schema is parsed out of the first lines of a CSV file (followed by a
- * empty CSV line). It's an {@link Iterable} of {@link CsvSchemaObject}s which
- * are then used later on to figure out how to parse CSV lines into
- * {@link CsvObject}s.
+ * empty CSV line). It's an {@link Iterable} of {@link CsvSchemaObject CsvSchemaObjects} which
+ * are then used later on to figure out how to parse CSV lines into {@link CsvObject CsvObjects}.
  */
 public class CsvSchema implements Iterable<CsvSchemaObject> {
 
@@ -47,11 +46,13 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 
 	public CsvObject readObject(final CSVRecord record, final ParseContext context) {
 		final String name = record.get(0);
-		final CsvSchemaObject csvSchemaObject = stream().filter((CsvSchemaObject obj) -> name.equals(obj.getName()))
+		final CsvSchemaObject csvSchemaObject = stream()
+				.filter((final CsvSchemaObject obj) -> name.equals(obj.getName()))
 				.findFirst().orElse(null);
 
-		if (null == csvSchemaObject)
+		if (null == csvSchemaObject) {
 			return null;
+		}
 
 		final CsvObject obj = new CsvObject(csvSchemaObject.getObjectClass());
 
@@ -59,10 +60,10 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 			final CsvSchemaObjectAttribute attr = csvSchemaObject.getAttributes().get(i);
 			final int csvIndex = attr.getIndex();
 			final String value = record.isSet(csvIndex) ? record.get(csvIndex) : "";
-			ValueParser valueParser = attr.getSetter();
-			Runnable setVal = valueParser instanceof ValueParser.Optional
+			final ValueParser valueParser = attr.getSetter();
+			final Runnable setVal = valueParser instanceof ValueParser.Optional
 					? () -> ((Optional<?>) valueParser.apply(value.isEmpty() ? null : value))
-					.ifPresent(v -> obj.setValue(attr.getName(), v))
+							.ifPresent(v -> obj.setValue(attr.getName(), v))
 					: () -> obj.setValue(attr.getName(), valueParser.apply(value.isEmpty() ? null : value));
 			if (valueParser instanceof ValueParser.Primitive) {
 				setVal.run();
@@ -85,8 +86,9 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 		}
 
 		// if nothing's found, there are no records anymore
-		if (null == record)
+		if (null == record) {
 			return schema;
+		}
 
 		// process the schema
 		do {
@@ -100,8 +102,11 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 			final String name = schemaObject.getName();
 			final String identifier = StringUtils.toPascalCase(name + " List");
 			schema.objects.forEach((final CsvSchemaObject otherObject) -> ReflectionUtils
-					.getGetter(otherObject.getObjectClass(), identifier).ifPresent((final Method method) -> schema.rev
-							.computeIfAbsent(schemaObject, o -> new ArrayList<>()).add(otherObject)));
+					.getGetter(otherObject.getObjectClass(), identifier)
+					.ifPresent((final Method method) -> schema.rev
+							.computeIfAbsent(schemaObject, o -> new ArrayList<>()).add(otherObject)
+					)
+			);
 		});
 
 		// return the schema

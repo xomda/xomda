@@ -26,7 +26,7 @@ public class CsvObject {
 	}
 
 	public CsvObject(final Class<?> clazz) {
-		this(new Class<?>[]{clazz});
+		this(new Class<?>[] { clazz });
 	}
 
 	public CsvObjectState getState() {
