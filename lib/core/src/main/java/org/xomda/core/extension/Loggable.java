@@ -5,8 +5,8 @@ import org.xomda.shared.logging.LogService;
 
 public interface Loggable {
 
-    default Logger getLogger() {
-        return LogService.getLogger(getClass());
-    }
+	default Logger getLogger() {
+		return LogService.getLogger(getClass());
+	}
 
 }

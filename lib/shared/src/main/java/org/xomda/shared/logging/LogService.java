@@ -9,24 +9,24 @@ import org.slf4j.LoggerFactory;
 
 public class LogService {
 
-    private static final Level DEFAULT_LOG_LEVEL = Level.ALL;
+	private static final Level DEFAULT_LOG_LEVEL = Level.ALL;
 
-    private static Function<Class<?>, Logger> logProvider = LoggerFactory::getLogger;
+	private static Function<Class<?>, Logger> logProvider = LoggerFactory::getLogger;
 
-    static {
-        Configurator.setRootLevel(DEFAULT_LOG_LEVEL);
-    }
+	static {
+		Configurator.setRootLevel(DEFAULT_LOG_LEVEL);
+	}
 
-    public static void setLogProvider(Function<Class<?>, Logger> provider) {
-        logProvider = provider;
-    }
+	public static void setLogProvider(Function<Class<?>, Logger> provider) {
+		logProvider = provider;
+	}
 
-    public static void setDefaultLogLevel(Level level) {
-        Configurator.setRootLevel(level);
-    }
+	public static void setDefaultLogLevel(Level level) {
+		Configurator.setRootLevel(level);
+	}
 
-    public static Logger getLogger(Class<?> clz) {
-        return logProvider.apply(clz);
-    }
+	public static Logger getLogger(Class<?> clz) {
+		return logProvider.apply(clz);
+	}
 
 }

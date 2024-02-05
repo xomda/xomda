@@ -31,95 +31,71 @@ import org.xomda.shared.util.ReflectionUtils;
 
 public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 
-    public void execute(JavaCompile task) {
-        Project project = task.getProject();
-        SourceSet omdaSourceSet = SourceSetUtils.getOmdaSourceSet(project);
+	public void execute(JavaCompile task) {
+		Project project = task.getProject();
+		SourceSet omdaSourceSet = SourceSetUtils.getOmdaSourceSet(project);
 
-        task.setClasspath(project.files(
-            project.getConfigurations().getAt(XOMDA_CONFIGURATION)
-        ));
+		task.setClasspath(project.files(project.getConfigurations().getAt(XOMDA_CONFIGURATION)));
 
-        task.getDestinationDirectory().set(omdaSourceSet.getJava().getDestinationDirectory().get());
-        task.setSource(omdaSourceSet.getJava().getFiles());
-    }
+		task.getDestinationDirectory().set(omdaSourceSet.getJava().getDestinationDirectory().get());
+		task.setSource(omdaSourceSet.getJava().getFiles());
+	}
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static List<Class<Template>> getUserClasses(Task someTask) {
-        Project project = someTask.getProject();
-        JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static List<Class<Template>> getUserClasses(Task someTask) {
+		Project project = someTask.getProject();
+		JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
 
-        Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
-        Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
-        Map<String, URL> map = compiledClasses.stream()
-            .map(File::toPath)
-            .collect(Collectors.toMap(
-                (Path p) -> taskDestinationPath.relativize(p).toString()
-                    .replaceAll("\\/", ".")
-                    .replaceAll("\\.class$", ""),
-                (Path p) -> {
-                    try {
-                        return p.toUri().toURL();
-                    } catch (MalformedURLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            ));
+		Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
+		Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
+		Map<String, URL> map = compiledClasses.stream().map(File::toPath)
+				.collect(Collectors.toMap((Path p) -> taskDestinationPath.relativize(p).toString()
+						.replaceAll("\\/", ".").replaceAll("\\.class$", ""), (Path p) -> {
+					try {
+						return p.toUri().toURL();
+					} catch (MalformedURLException e) {
+						throw new RuntimeException(e);
+					}
+				}));
 
-        try {
-            URL[] deps = Stream.concat(
-                    Stream.of(task.getDestinationDirectory().get().getAsFile().toURI().toURL()),
-                    project.files(project.getConfigurations().getAt(XOMDA_CONFIGURATION))
-                        .getFiles()
-                        .stream()
-                        .map(
-                            f -> {
-                                try {
-                                    return f.toURI().toURL();
-                                } catch (MalformedURLException e) {
-                                    project.getLogger().error("", e);
-                                    return null;
-                                }
-                            }
-                        )
-                        .filter(Objects::nonNull)
-                )
-                .toArray(URL[]::new);
+		try {
+			URL[] deps = Stream.concat(Stream.of(task.getDestinationDirectory().get().getAsFile().toURI().toURL()),
+					project.files(project.getConfigurations().getAt(XOMDA_CONFIGURATION)).getFiles().stream().map(f -> {
+						try {
+							return f.toURI().toURL();
+						} catch (MalformedURLException e) {
+							project.getLogger().error("", e);
+							return null;
+						}
+					}).filter(Objects::nonNull)).toArray(URL[]::new);
 
-            try (URLClassLoader cl = new URLClassLoader(deps, XOmdaCompileTemplatesTask.class.getClassLoader())) {
-                return map.keySet().stream()
-                    .map(k -> ReflectionUtils.findClass(k, cl))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-//                    .filter(ReflectionUtils.extendsFrom(Template.class))
-                    .filter(Template.class::isAssignableFrom)
-                    .map(clz -> (Class<Template>) (Class) clz)
-                    .toList();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+			try (URLClassLoader cl = new URLClassLoader(deps, XOmdaCompileTemplatesTask.class.getClassLoader())) {
+				return map.keySet().stream().map(k -> ReflectionUtils.findClass(k, cl)).filter(Optional::isPresent)
+						.map(Optional::get)
+						//                    .filter(ReflectionUtils.extendsFrom(Template.class))
+						.filter(Template.class::isAssignableFrom).map(clz -> (Class<Template>) (Class) clz).toList();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    public static <T> List<Consumer<T>> getTemplates(Task task) {
-        String cwd = task.getProject().getProjectDir().getPath();
-        return getUserClasses(task).stream()
-            .map(clazz ->
-                (Consumer<T>) (T t) -> {
-                    try {
-                        TemplateContext templateContext = new TemplateContext(cwd);
-                        @SuppressWarnings("unchecked")
-                        Template<T> c = clazz.getDeclaredConstructor().newInstance();
-                        c.generate(t, templateContext);
-                    } catch (IOException | InstantiationException | IllegalAccessException | InvocationTargetException |
-                             NoSuchMethodException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            )
-            .toList();
-    }
+	public static <T> List<Consumer<T>> getTemplates(Task task) {
+		String cwd = task.getProject().getProjectDir().getPath();
+		return getUserClasses(task).stream().map(clazz -> (Consumer<T>) (T t) -> {
+			try {
+				TemplateContext templateContext = new TemplateContext(cwd);
+				@SuppressWarnings("unchecked")
+				Template<T> c = clazz.getDeclaredConstructor().newInstance();
+				c.generate(t, templateContext);
+			} catch (IOException | InstantiationException | IllegalAccessException | InvocationTargetException
+					 | NoSuchMethodException e) {
+				throw new RuntimeException(e);
+			}
+		}).toList();
+	}
 
 }

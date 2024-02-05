@@ -5,6 +5,6 @@ import org.xomda.core.csv.CsvSchema;
 @FunctionalInterface
 public interface CsvSchemaProcessor extends XOmdaExtension {
 
-    void process(CsvSchema csvSchema);
+	void process(CsvSchema csvSchema);
 
 }

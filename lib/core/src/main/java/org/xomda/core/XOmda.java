@@ -7,12 +7,12 @@ import org.xomda.core.config.Configuration;
 import org.xomda.core.csv.CsvService;
 
 public class XOmda {
-    public static <T> List<T> read(String filename, Configuration config) throws IOException {
-        return new CsvService().read(filename, config);
-    }
+	public static <T> List<T> read(String filename, Configuration config) throws IOException {
+		return new CsvService().read(filename, config);
+	}
 
-    public static void initExtensions(Configuration config) {
+	public static void initExtensions(Configuration config) {
 
-    }
+	}
 
 }

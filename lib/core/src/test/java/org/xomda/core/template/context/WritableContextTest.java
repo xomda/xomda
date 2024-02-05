@@ -13,26 +13,24 @@ import org.xomda.shared.exception.SneakyThrow;
 
 public class WritableContextTest {
 
-    @Test
-    public void testSimple() {
-        assertEquals("ok", withContext(ctx -> ctx.print("ok")));
-        assertEquals("ok\n", withContext(ctx -> ctx.println("ok")));
-        assertEquals("\n", withContext(WritableContext::println));
-    }
+	@Test
+	public void testSimple() {
+		assertEquals("ok", withContext(ctx -> ctx.print("ok")));
+		assertEquals("ok\n", withContext(ctx -> ctx.println("ok")));
+		assertEquals("\n", withContext(WritableContext::println));
+	}
 
-    static String withContext(Consumer<WritableContext<JavaTemplateContext>> supplier) {
-        try (
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            BufferedOutputStream bos = new BufferedOutputStream(baos);
-            JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos)
-        ) {
-            supplier.accept(context);
-            context.flush();
-            return baos.toString();
-        } catch (IOException e) {
-            SneakyThrow.throwSneaky(e);
-            return null;
-        }
-    }
+	static String withContext(Consumer<WritableContext<JavaTemplateContext>> supplier) {
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			 BufferedOutputStream bos = new BufferedOutputStream(baos);
+			 JavaTemplateContext context = new JavaTemplateContext("com.example.Class", bos)) {
+			supplier.accept(context);
+			context.flush();
+			return baos.toString();
+		} catch (IOException e) {
+			SneakyThrow.throwSneaky(e);
+			return null;
+		}
+	}
 
 }

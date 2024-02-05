@@ -12,29 +12,30 @@ import org.xomda.core.csv.type.ValueParser;
 
 public class EnumParserProvider extends AbstractValueParserProvider.Nullable {
 
-    public EnumParserProvider() {
-        super(Class::isEnum, null);
-    }
+	public EnumParserProvider() {
+		super(Class::isEnum, null);
+	}
 
-    @Override
-    public ValueParser.Primitive apply(Class<?> c) {
-        return getEnumMap(c)::get;
-    }
+	@Override
+	public ValueParser.Primitive apply(Class<?> c) {
+		return getEnumMap(c)::get;
+	}
 
-    private static Map<String, Object> getEnumMap(final Class<?> enumClazz) {
-        if (!enumClazz.isEnum()) return Collections.emptyMap();
-        final Object[] enumValues = enumClazz.getEnumConstants();
-        try {
-            final Method m = enumClazz.getMethod("name");
-            return Stream.of(enumValues).collect(Collectors.toMap(v -> {
-                try {
-                    return (String) m.invoke(v);
-                } catch (final IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            }, Function.identity()));
-        } catch (final NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private static Map<String, Object> getEnumMap(final Class<?> enumClazz) {
+		if (!enumClazz.isEnum())
+			return Collections.emptyMap();
+		final Object[] enumValues = enumClazz.getEnumConstants();
+		try {
+			final Method m = enumClazz.getMethod("name");
+			return Stream.of(enumValues).collect(Collectors.toMap(v -> {
+				try {
+					return (String) m.invoke(v);
+				} catch (final IllegalAccessException | InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+			}, Function.identity()));
+		} catch (final NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
