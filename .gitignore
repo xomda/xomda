@@ -4,6 +4,8 @@
 .settings
 .project
 
+*.iml
+
 .classpath
 
 # Ignore Gradle project-specific cache directory

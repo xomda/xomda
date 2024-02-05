@@ -59,16 +59,16 @@ public class TemplateUtils {
 			return "java.lang.Object";
 		}
 		return switch (type) {
-		case String, Text -> "java.lang.String";
-		case Boolean -> "java.lang.Boolean";
-		case Integer -> "java.lang.Long";
-		case Decimal -> "java.lang.Double";
-		case Date, Time, Timestamp -> "java.util.Date";
+			case String, Text -> "java.lang.String";
+			case Boolean -> "java.lang.Boolean";
+			case Integer -> "java.lang.Long";
+			case Decimal -> "java.lang.Double";
+			case Date, Time, Timestamp -> "java.util.Date";
 
-		case Entity -> getType(attribute.getEntityRef());
-		case Enum -> getJavaType(attribute.getEnumRef());
+			case Entity -> getType(attribute.getEntityRef());
+			case Enum -> getJavaType(attribute.getEnumRef());
 
-		default -> "java.lang.Object";
+			default -> "java.lang.Object";
 		};
 	}
 

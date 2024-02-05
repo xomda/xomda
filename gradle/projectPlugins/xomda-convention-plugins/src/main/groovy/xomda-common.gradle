@@ -1,11 +1,13 @@
 // Stuff common to all types of xomda projects
 plugins {
-    id('eclipse')
+	id('eclipse')
+	id('idea')
 }
 
 // add file encoding settings
 eclipseJdt.doLast {
-    File f = file('.settings/org.eclipse.core.resources.prefs')
-    f.write('eclipse.preferences.version=1\n')
-    f.append('encoding/<project>=UTF-8')
+	final File eclipsePrefs = file('.settings/org.eclipse.core.resources.prefs')
+	eclipsePrefs.write('eclipse.preferences.version=1\n')
+	eclipsePrefs.append('encoding/<project>=UTF-8')
 }
+

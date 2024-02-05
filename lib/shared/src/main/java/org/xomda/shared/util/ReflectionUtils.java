@@ -39,7 +39,7 @@ public class ReflectionUtils {
 	}
 
 	public static Function<Object, Object> getGetterFunction(final Class<?> clazz, final String name) {
-		return getGetter(clazz, name).<Function<Object, Object>>map(method -> (final Object obj) -> {
+		return getGetter(clazz, name).<Function<Object, Object>> map(method -> (final Object obj) -> {
 			try {
 				return method.invoke(obj);
 			} catch (final IllegalAccessException | InvocationTargetException e) {

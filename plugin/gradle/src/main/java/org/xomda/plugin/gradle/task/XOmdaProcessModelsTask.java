@@ -32,9 +32,9 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 		if (null == projectLogLevel)
 			return Level.OFF.toString();
 		return switch (projectLogLevel) {
-		case LIFECYCLE -> Level.INFO.name();
-		case QUIET -> Level.OFF.name();
-		default -> projectLogLevel.name();
+			case LIFECYCLE -> Level.INFO.name();
+			case QUIET -> Level.OFF.name();
+			default -> projectLogLevel.name();
 		};
 	}
 

@@ -72,7 +72,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 			try (URLClassLoader cl = new URLClassLoader(deps, XOmdaCompileTemplatesTask.class.getClassLoader())) {
 				return map.keySet().stream().map(k -> ReflectionUtils.findClass(k, cl)).filter(Optional::isPresent)
 						.map(Optional::get)
-//                    .filter(ReflectionUtils.extendsFrom(Template.class))
+						//                    .filter(ReflectionUtils.extendsFrom(Template.class))
 						.filter(Template.class::isAssignableFrom).map(clz -> (Class<Template>) (Class) clz).toList();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
