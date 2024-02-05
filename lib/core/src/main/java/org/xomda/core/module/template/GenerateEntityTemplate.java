@@ -10,6 +10,7 @@ import org.xomda.core.template.TemplateContext;
 import org.xomda.core.template.TemplateUtils;
 import org.xomda.core.template.context.WritableContext;
 import org.xomda.core.template.context.java.JavaClassWriter;
+import org.xomda.core.template.context.java.feature.GetterSetter;
 import org.xomda.model.Attribute;
 import org.xomda.model.Dependency;
 import org.xomda.model.Entity;
@@ -29,9 +30,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 				JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
 						.withHeaders(
 								"// THIS FILE WAS AUTOMATICALLY GENERATED",
-								""
-						);
-		) {
+								"");) {
 			ctx
 					.println("public interface " + interfaceName + " {").tab(tabbed -> tabbed
 							.println()
@@ -41,6 +40,13 @@ public class GenerateEntityTemplate extends PackageTemplate {
 								final String attributeName = StringUtils.toPascalCase(attribute.getName());
 								final String fullyQualifiedType = ctx.addImport(TemplateUtils.getJavaType(attribute));
 								final String identifier = TemplateUtils.getJavaIdentifier(StringUtils.toCamelCase(attribute.getName()));
+
+								GetterSetter.create(fullyQualifiedType, attributeName)
+										.declareOnly()
+										.withJavaDoc(attribute.getDescription())
+										.writeTo(tabbed);
+
+								/*
 								tabbed
 										// getter
 										.addDocs(doc -> {
@@ -59,6 +65,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 										})
 										.println("void set{0}(final {1} {2});", attributeName, fullyQualifiedType, identifier)
 										.println();
+										*/
 							})
 
 							// generate the reverse entity attributes
@@ -69,6 +76,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 										ctx.addImport(List.class),
 										ctx.addImport(TemplateUtils.getJavaType(e)));
 								final String identifier = TemplateUtils.getJavaIdentifier(StringUtils.toCamelCase(e.getName()));
+
 								tabbed
 										// getter
 										.addDocs(doc -> {
