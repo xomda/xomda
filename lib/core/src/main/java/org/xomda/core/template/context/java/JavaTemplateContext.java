@@ -38,6 +38,7 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 		writer = parent.writer;
 		tabCharacter = parent.tabCharacter;
 		importService = parent.importService;
+		newLine = parent.newLine;
 	}
 
 	public String getClassName() {
@@ -54,6 +55,18 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 
 	public String addImport(final Class<?> clazz) {
 		return importService.addImport(clazz);
+	}
+
+	public String addGenericImport(final Class<?> clazz, final Class<?>... generics) {
+		return importService.addGenericImport(clazz, generics);
+	}
+
+	public String addGenericImport(final Class<?> clazz, final String... generics) {
+		return importService.addGenericImport(clazz, generics);
+	}
+
+	public String addGenericImport(final String clazz, final String... generics) {
+		return importService.addGenericImport(clazz, generics);
 	}
 
 	public String addStaticImport(final String methodName) {

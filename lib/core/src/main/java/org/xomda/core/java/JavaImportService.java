@@ -5,9 +5,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.xomda.shared.util.ReflectionUtils;
@@ -49,6 +51,18 @@ public class JavaImportService {
 		return addStaticImport(ReflectionUtils.getBareType(clazz).getName() + "." + methodName);
 	}
 
+	public String addGenericImport(final Class<?> clazz, final Class<?>... generics) {
+		return addImport(clazz) + generics(this::addImport, generics);
+	}
+
+	public String addGenericImport(final Class<?> clazz, final String... generics) {
+		return addImport(clazz) + generics(this::addImport, generics);
+	}
+
+	public String addGenericImport(final String clazz, final String... generics) {
+		return addImport(clazz) + generics(this::addImport, generics);
+	}
+
 	public String addImport(final String fullyQualifiedClassName, final boolean isStatic) {
 		Objects.requireNonNull(fullyQualifiedClassName);
 
@@ -60,7 +74,9 @@ public class JavaImportService {
 		final String registeredClassName = (isStatic ? "static " : "") + fullyQualifiedClassName;
 
 		if (imports.containsKey(className)) {
-			return imports.get(className).equals(fullyQualifiedClassName) ? className : fullyQualifiedClassName;
+			return imports.get(className).equals(registeredClassName)
+					? className
+					: fullyQualifiedClassName;
 		}
 
 		final boolean isJavaLang = JavaUtils.isGlobal(fullyQualifiedClassName);
@@ -128,6 +144,17 @@ public class JavaImportService {
 
 	public boolean isEmpty() {
 		return imports.isEmpty();
+	}
+
+	@SafeVarargs
+	private static <T> String generics(final Function<T, String> fn, final T... classes) {
+		final StringJoiner sj = new StringJoiner(", ", "<", ">").setEmptyValue("<?>");
+		if (null != classes) {
+			Stream.of(classes)
+					.map(fn)
+					.forEach(sj::add);
+		}
+		return sj.toString();
 	}
 
 	private static Comparator<String> compareBeginsWith(final String startsWith) {

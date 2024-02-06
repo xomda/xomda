@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.xomda.core.template.TemplateContext;
 import org.xomda.core.template.TemplateUtils;
-import org.xomda.core.template.context.WritableContext;
 import org.xomda.core.template.context.java.JavaClassWriter;
 import org.xomda.core.template.context.java.feature.GetterSetter;
 import org.xomda.core.util.XOMDAUtils;
@@ -23,7 +22,6 @@ public class GenerateEntityTemplate extends PackageTemplate {
 		final String pkg = TemplateUtils.getJavaPackage(entity.getPackage());
 		final String interfaceName = StringUtils.toPascalCase(entity.getName());
 		final String fullyQualifiedName = pkg + "." + interfaceName;
-
 		try (
 				@SuppressWarnings("resource")
 				final JavaClassWriter ctx = new JavaClassWriter(fullyQualifiedName)
@@ -37,7 +35,6 @@ public class GenerateEntityTemplate extends PackageTemplate {
 					)
 					.println("public interface " + interfaceName + " {").tab(tabbed -> tabbed
 							.println()
-
 							// generate the regular attributes
 							.forEach(entity::getAttributeList, (final Attribute attribute) -> {
 								final String attributeName = StringUtils.toPascalCase(attribute.getName());
@@ -47,23 +44,19 @@ public class GenerateEntityTemplate extends PackageTemplate {
 										.withJavaDoc(attribute.getDescription())
 										.writeTo(tabbed);
 							})
-
 							// generate the reverse entity attributes
 							.forEach(XOMDAUtils.findReverseEntities(entity), (final Entity e) -> {
 								final String attributeName = StringUtils.toPascalCase(e.getName() + " List");
-								final CharSequence fullyQualifiedType = WritableContext.format(
-										"{0}<{1}>",
-										ctx.addImport(List.class),
-										ctx.addImport(TemplateUtils.getJavaType(e))
+								final CharSequence fullyQualifiedType = ctx.addGenericImport(
+										List.class,
+										TemplateUtils.getJavaType(e)
 								);
 								GetterSetter.create(fullyQualifiedType, attributeName)
 										.declareOnly()
 										.withJavaDoc(entity.getDescription())
 										.writeTo(tabbed);
 							}))
-
 					.println("}");
-
 			ctx.writeFile(context.outDir());
 		}
 	}
