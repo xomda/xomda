@@ -40,8 +40,10 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 
 	private List<Object> readModel(Project project, String file) {
 		try {
-			Configuration config = Configuration.builder().withClassPath(extension.getClasspath().get())
-					.withLogLevel(getLogLevel(project)).withExtensions(extension.getPlugins().get()).build();
+			Configuration config = Configuration.builder()
+					.withClassPath(extension.getClasspath().get())
+					.withLogLevel(getLogLevel(project))
+					.withExtensions(extension.getPlugins().get()).build();
 
 			LogService.setLogProvider((Class<?> clazz) -> project.getLogger());
 
@@ -67,7 +69,7 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 			project.getLogger().info("Found model definitions: {}", files);
 			files.forEach((String file) -> {
 				List<Object> objects = readModel(project, file);
-				XOmdaCompileTemplatesTask.getTemplates(task).forEach(c -> c.accept(objects.get(0)));
+				XOmdaCompileTemplatesTask.executeTemplates(task, objects);
 			});
 		});
 	}
