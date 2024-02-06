@@ -6,7 +6,7 @@ import java.util.List;
 import org.xomda.core.config.Configuration;
 import org.xomda.core.csv.CsvService;
 
-public class XOmda {
+public class XOMDA {
 	public static <T> List<T> read(String filename, Configuration config) throws IOException {
 		return new CsvService().read(filename, config);
 	}
