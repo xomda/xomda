@@ -2,6 +2,7 @@ package org.xomda.core.template.context.java.feature;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 import org.xomda.core.template.TemplateUtils;
 import org.xomda.core.template.context.java.JavaTemplateContext;
@@ -34,11 +35,9 @@ public class GetterSetter {
 	}
 
 	public GetterSetter withModifiers(final int... modifiers) {
-		int mod = 0;
-		for (final int modifier : modifiers) {
-			mod = mod | modifier;
-		}
-		this.modifiers = mod;
+		this.modifiers = IntStream
+				.of(modifiers)
+				.reduce(0, (a, b) -> a | b);
 		return this;
 	}
 

@@ -6,12 +6,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TemplateContext {
 
 	private final String outDir;
+	private final Map<Object, Object> userData = new ConcurrentHashMap<>();
 
 	public TemplateContext(String outDir) {
 		this.outDir = outDir;
 	}
-
-	private final Map<Object, Object> userData = new ConcurrentHashMap<>();
 
 	public Map<Object, Object> userData() {
 		return userData;
