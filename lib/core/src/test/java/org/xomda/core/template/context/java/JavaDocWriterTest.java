@@ -18,47 +18,66 @@ public class JavaDocWriterTest {
 	private static final String TAB = "    ";
 
 	@Test
-	public void testJavaDoc() {
-		final String actual = withContext(ctx -> {
-			ctx.println("void test() {}").println().addDocs(doc -> {
-				// make sure we got a JavaDocWriter
-				assertInstanceOf(JavaDocWriter.class, doc);
-				doc.println("Test 123").println("Test 456");
-			}).println("void test() {}");
-		});
-
-		assertNotNull(actual);
+	public void test() {
 		assertEquals("""
-				void test() {}
+						void test() {}
 
-				/**
-				 * Test 123
-				 * Test 456
-				 */
-				void test() {}
-				""", actual);
+						/**
+						 * Test 123
+						 * Test 456
+						 */
+						void test() {}
+						""",
+				withContext(ctx -> ctx
+						.println("void test() {}").println().addDocs(doc -> {
+							// make sure we got a JavaDocWriter
+							assertInstanceOf(JavaDocWriter.class, doc);
+							doc
+									.println("Test 123")
+									.println("Test 456");
+						})
+						.println("void test() {}")
+				));
 	}
 
 	@Test
-	public void testTabbedJavaDoc() {
+	public void testWithTabs() {
+		assertEquals(
+				String.join("\n",
+						TAB.repeat(3) + "/**",
+						TAB.repeat(3) + " * Test 123",
+						TAB.repeat(3) + " * Test 456",
+						TAB.repeat(3) + " */",
+						""
+				),
+				withContext(ctx -> ctx.tab(tab1 -> tab1.tab(tab2 -> tab2.tab(tab3 -> tab3
+						.addDocs(doc -> doc
+								// make sure we got a JavaDocWriter
+								.println("Test 123")
+								.println("Test 456")
+						)
+				))))
+		);
+	}
+
+	@Test
+	public void testLooselyWithTabs() {
 		final int tabCount = 2;
-		final String actual = withContext(ctx -> ctx.tab(tabCount, tab -> tab.addDocs(doc -> {
-			// make sure we got a JavaDocWriter
-			assertInstanceOf(JavaDocWriter.class, doc);
-			final JavaTemplateContext res = doc
-					.println("Test 123")
-					.println("Test 456");
-			assertInstanceOf(JavaDocWriter.class, res);
-		}).println("void test() {}")));
-
-		System.out.println(actual);
-
+		final String actual = withContext(ctx -> ctx.tab(tabCount, tab -> tab
+				.addDocs(doc -> {
+					// make sure we got a JavaDocWriter
+					assertInstanceOf(JavaDocWriter.class, doc);
+					final JavaTemplateContext res = doc
+							.println("Test 123")
+							.println("Test 456");
+					assertInstanceOf(JavaDocWriter.class, res);
+				})
+				.println("void test() {}")
+		));
 		assertNotNull(actual);
 		actual.lines().forEach(line -> {
 			assertTrue(line.startsWith(TAB.repeat(tabCount)), line);
 		});
-
-		assertNotNull(actual);
 	}
 
 	static String withContext(final Consumer<JavaTemplateContext> supplier) {
@@ -70,7 +89,11 @@ public class JavaDocWriterTest {
 			context.setTabCharacter(TAB);
 			supplier.accept(context);
 			context.flush();
-			return os.toString();
+
+			final String actual = os.toString();
+			assertNotNull(actual);
+
+			return actual;
 		} catch (final IOException e) {
 			SneakyThrow.throwSneaky(e);
 			return null;
