@@ -5,11 +5,11 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
-import org.slf4j.Logger;
+import org.xomda.core.extension.Loggable;
 import org.xomda.core.extension.XOmdaExtension;
 import org.xomda.core.template.Template;
 import org.xomda.model.Entity;
-import org.xomda.shared.logging.LogService;
+import org.xomda.shared.util.StreamUtils;
 
 /**
  * The Configuration of XOMDA is done here.
@@ -18,7 +18,7 @@ import org.xomda.shared.logging.LogService;
  * the CLI or the Gradle plugin, will each parse their settings into a
  * Configuration.
  */
-public interface Configuration {
+public interface Configuration extends Loggable {
 
 	String[] DEFAULT_CLASSPATH = { Entity.class.getPackageName() };
 	Level DEFAULT_LOG_LEVEL = Level.INFO;
@@ -65,17 +65,10 @@ public interface Configuration {
 	// TODO: MOVE!
 	@SuppressWarnings("unchecked")
 	default Stream<Template<Object>> getTemplates() {
-		return extensions().filter(Template.class::isAssignableFrom).map(c -> {
-			try {
-				return c.getDeclaredConstructor().newInstance();
-			} catch (Exception e) {
-				return null;
-			}
-		}).filter(Objects::nonNull).map(c -> (Template<Object>) c);
-	}
-
-	default Logger getLogger(Class<?> clazz) {
-		return LogService.getLogger(clazz);
+		return extensions().filter(Template.class::isAssignableFrom)
+				.map(StreamUtils.mapOrNull(c -> c.getDeclaredConstructor().newInstance()))
+				.filter(Objects::nonNull)
+				.map(c -> (Template<Object>) c);
 	}
 
 	static ConfigurationBuilder builder() {
