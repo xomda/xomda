@@ -1,8 +1,6 @@
 package org.xomda.shared.exception;
 
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
-import static org.xomda.shared.exception.SneakyThrow.ThrowingConsumer;
-import static org.xomda.shared.exception.SneakyThrow.ThrowingFunction;
 import static org.xomda.shared.exception.SneakyThrow.sneaky;
 import static org.xomda.shared.exception.SneakyThrow.throwSneaky;
 
@@ -13,10 +11,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
+import org.xomda.shared.exception.SneakyThrow.ThrowingConsumer;
+import org.xomda.shared.exception.SneakyThrow.ThrowingFunction;
 
 public class SneakyThrowTest {
 
 	static class TestCheckedException extends Exception {
+		private static final long serialVersionUID = -3506879281736101983L;
 	}
 
 	@Test
@@ -41,19 +42,19 @@ public class SneakyThrowTest {
 		assertThrowsExactly(TestCheckedException.class, () -> consume(sneaky((ThrowingConsumer<Object, ? extends Throwable>) o -> throwTestCheckedException(null))));
 	}
 
-	static Object throwTestCheckedException(Object args) throws TestCheckedException {
+	static Object throwTestCheckedException(final Object args) throws TestCheckedException {
 		throw new TestCheckedException();
 	}
 
-	static void consume(Consumer<Object> consumer) {
+	static void consume(final Consumer<Object> consumer) {
 		consumer.accept(new Object());
 	}
 
-	static void supply(Supplier<Object> supplier) {
+	static void supply(final Supplier<Object> supplier) {
 		supplier.get();
 	}
 
-	static void map(Function<Object, Object> fn) {
+	static void map(final Function<Object, Object> fn) {
 		fn.apply(new Object());
 	}
 
