@@ -1,12 +1,18 @@
 package org.xomda.core.util;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.template.Template;
 import org.xomda.model.Dependency;
 import org.xomda.model.Entity;
 import org.xomda.model.Package;
+import org.xomda.shared.util.Predicates;
+import org.xomda.shared.util.ReflectionUtils;
 
 public class XOMDAUtils {
 
@@ -26,14 +32,67 @@ public class XOMDAUtils {
 		return null == pkg
 				? Stream.empty()
 				: Stream.concat(
-						stream(pkg::getPackageList).flatMap(XOMDAUtils::getAllEntities),
-						stream(pkg::getEntityList)
-				);
+				stream(pkg::getPackageList).flatMap(XOMDAUtils::getAllEntities),
+				stream(pkg::getEntityList)
+		);
 	}
 
 	private static <T> Stream<T> stream(final Supplier<Collection<T>> supplier) {
 		final Collection<T> col = supplier.get();
 		return null == col ? Stream.empty() : col.stream();
+	}
+
+	public static boolean isExtensionClass(Class<?> o) {
+		return getGenericInterfaceClasses(o).anyMatch(XOmdaExtension.class::isAssignableFrom);
+	}
+
+	public static boolean isTemplateClass(Class<?> o) {
+		return getExtensionTypes(o, Template.class).anyMatch(Predicates.alwaysTrue());
+	}
+
+	public static boolean isTemplateClass(Class<?> o, Class<?> ext) {
+		return getExtensionTypes(o, Template.class)
+				.map(Class.class::cast)
+				.anyMatch((Class c) -> hasGeneric(c, ext));
+	}
+
+	static boolean hasGeneric(Class<?> c, Class<?> generic) {
+		return getGenericInterfaces(c)
+				.filter(ParameterizedType.class::isInstance)
+				.map(ParameterizedType.class::cast)
+				.anyMatch(pt -> Stream.of(pt.getActualTypeArguments())
+						.filter(Class.class::isInstance)
+						.map(Class.class::cast)
+						.anyMatch(generic::isAssignableFrom)
+				);
+	}
+
+	public static <E extends XOmdaExtension> Stream<?> getExtensionTypes(Class<?> o, Class<E> ext) {
+		return getGenericInterfaceClasses(o)
+				.filter(ext::isAssignableFrom);
+	}
+
+	static Stream<Type> getGenericInterfaces(Type t) {
+		return ReflectionUtils.unchecked(Stream.concat(
+				Stream.concat(
+						Stream.of(t),
+						Stream.of(t)
+								.filter(Class.class::isInstance)
+								.map(Class.class::cast)
+								.flatMap(c -> Stream.of(c.getGenericInterfaces()))
+								.flatMap(XOMDAUtils::getGenericInterfaces)
+				),
+
+				t instanceof Class tc ?
+						getGenericInterfaceClasses((tc).getSuperclass())
+						: Stream.empty()
+		));
+	}
+
+	static Stream<Class<?>> getGenericInterfaceClasses(Class<?> o) {
+		return ReflectionUtils.unchecked(getGenericInterfaces(o)
+				.filter(Class.class::isInstance)
+				.map(Class.class::cast));
 	}
 
 }
