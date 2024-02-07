@@ -17,7 +17,16 @@ import org.xomda.shared.exception.SneakyThrow;
 public class JavaTemplateContextTest {
 
 	@Test
-	public void test() {
+	public void testClassAndPackageName() {
+		withContext(ctx -> {
+			assertEquals("com.example.Test", ctx.getFullClassName());
+			assertEquals("com.example", ctx.getPackageName());
+			assertEquals("Test", ctx.getClassName());
+		});
+	}
+
+	@Test
+	public void testBasicPrint() {
 		assertEquals("ok", withContext(ctx -> ctx.print("ok")));
 		assertEquals("ok\n", withContext(ctx -> ctx.println("ok")));
 		assertEquals("\n", withContext(WritableContext::println));
@@ -85,7 +94,7 @@ public class JavaTemplateContextTest {
 		try (
 				final ByteArrayOutputStream os = new ByteArrayOutputStream();
 				final BufferedOutputStream bos = new BufferedOutputStream(os);
-				final JavaTemplateContext context = JavaTemplateContext.create("com.example.com", bos);
+				final JavaTemplateContext context = JavaTemplateContext.create("com.example.Test", bos);
 		) {
 			context.setTabCharacter(tabCharacter);
 			supplier.accept(context);
