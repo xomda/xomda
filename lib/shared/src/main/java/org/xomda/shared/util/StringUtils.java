@@ -1,15 +1,14 @@
 package org.xomda.shared.util;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringUtils {
 
-	private static final Pattern RX_ALLOWED_PUNCTATION = Pattern.compile("[.?!,\\[\\](){}]");
-	private static final Predicate<String> ALLOWED_PUNCTATION = RX_ALLOWED_PUNCTATION.asMatchPredicate();
+	private static final Pattern RX_ALLOWED_HTML_PUNCTATION = Pattern.compile("[.?!,\\[\\](){}]");
+	private static final Predicate<String> ALLOWED_HTML_PUNCTATION = RX_ALLOWED_HTML_PUNCTATION.asMatchPredicate();
 
 	/**
 	 * Turns "Some String" into "SomeString"
@@ -63,26 +62,28 @@ public class StringUtils {
 	public static String escapeHTML(CharSequence text) {
 		if (null == text) return null;
 		StringBuilder sb = new StringBuilder();
-		AtomicInteger highSurrogate = new AtomicInteger();
-		text.chars().forEach((int c) -> {
-			if (Character.isHighSurrogate((char) c)) {
-				highSurrogate.set(c);
-				return;
-			}
-			if (highSurrogate.get() > 0) {
-				final int surrogate = highSurrogate.getAndSet(0);
-				c = Character.toCodePoint((char) surrogate, (char) c);
-			}
+		int length = text.length();
+
+		for (int i = 0; i < length; i++) {
+			char c = text.charAt(i);
 			if (Character.isAlphabetic(c)
 					|| Character.isDigit(c)
 					|| Character.isSpaceChar(c)
-					|| ALLOWED_PUNCTATION.test("" + c)
+					|| ALLOWED_HTML_PUNCTATION.test("" + c)
 			) {
-				sb.append((char) c);
-			} else {
-				sb.append("&#").append(c).append(';');
+				sb.append(c);
+				continue;
 			}
-		});
+
+			sb.append("&");
+			if (Character.isHighSurrogate(c) && i < length - 1) {
+				sb.append('#').append(Character.toCodePoint(c, text.charAt(++i)));
+			} else {
+				sb.append(HTMLEntities.translate(c));
+			}
+			sb.append(';');
+
+		}
 		return sb.toString();
 	}
 

@@ -60,6 +60,8 @@ class StringUtilsTest {
 		assertNull(StringUtils.escapeHTML(null));
 
 		assertEquals("Joris Aerts", StringUtils.escapeHTML("Joris Aerts"));
-		assertEquals("Joris Aerts &#60;&#62; &#129395;", StringUtils.escapeHTML("Joris Aerts <> 🥳"));
+		assertEquals("Joris Aerts &lt;&gt; &#129395;", StringUtils.escapeHTML("Joris Aerts <> 🥳"));
+		assertEquals("&euro;", StringUtils.escapeHTML("€"));
+		assertEquals("&#128128;", StringUtils.escapeHTML("💀"));
 	}
 }
