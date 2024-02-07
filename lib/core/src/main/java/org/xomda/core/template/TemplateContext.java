@@ -5,24 +5,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TemplateContext {
 
-    private final String outDir;
+	private final String outDir;
+	private final Map<Object, Object> userData = new ConcurrentHashMap<>();
 
-    public TemplateContext(String outDir) {
-        this.outDir = outDir;
-    }
+	public TemplateContext(final String outDir) {
+		this.outDir = outDir;
+	}
 
-    private final Map<Object, Object> userData = new ConcurrentHashMap<>();
+	public Map<Object, Object> userData() {
+		return userData;
+	}
 
-    public Map<Object, Object> userData() {
-        return userData;
-    }
+	public String outDir() {
+		return outDir;
+	}
 
-    public String outDir() {
-        return this.outDir;
-    }
-
-    public static TemplateContext defaultContext() {
-        return new TemplateContext(System.getProperty("user.dir"));
-    }
+	public static TemplateContext defaultContext() {
+		return new TemplateContext(System.getProperty("user.dir"));
+	}
 
 }

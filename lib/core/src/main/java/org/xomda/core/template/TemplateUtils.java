@@ -11,68 +11,85 @@ import org.xomda.shared.util.StringUtils;
 
 public class TemplateUtils {
 
-    public static String getJavaPackage(org.xomda.model.Package pkg) {
-        if (null == pkg) return "";
-        String prefix = getJavaPackage(pkg.getPackage()).trim();
-        return prefix + (prefix.isBlank() ? "" : ".") + pkg.getPackageName();
-    }
+	public static String getJavaPackage(final org.xomda.model.Package pkg) {
+		if (null == pkg) {
+			return "";
+		}
+		final String prefix = getJavaPackage(pkg.getPackage()).trim();
+		return prefix + (prefix.isBlank() ? "" : ".") + pkg.getPackageName();
+	}
 
-    public static Path getPath(org.xomda.model.Package pkg) {
-        String pkgName = getJavaPackage(pkg);
-        String[] pkgs = pkgName.trim().split("\\.");
-        Path parentPath = null;
+	public static String getJavaInterfaceName(final org.xomda.model.Entity entity) {
+		final String pkg = getJavaPackage(entity.getPackage());
+		final String interfaceName = StringUtils.toPascalCase(entity.getName());
+		return pkg + "." + interfaceName;
+	}
 
-        for (String p : pkgs)
-            parentPath = null == parentPath
-                ? Paths.get(p)
-                : parentPath.resolve(p);
+	public static String getJavaEnumName(final org.xomda.model.Enum enm) {
+		final String pkg = getJavaPackage(enm.getPackage());
+		final String interfaceName = StringUtils.toPascalCase(enm.getName());
+		return pkg + "." + interfaceName;
+	}
 
-        return parentPath;
-    }
+	public static Path getPath(final org.xomda.model.Package pkg) {
+		final String pkgName = getJavaPackage(pkg);
+		final String[] pkgs = pkgName.trim().split("\\.");
+		Path parentPath = null;
 
-    public static Path getEnumPath(org.xomda.model.Enum enm) {
-        return getPath(enm.getPackage()).resolve(StringUtils.toPascalCase(enm.getName()) + ".java");
-    }
+		for (final String p : pkgs) {
+			parentPath = null == parentPath ? Paths.get(p) : parentPath.resolve(p);
+		}
 
-    public static Path getInterfacePath(Entity entity) {
-        return getPath(entity.getPackage()).resolve(StringUtils.toPascalCase(entity.getName()) + ".java");
-    }
+		return parentPath;
+	}
 
-    public static String getJavaType(Entity entity) {
-        if (entity == null) return "java.lang.Object";
-        return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
-    }
+	public static Path getEnumPath(final org.xomda.model.Enum enm) {
+		return getPath(enm.getPackage()).resolve(StringUtils.toPascalCase(enm.getName()) + ".java");
+	}
 
-    public static String getJavaType(org.xomda.model.Enum enm) {
-        if (enm == null) return "java.lang.Object";
-        return getJavaPackage(enm.getPackage()) + "." + StringUtils.toPascalCase(enm.getName());
-    }
+	public static Path getInterfacePath(final Entity entity) {
+		return getPath(entity.getPackage()).resolve(StringUtils.toPascalCase(entity.getName()) + ".java");
+	}
 
-    public static String getType(Entity entity) {
-        return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
-    }
+	public static String getJavaType(final Entity entity) {
+		if (entity == null) {
+			return "java.lang.Object";
+		}
+		return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
+	}
 
-    public static String getJavaType(Attribute attribute) {
-        AttributeType type = attribute.getType();
-        if (null == type) {
-            return "java.lang.Object";
-        }
-        return switch (type) {
-            case String, Text -> "java.lang.String";
-            case Boolean -> "java.lang.Boolean";
-            case Integer -> "java.lang.Long";
-            case Decimal -> "java.lang.Double";
-            case Date, Time, Timestamp -> "java.util.Date";
+	public static String getJavaType(final org.xomda.model.Enum enm) {
+		if (enm == null) {
+			return "java.lang.Object";
+		}
+		return getJavaPackage(enm.getPackage()) + "." + StringUtils.toPascalCase(enm.getName());
+	}
 
-            case Entity -> getType(attribute.getEntityRef());
-            case Enum -> getJavaType(attribute.getEnumRef());
+	public static String getType(final Entity entity) {
+		return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
+	}
 
-            default -> "java.lang.Object";
-        };
-    }
+	public static String getJavaType(final Attribute attribute) {
+		final AttributeType type = attribute.getType();
+		if (null == type) {
+			return "java.lang.Object";
+		}
+		return switch (type) {
+			case String, Text -> "java.lang.String";
+			case Boolean -> "java.lang.Boolean";
+			case Integer -> "java.lang.Long";
+			case Decimal -> "java.lang.Double";
+			case Date, Time, Timestamp -> "java.util.Date";
 
-    public static String getJavaIdentifier(String idr) {
-        return JavaUtils.toIdentifier(idr);
-    }
+			case Entity -> getType(attribute.getEntityRef());
+			case Enum -> getJavaType(attribute.getEnumRef());
+
+			default -> "java.lang.Object";
+		};
+	}
+
+	public static String getJavaIdentifier(final String idr) {
+		return JavaUtils.toIdentifier(idr);
+	}
 
 }

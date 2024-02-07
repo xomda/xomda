@@ -16,123 +16,157 @@ import org.xomda.core.template.context.DefaultContext;
 
 public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>, Closeable, Flushable {
 
-    private final JavaImportService importService;
+	private final JavaImportService importService;
 
-    private final OutputStream outputStream;
-    private final PrintWriter writer;
-    private final String localClassName;
-    private String tabCharacter = TabbedContext.DEFAULT_TAB_CHARACTER;
+	private final OutputStream outputStream;
+	private final PrintWriter writer;
+	private final String localClassName;
+	private String tabCharacter = TabbedContext.DEFAULT_TAB_CHARACTER;
 
-    private boolean lineIsOpen;
+	private boolean newLine = true;
 
-    public JavaTemplateContext(String localClassName, final OutputStream out) {
-        this.localClassName = localClassName;
-        this.outputStream = out;
-        this.writer = new PrintWriter(out);
-        this.importService = new JavaImportService(localClassName);
-    }
+	JavaTemplateContext(final String localClassName, final OutputStream out) {
+		this.localClassName = localClassName;
+		outputStream = out;
+		writer = new PrintWriter(out);
+		importService = new JavaImportService(localClassName);
+	}
 
-    JavaTemplateContext(JavaTemplateContext parent) {
-        this.localClassName = parent.localClassName;
-        this.outputStream = parent.outputStream;
-        this.writer = parent.writer;
-        this.tabCharacter = parent.tabCharacter;
-        this.importService = parent.importService;
-    }
+	JavaTemplateContext(final JavaTemplateContext parent) {
+		localClassName = parent.localClassName;
+		outputStream = parent.outputStream;
+		writer = parent.writer;
+		tabCharacter = parent.tabCharacter;
+		importService = parent.importService;
+		newLine = parent.newLine;
+	}
 
-    public String getClassName() {
-        return localClassName;
-    }
+	/**
+	 * The fully qualified class name of this template context
+	 * <br/><br/>
+	 * (<code>a.b.Class &rarr; a.b.Class</code>)
+	 */
+	public String getFullClassName() {
+		return localClassName;
+	}
 
-    public String getPackageName() {
-        return JavaUtils.getPackageName(localClassName);
-    }
+	/**
+	 * The class name of this template context, without package
+	 * <br/><br/>
+	 * (<code>a.b.Class &rarr; Class</code>)
+	 */
+	public String getClassName() {
+		return JavaUtils.getClassName(getFullClassName());
+	}
 
-    public String addImport(String className) {
-        return importService.addImport(className);
-    }
+	/**
+	 * The package name of this template context
+	 * <br/><br/>
+	 * (<code>a.b.Class &rarr; a.b</code>)
+	 */
+	public String getPackageName() {
+		return JavaUtils.getPackageName(localClassName);
+	}
 
-    public String addImport(Class<?> clazz) {
-        return importService.addImport(clazz);
-    }
+	public String addImport(final String className) {
+		return importService.addImport(className);
+	}
 
-    public String addStaticImport(String methodName) {
-        return importService.addStaticImport(methodName);
-    }
+	public String addImport(final Class<?> clazz) {
+		return importService.addImport(clazz);
+	}
 
-    public String addStaticImport(Class<?> clazz, String methodName) {
-        return importService.addStaticImport(clazz, methodName);
-    }
+	public String addGenericImport(final Class<?> clazz, final Class<?>... generics) {
+		return importService.addGenericImport(clazz, generics);
+	}
 
-    public List<String> getImports() {
-        List<String> imports = new ArrayList<>();
-        importService.forEach(
-            (String imp) -> imports.add("import " + imp + ";"),
-            () -> imports.add("")
-        );
-        return imports;
-    }
+	public String addGenericImport(final Class<?> clazz, final String... generics) {
+		return importService.addGenericImport(clazz, generics);
+	}
 
-    public Stream<String> imports() {
-        return getImports().stream();
-    }
+	public String addGenericImport(final String clazz, final String... generics) {
+		return importService.addGenericImport(clazz, generics);
+	}
 
-    public int getTabCount() {
-        return 0;
-    }
+	public String addStaticImport(final String methodName) {
+		return importService.addStaticImport(methodName);
+	}
 
-    public String getSingleTab() {
-        return tabCharacter;
-    }
+	public String addStaticImport(final Class<?> clazz, final String methodName) {
+		return importService.addStaticImport(clazz, methodName);
+	}
 
-    public void setTabCharacter(String character) {
-        tabCharacter = character;
-    }
+	public List<String> getImports() {
+		final List<String> imports = new ArrayList<>();
+		importService.forEach((final String imp) -> imports.add("import " + imp + ";"), () -> imports.add(""));
+		return imports;
+	}
 
-    protected OutputStream getOutputStream() {
-        return outputStream;
-    }
+	public Stream<String> imports() {
+		return getImports().stream();
+	}
 
-    @Override
-    public PrintWriter getWriter() {
-        return writer;
-    }
+	public int getTabCount() {
+		return 0;
+	}
 
-    @Override
-    public JavaTemplateContext deferred() {
-        return new DeferredContext(this);
-    }
+	public String getSingleTab() {
+		return tabCharacter;
+	}
 
-    @Override
-    public JavaTemplateContext tab(final int count) {
-        return new TabbedContext(this, count);
-    }
+	public void setTabCharacter(final String character) {
+		tabCharacter = character;
+	}
 
-    public JavaTemplateContext addDocs(Consumer<JavaDocWriter> docWriterConsumer) {
-        try (JavaDocWriter docCtx = new JavaDocWriter(this);) {
-            docWriterConsumer.accept(docCtx);
-        }
-        return this;
-    }
+	protected OutputStream getOutputStream() {
+		return outputStream;
+	}
 
-    public boolean isNewLine() {
-        return !lineIsOpen;
-    }
+	@Override
+	public PrintWriter getWriter() {
+		return writer;
+	}
 
-    @Override
-    public void setNewLine(final boolean state) {
-        lineIsOpen = state;
-    }
+	@Override
+	public JavaTemplateContext deferred() {
+		return new DeferredContext(this);
+	}
 
-    @Override
-    public void flush() throws IOException {
-        getWriter().flush();
-    }
+	@Override
+	public JavaTemplateContext tab(final int count) {
+		return new TabbedContext(this, count);
+	}
 
-    @Override
-    public void close() throws IOException {
-        flush();
-        getWriter().close();
-    }
+	public JavaTemplateContext addDocs(final Consumer<JavaDocWriter> docWriterConsumer) {
+		try (JavaDocWriter docCtx = new JavaDocWriter(this);) {
+			docWriterConsumer.accept(docCtx);
+		}
+		return this;
+	}
+
+	@Override
+	public boolean isNewLine() {
+		return newLine;
+	}
+
+	@Override
+	public void setNewLine(final boolean state) {
+		newLine = state;
+	}
+
+	@Override
+	public void flush() throws IOException {
+		getWriter().flush();
+	}
+
+	@Override
+	public void close() throws IOException {
+		flush();
+		getWriter().close();
+	}
+
+	public static JavaTemplateContext create(final String localClassName, final OutputStream out) {
+		return new JavaTemplateContext(localClassName, out);
+	}
 
 }

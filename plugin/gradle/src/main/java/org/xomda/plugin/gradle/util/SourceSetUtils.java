@@ -7,31 +7,31 @@ import org.xomda.plugin.gradle.Constants;
 
 public class SourceSetUtils {
 
-    public static final String OMDA_SOURCESET_NAME = Constants.XOMDA_CONFIGURATION;
+	public static final String OMDA_SOURCESET_NAME = Constants.XOMDA_CONFIGURATION;
 
-    public static SourceSetContainer getSourceSetContainer(Project project) {
-        return project.getExtensions().getByType(SourceSetContainer.class);
-    }
+	public static SourceSetContainer getSourceSetContainer(final Project project) {
+		return project.getExtensions().getByType(SourceSetContainer.class);
+	}
 
-    public static SourceSet createOmdaSourceSet(Project project) {
-        return createOmdaSourceSet(getSourceSetContainer(project));
-    }
+	public static SourceSet createOmdaSourceSet(final Project project) {
+		return createOmdaSourceSet(getSourceSetContainer(project));
+	}
 
-    public static SourceSet createOmdaSourceSet(SourceSetContainer sourceSets) {
-        SourceSet omdaSourceSet = sourceSets.create(OMDA_SOURCESET_NAME);
+	public static SourceSet createOmdaSourceSet(final SourceSetContainer sourceSets) {
+		final SourceSet omdaSourceSet = sourceSets.create(OMDA_SOURCESET_NAME);
 
-        // Configure the source set's directories
-        omdaSourceSet.getResources().srcDirs(Constants.XOMDA_CSV_CONFIG_PATH);
-        omdaSourceSet.getResources().getFilter().include("*.csv");
+		// Configure the source set's directories
+		omdaSourceSet.getResources().srcDirs(Constants.XOMDA_CSV_CONFIG_PATH);
+		omdaSourceSet.getResources().getFilter().include("*.csv");
 
-        omdaSourceSet.getJava().srcDirs(Constants.XOMDA_JAVA_PATH);
-        omdaSourceSet.getJava().srcDirs(Constants.XOMDA_GENERATED_PATH);
+		omdaSourceSet.getJava().srcDirs(Constants.XOMDA_JAVA_PATH);
+		omdaSourceSet.getJava().srcDirs(Constants.XOMDA_GENERATED_PATH);
 
-        return omdaSourceSet;
-    }
+		return omdaSourceSet;
+	}
 
-    public static SourceSet getOmdaSourceSet(Project project) {
-        return getSourceSetContainer(project).findByName(OMDA_SOURCESET_NAME);
-    }
+	public static SourceSet getOmdaSourceSet(final Project project) {
+		return getSourceSetContainer(project).findByName(OMDA_SOURCESET_NAME);
+	}
 
 }

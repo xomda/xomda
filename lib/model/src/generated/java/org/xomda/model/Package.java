@@ -7,24 +7,31 @@ import java.util.List;
 public interface Package {
 	
 	org.xomda.model.Package getPackage();
+	
 	void setPackage(final org.xomda.model.Package pckg);
 	
 	String getName();
+	
 	void setName(final String name);
 	
 	String getPackageName();
-	void setPackageName(final String packageName);
+	
+	void setPackageName(final String packagename);
 	
 	String getDescription();
+	
 	void setDescription(final String description);
 	
 	List<org.xomda.model.Package> getPackageList();
-	void setPackageList(final List<org.xomda.model.Package> pckg);
+	
+	void setPackageList(final List<org.xomda.model.Package> packagelist);
 	
 	List<org.xomda.model.Enum> getEnumList();
-	void setEnumList(final List<org.xomda.model.Enum> enm);
+	
+	void setEnumList(final List<org.xomda.model.Enum> enumlist);
 	
 	List<Entity> getEntityList();
-	void setEntityList(final List<Entity> entity);
+	
+	void setEntityList(final List<Entity> entitylist);
 	
 }

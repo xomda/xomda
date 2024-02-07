@@ -7,8 +7,8 @@ import org.xomda.core.csv.type.ValueParser;
 
 public class DateParserProvider extends AbstractValueParserProvider.Nullable {
 
-    public DateParserProvider() {
-        super(createPredicate(Date.class), (ValueParser.Primitive) LocalDateTime::parse);
-    }
+	public DateParserProvider() {
+		super(createPredicate(Date.class), (ValueParser.Primitive) LocalDateTime::parse);
+	}
 
 }

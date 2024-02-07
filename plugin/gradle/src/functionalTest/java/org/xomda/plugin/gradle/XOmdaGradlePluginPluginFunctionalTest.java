@@ -16,40 +16,38 @@ import org.junit.jupiter.api.io.TempDir;
  * A simple functional test for the XOMDA Gradle plugin.
  */
 class XOmdaGradlePluginPluginFunctionalTest {
-    @TempDir
-    File projectDir;
 
-    private File getBuildFile() {
-        return new File(projectDir, "build.gradle");
-    }
+	@TempDir
+	File projectDir;
 
-    private File getSettingsFile() {
-        return new File(projectDir, "settings.gradle");
-    }
+	private File getBuildFile() {
+		return new File(projectDir, "build.gradle");
+	}
 
-    @Test
-    void canRunTask() throws IOException {
-        writeString(getSettingsFile(), "");
-        writeString(getBuildFile(),
-            "plugins {" +
-                "  id('org.xomda.plugin-gradle')" +
-                "}");
+	private File getSettingsFile() {
+		return new File(projectDir, "settings.gradle");
+	}
 
-        // Run the build
-        GradleRunner runner = GradleRunner.create();
-        runner.forwardOutput();
-        runner.withPluginClasspath();
-        runner.withArguments("xomda");
-        runner.withProjectDir(projectDir);
-        BuildResult result = runner.build();
+	@Test
+	void canRunTask() throws IOException {
+		writeString(getSettingsFile(), "");
+		writeString(getBuildFile(), "plugins {" + "  id('org.xomda.plugin-gradle')" + "}");
 
-        // Verify the result
-        assertTrue(result.getOutput().contains(" "));
-    }
+		// Run the build
+		final GradleRunner runner = GradleRunner.create();
+		runner.forwardOutput();
+		runner.withPluginClasspath();
+		runner.withArguments("xomda");
+		runner.withProjectDir(projectDir);
+		final BuildResult result = runner.build();
 
-    private void writeString(File file, String string) throws IOException {
-        try (Writer writer = new FileWriter(file)) {
-            writer.write(string);
-        }
-    }
+		// Verify the result
+		assertTrue(result.getOutput().contains(" "));
+	}
+
+	private void writeString(final File file, final String string) throws IOException {
+		try (Writer writer = new FileWriter(file)) {
+			writer.write(string);
+		}
+	}
 }

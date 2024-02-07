@@ -15,74 +15,88 @@ import org.xomda.shared.exception.SneakyThrow;
 
 public class JavaDocWriterTest {
 
-    private static final String TAB = "    ";
+	private static final String TAB = "    ";
 
-    @Test
-    public void testJavaDoc() {
-        String actual = withContext(ctx -> {
-            ctx.println("void test() {}")
-                .println()
-                .addDocs(doc -> {
-                    // make sure we got a JavaDocWriter
-                    assertInstanceOf(JavaDocWriter.class, doc);
-                    doc
-                        .println("Test 123")
-                        .println("Test 456");
-                })
-                .println("void test() {}")
-            ;
-        });
+	@Test
+	public void test() {
+		assertEquals("""
+						void test() {}
 
-        assertNotNull(actual);
-        assertEquals("""
-            void test() {}
+						/**
+						 * Test 123
+						 * Test 456
+						 */
+						void test() {}
+						""",
+				withContext(ctx -> ctx
+						.println("void test() {}").println().addDocs(doc -> {
+							// make sure we got a JavaDocWriter
+							assertInstanceOf(JavaDocWriter.class, doc);
+							doc
+									.println("Test 123")
+									.println("Test 456");
+						})
+						.println("void test() {}")
+				));
+	}
 
-            /**
-             * Test 123
-             * Test 456
-             */
-            void test() {}
-            """, actual);
-    }
+	@Test
+	public void testWithTabs() {
+		assertEquals(
+				String.join("\n",
+						TAB.repeat(3) + "/**",
+						TAB.repeat(3) + " * Test 123",
+						TAB.repeat(3) + " * Test 456",
+						TAB.repeat(3) + " */",
+						""
+				),
+				withContext(ctx -> ctx.tab(tab1 -> tab1.tab(tab2 -> tab2.tab(tab3 -> tab3
+						.addDocs(doc -> doc
+								// make sure we got a JavaDocWriter
+								.println("Test 123")
+								.println("Test 456")
+						)
+				))))
+		);
+	}
 
-    @Test
-    public void testTabbedJavaDoc() {
-        int tabCount = 2;
-        String actual = withContext(ctx -> ctx.tab(tabCount, tab -> tab
-            .addDocs(doc -> {
-                // make sure we got a JavaDocWriter
-                assertInstanceOf(JavaDocWriter.class, doc);
-                JavaTemplateContext res = doc
-                    .println("Test 123")
-                    .println("Test 456");
-                assertInstanceOf(JavaDocWriter.class, res);
-            })
-            .println("void test() {}")
-        ));
+	@Test
+	public void testLooselyWithTabs() {
+		final int tabCount = 2;
+		final String actual = withContext(ctx -> ctx.tab(tabCount, tab -> tab
+				.addDocs(doc -> {
+					// make sure we got a JavaDocWriter
+					assertInstanceOf(JavaDocWriter.class, doc);
+					final JavaTemplateContext res = doc
+							.println("Test 123")
+							.println("Test 456");
+					assertInstanceOf(JavaDocWriter.class, res);
+				})
+				.println("void test() {}")
+		));
+		assertNotNull(actual);
+		actual.lines().forEach(line -> {
+			assertTrue(line.startsWith(TAB.repeat(tabCount)), line);
+		});
+	}
 
-        System.out.println(actual);
+	static String withContext(final Consumer<JavaTemplateContext> supplier) {
+		try (
+				final ByteArrayOutputStream os = new ByteArrayOutputStream();
+				final BufferedOutputStream bos = new BufferedOutputStream(os);
+				final JavaTemplateContext context = JavaTemplateContext.create("com.example.com", bos);
+		) {
+			context.setTabCharacter(TAB);
+			supplier.accept(context);
+			context.flush();
 
-        assertNotNull(actual);
-        actual.lines().forEach(line -> {
-            assertTrue(line.startsWith(TAB.repeat(tabCount)), line);
-        });
+			final String actual = os.toString();
+			assertNotNull(actual);
 
-        assertNotNull(actual);
-    }
-
-    static String withContext(Consumer<JavaTemplateContext> supplier) {
-        try (
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            BufferedOutputStream bos = new BufferedOutputStream(os);
-            JavaTemplateContext context = new JavaTemplateContext("com.example.com", bos)
-        ) {
-            context.setTabCharacter(TAB);
-            supplier.accept(context);
-            context.flush();
-            return os.toString();
-        } catch (IOException e) {
-            SneakyThrow.throwSneaky(e);
-            return null;
-        }
-    }
+			return actual;
+		} catch (final IOException e) {
+			SneakyThrow.throwSneaky(e);
+			return null;
+		}
+	}
 }

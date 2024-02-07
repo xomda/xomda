@@ -5,151 +5,168 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.xomda.shared.util.ReflectionUtils;
 
+/**
+ * This service is used to provide import-functionality when generating code.
+ * It will correctly determine whether a Class or static method needs to be fully qualified or not.
+ */
 public class JavaImportService {
 
-    private final Map<String, String> imports = new ConcurrentHashMap<>();
-    private final String localClass;
+	private final Map<String, String> imports = new ConcurrentHashMap<>();
+	private final String localClass;
 
-    private final List<String> sortOrder = Arrays.asList("static java.", "static", "java.");
+	private final List<String> sortOrder = Arrays.asList("static java.", "static", "java.");
 
-    public JavaImportService(String localClass) {
-        if (!JavaUtils.isValidClassName(localClass)) {
-            throw new IllegalArgumentException("Invalid class name:" + localClass);
-        }
-        this.localClass = localClass;
-    }
+	public JavaImportService(final String localClass) {
+		if (!JavaUtils.isValidClassName(localClass)) {
+			throw new IllegalArgumentException("Invalid class name:" + localClass);
+		}
+		this.localClass = localClass;
+	}
 
-    public String getLocalClassName() {
-        return localClass;
-    }
+	public String getLocalClassName() {
+		return localClass;
+	}
 
-    public String addImport(Class<?> clazz) {
-        Objects.requireNonNull(clazz);
-        return addImport(ReflectionUtils
-            .getBareType(clazz)
-            .getName()
-        );
-    }
+	public String addImport(final Class<?> clazz) {
+		Objects.requireNonNull(clazz);
+		return addImport(ReflectionUtils.getBareType(clazz).getName());
+	}
 
-    public String addImport(String fullyQualifiedClassName) {
-        return addImport(fullyQualifiedClassName, false);
-    }
+	public String addImport(final String fullyQualifiedClassName) {
+		return addImport(fullyQualifiedClassName, false);
+	}
 
-    public String addStaticImport(String methodName) {
-        return addImport(methodName, true);
-    }
+	public String addStaticImport(final String methodName) {
+		return addImport(methodName, true);
+	}
 
-    public String addStaticImport(Class<?> clazz, String methodName) {
-        Objects.requireNonNull(clazz);
-        Objects.requireNonNull(methodName);
-        return addStaticImport(
-            ReflectionUtils
-                .getBareType(clazz)
-                .getName() + "." + methodName
-        );
-    }
+	public String addStaticImport(final Class<?> clazz, final String methodName) {
+		Objects.requireNonNull(clazz);
+		Objects.requireNonNull(methodName);
+		return addStaticImport(ReflectionUtils.getBareType(clazz).getName() + "." + methodName);
+	}
 
-    public String addImport(String fullyQualifiedClassName, boolean isStatic) {
-        Objects.requireNonNull(fullyQualifiedClassName);
+	public String addGenericImport(final Class<?> clazz, final Class<?>... generics) {
+		return addImport(clazz) + generics(this::addImport, generics);
+	}
 
-        if (!JavaUtils.hasPackage(fullyQualifiedClassName)) return fullyQualifiedClassName;
+	public String addGenericImport(final Class<?> clazz, final String... generics) {
+		return addImport(clazz) + generics(this::addImport, generics);
+	}
 
-        String className = JavaUtils.getClassName(fullyQualifiedClassName);
-        String registeredClassName = (isStatic ? "static " : "") + fullyQualifiedClassName;
+	public String addGenericImport(final String clazz, final String... generics) {
+		return addImport(clazz) + generics(this::addImport, generics);
+	}
 
-        if (imports.containsKey(className)) {
-            return imports.get(className).equals(fullyQualifiedClassName)
-                ? className
-                : fullyQualifiedClassName;
-        }
+	public String addImport(final String fullyQualifiedClassName, final boolean isStatic) {
+		Objects.requireNonNull(fullyQualifiedClassName);
 
-        boolean isJavaLang = JavaUtils.isGlobal(fullyQualifiedClassName);
-        boolean existsInJavaLang = existsInJavaLang(fullyQualifiedClassName);
+		if (!JavaUtils.hasPackage(fullyQualifiedClassName)) {
+			return fullyQualifiedClassName;
+		}
 
-        // Return full Class names which also exist in java.lang
-        if (!isJavaLang && existsInJavaLang) {
-            return fullyQualifiedClassName;
-        }
+		final String className = JavaUtils.getClassName(fullyQualifiedClassName);
+		final String registeredClassName = (isStatic ? "static " : "") + fullyQualifiedClassName;
 
-        // don't import java.lang classes
-        if (isJavaLang) {
-            return className;
-        }
+		if (imports.containsKey(className)) {
+			return imports.get(className).equals(registeredClassName)
+					? className
+					: fullyQualifiedClassName;
+		}
 
-        // Same package? Doesn't need to be imported
-        if (isSamePackage(fullyQualifiedClassName)) {
-            // still remember that we are using a class from the same package
-            imports.put(className, registeredClassName);
-            return className;
-        }
+		final boolean isJavaLang = JavaUtils.isGlobal(fullyQualifiedClassName);
+		final boolean existsInJavaLang = existsInJavaLang(fullyQualifiedClassName);
 
-        imports.put(className, registeredClassName);
-        return className;
-    }
+		// Return full Class names which also exist in java.lang
+		if (!isJavaLang && existsInJavaLang) {
+			return fullyQualifiedClassName;
+		}
 
-    public List<String> getSortOrder() {
-        return sortOrder;
-    }
+		// don't import java.lang classes
+		if (isJavaLang) {
+			return className;
+		}
 
-    boolean existsInJavaLang(String className) {
-        return ReflectionUtils
-            .findClass("java.lang." + JavaUtils.getClassName(className))
-            .isPresent();
-    }
+		// Same package? Doesn't need to be imported
+		if (isSamePackage(fullyQualifiedClassName)) {
+			// still remember that we are using a class from the same package
+			imports.put(className, registeredClassName);
+			return className;
+		}
 
-    boolean isSamePackage(String className) {
-        return JavaUtils.isSamePackage(getLocalClassName(), className);
-    }
+		imports.put(className, registeredClassName);
+		return className;
+	}
 
-    private Comparator<String> getComparator() {
-        return sortOrder.stream()
-            .map(JavaImportService::compareBeginsWith)
-            .reduce((a, b) -> 0, Comparator::thenComparing)
-            .thenComparing(String::compareTo);
-    }
+	public List<String> getSortOrder() {
+		return sortOrder;
+	}
 
-    public Stream<String> stream() {
-        return imports.values().stream()
-            .filter(c -> !JavaUtils.isSamePackage(c, getLocalClassName()))
-            .sorted(getComparator());
-    }
+	boolean existsInJavaLang(final String className) {
+		return ReflectionUtils.findClass("java.lang." + JavaUtils.getClassName(className)).isPresent();
+	}
 
-    public void forEach(Consumer<String> consumer) {
-        forEach(consumer, () -> { /* noop */ });
-    }
+	boolean isSamePackage(final String className) {
+		return JavaUtils.isSamePackage(getLocalClassName(), className);
+	}
 
-    public void forEach(Consumer<String> consumer, Runnable newGroupHandler) {
-        AtomicReference<String> lastRef = new AtomicReference<>();
-        stream().forEach((String imp) -> {
-            String last = lastRef.getAndUpdate(s -> imp);
-            if (last != null && getSortOrder().stream()
-                .anyMatch(s -> last.startsWith(s) && !imp.startsWith(s))
-            ) {
-                newGroupHandler.run();
-            }
-            consumer.accept(imp);
-        });
-    }
+	private Comparator<String> getComparator() {
+		return sortOrder.stream().map(JavaImportService::compareBeginsWith)
+				.reduce((a, b) -> 0, Comparator::thenComparing).thenComparing(String::compareTo);
+	}
 
-    public boolean isEmpty() {
-        return imports.isEmpty();
-    }
+	public Stream<String> stream() {
+		return imports.values().stream().filter(c -> !JavaUtils.isSamePackage(c, getLocalClassName()))
+				.sorted(getComparator());
+	}
 
-    private static Comparator<String> compareBeginsWith(final String startsWith) {
-        return (a, b) -> {
-            boolean isA = a.startsWith(startsWith);
-            boolean isB = b.startsWith(startsWith);
-            return isA
-                ? isB ? a.compareTo(b) : -1
-                : isB ? 1 : 0;
-        };
-    }
+	public void forEach(final Consumer<String> consumer) {
+		forEach(consumer, () -> {
+			/* noop */
+		});
+	}
+
+	public void forEach(final Consumer<String> consumer, final Runnable newGroupHandler) {
+		final AtomicReference<String> lastRef = new AtomicReference<>();
+		stream().forEach((final String imp) -> {
+			final String last = lastRef.getAndUpdate(s -> imp);
+			if (last != null && getSortOrder().stream().anyMatch(s -> last.startsWith(s) && !imp.startsWith(s))) {
+				newGroupHandler.run();
+			}
+			consumer.accept(imp);
+		});
+	}
+
+	public boolean isEmpty() {
+		return imports.isEmpty();
+	}
+
+	@SafeVarargs
+	private static <T> String generics(final Function<T, String> fn, final T... classes) {
+		final StringJoiner sj = new StringJoiner(", ", "<", ">").setEmptyValue("<?>");
+		if (null != classes) {
+			Stream.of(classes)
+					.map(fn)
+					.forEach(sj::add);
+		}
+		return sj.toString();
+	}
+
+	private static Comparator<String> compareBeginsWith(final String startsWith) {
+		return (a, b) -> {
+			final boolean isA = a.startsWith(startsWith);
+			final boolean isB = b.startsWith(startsWith);
+			return isA ? isB ? a.compareTo(b) : -1 : isB ? 1 : 0;
+		};
+	}
 
 }

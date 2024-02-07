@@ -1,25 +1,25 @@
 // This plugin applies basic Java configuration on top of xomda-common
 plugins {
-    id('xomda-common')
-    id('java')
+	id('xomda-common')
+	id('java')
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17) // 21?
-    version = libs.versions.xomda.get()
+	toolchain.languageVersion = JavaLanguageVersion.of(17) // 21?
+	version = libs.versions.xomda.get()
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+	options.encoding = 'UTF-8'
 }
 
 dependencies {
-    testImplementation libs.junit.jupiter
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testImplementation libs.junit.jupiter
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.withType(Test) {
-    useJUnitPlatform()
+	useJUnitPlatform()
 }
 
 group "org.xomda"

@@ -14,11 +14,11 @@ public interface TabbableContext<R extends TabbableContext<R>> extends WritableC
 
 	R tab(int count);
 
-	default R tab(Consumer<R> consumer) {
+	default R tab(final Consumer<R> consumer) {
 		return tab(1, consumer);
 	}
 
-	default R tab(int count, Consumer<R> consumer) {
+	default R tab(final int count, final Consumer<R> consumer) {
 		consumer.accept(tab(count));
 		return unchecked(this);
 	}
