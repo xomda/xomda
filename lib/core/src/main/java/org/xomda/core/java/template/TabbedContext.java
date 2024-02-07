@@ -1,4 +1,4 @@
-package org.xomda.core.template.context.java;
+package org.xomda.core.java.template;
 
 import java.util.regex.Pattern;
 

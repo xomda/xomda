@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import org.xomda.core.java.template.JavaClassWriter;
+import org.xomda.core.java.template.feature.GetterSetter;
 import org.xomda.core.template.TemplateContext;
 import org.xomda.core.template.TemplateUtils;
-import org.xomda.core.template.context.java.JavaClassWriter;
-import org.xomda.core.template.context.java.feature.GetterSetter;
 import org.xomda.core.util.XOMDAUtils;
 import org.xomda.model.Attribute;
 import org.xomda.model.Entity;
@@ -20,8 +20,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 	@Override
 	public void generate(final Entity entity, final TemplateContext context) throws IOException {
 		try (
-				@SuppressWarnings("resource")
-				final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaInterfaceName(entity))
+				@SuppressWarnings("resource") final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaInterfaceName(entity))
 						.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "");
 		) {
 			ctx

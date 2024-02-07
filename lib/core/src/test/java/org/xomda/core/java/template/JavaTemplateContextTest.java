@@ -1,4 +1,4 @@
-package org.xomda.core.template.context.java;
+package org.xomda.core.java.template;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -1,4 +1,4 @@
-package org.xomda.core.template.context.java.feature;
+package org.xomda.core.java.template.feature;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
-import org.xomda.core.template.context.java.JavaTemplateContext;
+import org.xomda.core.java.template.JavaTemplateContext;
 import org.xomda.shared.exception.SneakyThrow;
 
 public class GetterSetterTest {
@@ -25,7 +25,8 @@ public class GetterSetterTest {
 						::writeTo
 		));
 
-		assertEquals("""
+		assertEquals(
+				"""
 						private String name;
 												
 						/**
@@ -42,9 +43,11 @@ public class GetterSetterTest {
 								.withJavaDoc("Test")
 								.getOnly()
 								::writeTo
-				));
+				)
+		);
 
-		assertEquals("""
+		assertEquals(
+				"""
 						private String name;
 												
 						/**
@@ -61,9 +64,11 @@ public class GetterSetterTest {
 								.withJavaDoc("Test")
 								.setOnly()
 								::writeTo
-				));
+				)
+		);
 
-		assertEquals("""
+		assertEquals(
+				"""
 						private String name;
 												
 						/**
@@ -86,7 +91,8 @@ public class GetterSetterTest {
 								.withModifiers(Modifier.PRIVATE)
 								.withJavaDoc("Test")
 								::writeTo
-				));
+				)
+		);
 
 	}
 

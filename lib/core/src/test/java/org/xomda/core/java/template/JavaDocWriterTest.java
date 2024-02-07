@@ -1,4 +1,4 @@
-package org.xomda.core.template.context.java;
+package org.xomda.core.java.template;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -19,7 +19,8 @@ public class JavaDocWriterTest {
 
 	@Test
 	public void test() {
-		assertEquals("""
+		assertEquals(
+				"""
 						void test() {}
 
 						/**
@@ -37,13 +38,15 @@ public class JavaDocWriterTest {
 									.println("Test 456");
 						})
 						.println("void test() {}")
-				));
+				)
+		);
 	}
 
 	@Test
 	public void testWithTabs() {
 		assertEquals(
-				String.join("\n",
+				String.join(
+						"\n",
 						TAB.repeat(3) + "/**",
 						TAB.repeat(3) + " * Test 123",
 						TAB.repeat(3) + " * Test 456",

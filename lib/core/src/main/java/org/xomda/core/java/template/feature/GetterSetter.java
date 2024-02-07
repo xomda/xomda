@@ -1,11 +1,11 @@
-package org.xomda.core.template.context.java.feature;
+package org.xomda.core.java.template.feature;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
+import org.xomda.core.java.template.JavaTemplateContext;
 import org.xomda.core.template.TemplateUtils;
-import org.xomda.core.template.context.java.JavaTemplateContext;
 import org.xomda.shared.util.StringUtils;
 
 public class GetterSetter {
