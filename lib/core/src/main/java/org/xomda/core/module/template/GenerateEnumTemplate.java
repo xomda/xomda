@@ -2,11 +2,11 @@ package org.xomda.core.module.template;
 
 import java.io.IOException;
 
-import org.xomda.core.java.template.JavaClassWriter;
-import org.xomda.core.template.TemplateContext;
-import org.xomda.core.template.TemplateUtils;
+import org.xomda.core.java.JavaClassWriter;
 import org.xomda.model.Value;
 import org.xomda.shared.util.StringUtils;
+import org.xomda.template.TemplateContext;
+import org.xomda.template.TemplateUtils;
 
 public class GenerateEnumTemplate extends org.xomda.core.module.template.PackageTemplate {
 

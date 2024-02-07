@@ -7,12 +7,12 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.xomda.core.extension.XOmdaExtension;
-import org.xomda.core.template.Template;
 import org.xomda.model.Dependency;
 import org.xomda.model.Entity;
 import org.xomda.model.Package;
 import org.xomda.shared.util.Predicates;
 import org.xomda.shared.util.ReflectionUtils;
+import org.xomda.template.Template;
 
 public class XOMDAUtils {
 

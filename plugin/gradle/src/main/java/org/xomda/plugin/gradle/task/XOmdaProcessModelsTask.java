@@ -15,7 +15,7 @@ import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.SourceSet;
 import org.xomda.core.config.Configuration;
-import org.xomda.core.csv.CsvService;
+import org.xomda.parser.csv.CsvService;
 import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
 import org.xomda.shared.logging.LogService;
 

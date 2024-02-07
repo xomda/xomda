@@ -8,8 +8,8 @@ import java.util.stream.Stream;
 
 import org.apache.commons.cli.ParseException;
 import org.xomda.core.config.Configuration;
-import org.xomda.core.csv.CsvService;
-import org.xomda.core.template.TemplateContext;
+import org.xomda.parser.csv.CsvService;
+import org.xomda.template.TemplateContext;
 import org.xomda.shared.logging.LogService;
 
 /**
@@ -33,8 +33,9 @@ public class Main {
 			List<?> result = new CsvService().read(csvFilename, config);
 			// 2) fetch
 			final Object pkg = result.isEmpty() ? null : result.get(0);
-			if (null == pkg)
+			if (null == pkg) {
 				return;
+			}
 			// 3) generate
 			config.getTemplates().forEach(sneaky(t -> {
 				TemplateContext templateContext = new TemplateContext(config.getOutDir());

@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.Level;
 import org.xomda.core.extension.Loggable;
 import org.xomda.core.extension.XOmdaExtension;
-import org.xomda.core.template.Template;
 import org.xomda.model.Entity;
 import org.xomda.shared.util.StreamUtils;
+import org.xomda.template.Template;
 
 /**
  * The Configuration of XOMDA is done here.

@@ -6,14 +6,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import org.xomda.core.java.template.JavaClassWriter;
-import org.xomda.core.java.template.feature.GetterSetter;
-import org.xomda.core.template.TemplateContext;
-import org.xomda.core.template.TemplateUtils;
+import org.xomda.core.java.JavaClassWriter;
+import org.xomda.core.java.util.GetterSetter;
 import org.xomda.core.util.XOMDAUtils;
 import org.xomda.model.Attribute;
 import org.xomda.model.Entity;
 import org.xomda.shared.util.StringUtils;
+import org.xomda.template.TemplateContext;
+import org.xomda.template.TemplateUtils;
 
 public class GenerateEntityTemplate extends PackageTemplate {
 

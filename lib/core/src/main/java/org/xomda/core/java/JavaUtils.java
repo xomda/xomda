@@ -13,11 +13,13 @@ public class JavaUtils {
 			"break", "double", "implements", "public", "throw", "byte", "else", "import", "throws", "case", "enum",
 			"instanceof", "return", "transient", "catch", "extends", "int", "short", "try", "char", "final",
 			"interface", "static", "void", "class", "finally", "long", "strictfp", "volatile", "const", "float",
-			"native", "super", "while");
+			"native", "super", "while"
+	);
 
 	private static final Collection<String> JAVA_RESERVED_IDENTIFIER = Set.of("exports", "module", "non-sealed", "open",
 			"opens", "permits", "provides", "record", "requires", "sealed", "to", "transitive", "uses", "var", "when",
-			"with", "yield");
+			"with", "yield"
+	);
 
 	private static final Collection<String> JAVA_RESERVED_LITERALS = Set.of("true", "false", "null");
 

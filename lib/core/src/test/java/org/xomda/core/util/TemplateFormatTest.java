@@ -3,6 +3,7 @@ package org.xomda.core.util;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.xomda.template.util.TemplateFormat;
 
 public class TemplateFormatTest {
 
@@ -29,11 +30,15 @@ public class TemplateFormatTest {
 	@Test
 	public void testFormat() {
 		assertEquals("Test Test", TemplateFormat.format("{0} Test", "Test"));
-		assertEquals("public void testFormat {test();}",
-				TemplateFormat.format("public void {0} {test();}", "testFormat"));
+		assertEquals(
+				"public void testFormat {test();}",
+				TemplateFormat.format("public void {0} {test();}", "testFormat")
+		);
 		assertEquals("new SomeAbstractClass() {{ }}", TemplateFormat.format("new {0}() {{ }}", "SomeAbstractClass"));
-		assertEquals("new SomeAbstractClass() { { } }",
-				TemplateFormat.format("new {0}() { { } }", "SomeAbstractClass"));
+		assertEquals(
+				"new SomeAbstractClass() { { } }",
+				TemplateFormat.format("new {0}() { { } }", "SomeAbstractClass")
+		);
 
 		assertEquals("print('a')", TemplateFormat.format("print('{0}')", "a"));
 		assertEquals("print(\"aaaa\")", TemplateFormat.format("print(\"{0}\")", "aaaa"));
