@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 import org.apache.commons.cli.ParseException;
 import org.xomda.core.config.Configuration;
 import org.xomda.parser.csv.CsvService;
-import org.xomda.template.TemplateContext;
 import org.xomda.shared.logging.LogService;
+import org.xomda.template.TemplateContext;
 
 /**
  * The main command-line entry point for XOMDA.

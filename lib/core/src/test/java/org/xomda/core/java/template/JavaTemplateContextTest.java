@@ -12,8 +12,8 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 import org.xomda.core.java.JavaTemplateContext;
-import org.xomda.template.context.WritableContext;
 import org.xomda.shared.exception.SneakyThrow;
+import org.xomda.template.context.WritableContext;
 
 public class JavaTemplateContextTest {
 

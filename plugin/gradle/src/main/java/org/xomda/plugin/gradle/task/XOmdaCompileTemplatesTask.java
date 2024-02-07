@@ -16,13 +16,13 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.xomda.template.Template;
-import org.xomda.template.TemplateContext;
 import org.xomda.core.util.XOMDAUtils;
 import org.xomda.plugin.gradle.util.SourceSetUtils;
 import org.xomda.plugin.gradle.util.XOMDATemplateClassLoader;
 import org.xomda.shared.exception.SneakyThrow;
 import org.xomda.shared.util.ReflectionUtils;
+import org.xomda.template.Template;
+import org.xomda.template.TemplateContext;
 
 public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 
