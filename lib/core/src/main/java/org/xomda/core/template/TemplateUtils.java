@@ -18,6 +18,18 @@ public class TemplateUtils {
 		return prefix + (prefix.isBlank() ? "" : ".") + pkg.getPackageName();
 	}
 
+	public static String getJavaInterfaceName(org.xomda.model.Entity entity) {
+		final String pkg = getJavaPackage(entity.getPackage());
+		final String interfaceName = StringUtils.toPascalCase(entity.getName());
+		return pkg + "." + interfaceName;
+	}
+
+	public static String getJavaEnumName(org.xomda.model.Enum enm) {
+		final String pkg = getJavaPackage(enm.getPackage());
+		final String interfaceName = StringUtils.toPascalCase(enm.getName());
+		return pkg + "." + interfaceName;
+	}
+
 	public static Path getPath(org.xomda.model.Package pkg) {
 		String pkgName = getJavaPackage(pkg);
 		String[] pkgs = pkgName.trim().split("\\.");
