@@ -7,8 +7,9 @@ import java.util.stream.Collectors;
 
 public class StringUtils {
 
-	private static final Pattern RX_ALLOWED_HTML_PUNCTATION = Pattern.compile("[.?!,\\[\\](){}]");
-	private static final Predicate<String> ALLOWED_HTML_PUNCTATION = RX_ALLOWED_HTML_PUNCTATION.asMatchPredicate();
+	private static final Predicate<String> ALLOWED_HTML_PUNCTATION = Pattern
+			.compile("[.?!,\\[\\](){}]")
+			.asMatchPredicate();
 
 	/**
 	 * Turns "Some String" into "SomeString"
@@ -67,7 +68,6 @@ public class StringUtils {
 		}
 		final StringBuilder sb = new StringBuilder();
 		final int length = text.length();
-
 		for (int i = 0; i < length; i++) {
 			final char c = text.charAt(i);
 			if (Character.isAlphabetic(c)
@@ -77,7 +77,6 @@ public class StringUtils {
 				sb.append(c);
 				continue;
 			}
-
 			sb.append("&");
 			if (Character.isHighSurrogate(c) && i < length - 1) {
 				sb.append('#').append(Character.toCodePoint(c, text.charAt(++i)));
@@ -85,7 +84,6 @@ public class StringUtils {
 				sb.append(HTMLEntities.translate(c));
 			}
 			sb.append(';');
-
 		}
 		return sb.toString();
 	}
