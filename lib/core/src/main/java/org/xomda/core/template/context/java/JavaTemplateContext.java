@@ -41,10 +41,29 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 		newLine = parent.newLine;
 	}
 
-	public String getClassName() {
+	/**
+	 * The fully qualified class name of this template context
+	 * <br/><br/>
+	 * (<code>a.b.Class &rarr; a.b.Class</code>)
+	 */
+	public String getFullClassName() {
 		return localClassName;
 	}
 
+	/**
+	 * The class name of this template context, without package
+	 * <br/><br/>
+	 * (<code>a.b.Class &rarr; Class</code>)
+	 */
+	public String getClassName() {
+		return JavaUtils.getClassName(getFullClassName());
+	}
+
+	/**
+	 * The package name of this template context
+	 * <br/><br/>
+	 * (<code>a.b.Class &rarr; a.b</code>)
+	 */
 	public String getPackageName() {
 		return JavaUtils.getPackageName(localClassName);
 	}

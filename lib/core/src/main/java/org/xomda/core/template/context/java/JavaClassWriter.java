@@ -48,7 +48,7 @@ public class JavaClassWriter extends JavaTemplateContext {
 
 	public void writeFile(final Path root) throws IOException {
 		final ByteArrayOutputStream bos = (ByteArrayOutputStream) getOutputStream();
-		final String className = getClassName();
+		final String className = getFullClassName();
 
 		final Path outFile = root.resolve(JavaUtils.toJavaPath(className));
 		Files.createDirectories(outFile.getParent());
