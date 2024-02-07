@@ -1,9 +1,15 @@
 package org.xomda.shared.util;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class StringUtils {
+
+	private static final Pattern RX_ALLOWED_PUNCTATION = Pattern.compile("[.?!,\\[\\](){}]");
+	private static final Predicate<String> ALLOWED_PUNCTATION = RX_ALLOWED_PUNCTATION.asMatchPredicate();
 
 	/**
 	 * Turns "Some String" into "SomeString"
@@ -49,6 +55,35 @@ public class StringUtils {
 
 	public static boolean isNullOrBlank(String str) {
 		return null == str || str.isBlank();
+	}
+
+	/**
+	 * Escape text to conform HTML.
+	 */
+	public static String escapeHTML(CharSequence text) {
+		if (null == text) return null;
+		StringBuilder sb = new StringBuilder();
+		AtomicInteger highSurrogate = new AtomicInteger();
+		text.chars().forEach((int c) -> {
+			if (Character.isHighSurrogate((char) c)) {
+				highSurrogate.set(c);
+				return;
+			}
+			if (highSurrogate.get() > 0) {
+				final int surrogate = highSurrogate.getAndSet(0);
+				c = Character.toCodePoint((char) surrogate, (char) c);
+			}
+			if (Character.isAlphabetic(c)
+					|| Character.isDigit(c)
+					|| Character.isSpaceChar(c)
+					|| ALLOWED_PUNCTATION.test("" + c)
+			) {
+				sb.append((char) c);
+			} else {
+				sb.append("&#").append(c).append(';');
+			}
+		});
+		return sb.toString();
 	}
 
 }

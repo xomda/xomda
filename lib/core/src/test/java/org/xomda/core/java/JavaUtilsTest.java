@@ -12,6 +12,22 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.junit.jupiter.api.Test;
 
 public class JavaUtilsTest {
+
+	@Test
+	public void isIsReserved() {
+		assertTrue(JavaUtils.isReserved("new"));
+		assertTrue(JavaUtils.isReserved("case"));
+		assertTrue(JavaUtils.isReserved("switch"));
+		assertTrue(JavaUtils.isReserved("enum"));
+		assertTrue(JavaUtils.isReserved("package"));
+
+		assertTrue(JavaUtils.isReserved("FMT"));
+		assertFalse(JavaUtils.isReserved("fmt"));
+
+		assertFalse(JavaUtils.isReserved("NEW"));
+		assertFalse(JavaUtils.isReserved("CASE"));
+	}
+
 	@Test
 	public void testGetPackageName() {
 		assertEquals("java.lang", JavaUtils.getPackageName("java.lang.String"));
@@ -26,7 +42,7 @@ public class JavaUtilsTest {
 	}
 
 	@Test
-	public void isSameClass() {
+	public void isSamePackage() {
 		assertTrue(JavaUtils.isSamePackage("java.lang.Long", "java.lang.String"));
 		assertTrue(JavaUtils.isSamePackage("java.util.List", "java.util.Date"));
 		assertTrue(JavaUtils.isSamePackage(List.class, Date.class));

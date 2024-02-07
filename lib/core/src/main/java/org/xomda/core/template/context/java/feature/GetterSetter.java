@@ -93,7 +93,7 @@ public class GetterSetter {
 			ctx
 					.addDocs(doc -> {
 						if (hasJavaDoc) {
-							doc.println(javadoc);
+							doc.printlnEscaped(javadoc);
 						}
 					})
 					.print("{0}{1} {2}()", fnModifiers, type, getterName);
@@ -113,7 +113,7 @@ public class GetterSetter {
 			ctx
 					.addDocs(doc -> {
 						if (hasJavaDoc) {
-							doc.println(javadoc);
+							doc.printlnEscaped(javadoc);
 						}
 					})
 					.print("{0}void {1}(final {2} {3})", fnModifiers, setterName, type, variableName);

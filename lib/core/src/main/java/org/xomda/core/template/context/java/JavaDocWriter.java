@@ -2,6 +2,8 @@ package org.xomda.core.template.context.java;
 
 import java.util.regex.Pattern;
 
+import org.xomda.shared.util.StringUtils;
+
 public class JavaDocWriter extends DelegateContext<JavaDocWriter> implements AutoCloseable {
 
 	private static final Pattern rxNewLine = Pattern.compile("([\\r\\n])");
@@ -22,10 +24,18 @@ public class JavaDocWriter extends DelegateContext<JavaDocWriter> implements Aut
 		return super.print(process(text), args);
 	}
 
+	public JavaDocWriter printEscaped(final CharSequence text, final Object... args) {
+		return print(StringUtils.escapeHTML(text), args);
+	}
+
 	@Override
 	public JavaDocWriter println(final CharSequence text, final Object... args) {
 		open();
 		return super.println(LINE_PREFIX + process(text), args);
+	}
+
+	public JavaDocWriter printlnEscaped(final CharSequence text, final Object... args) {
+		return println(StringUtils.escapeHTML(text), args);
 	}
 
 	@Override

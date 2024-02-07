@@ -53,4 +53,13 @@ class StringUtilsTest {
 		// multiple characters
 		assertEquals("Joris aerts", StringUtils.toUpper1("joris aerts"));
 	}
+
+	@Test
+	void testEscapeHTML() {
+		// null stays null
+		assertNull(StringUtils.escapeHTML(null));
+
+		assertEquals("Joris Aerts", StringUtils.escapeHTML("Joris Aerts"));
+		assertEquals("Joris Aerts &#60;&#62; &#129395;", StringUtils.escapeHTML("Joris Aerts <> 🥳"));
+	}
 }
