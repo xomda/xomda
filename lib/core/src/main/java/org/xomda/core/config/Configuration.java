@@ -31,15 +31,16 @@ public interface Configuration extends Loggable {
 
 	void setLogLevel(Level logLevel);
 
-	default void setLogLevel(String logLevel) {
+	default void setLogLevel(final String logLevel) {
 		setLogLevel(Level.valueOf(logLevel));
 	}
 
-	default void setLogLevel(Object logLevel) {
-		if (logLevel instanceof Enum<?> en)
+	default void setLogLevel(final Object logLevel) {
+		if (logLevel instanceof final Enum<?> en) {
 			en.name();
-		else if (logLevel instanceof CharSequence cs)
+		} else if (logLevel instanceof final CharSequence cs) {
 			setLogLevel(cs.toString());
+		}
 	}
 
 	Class<? extends XOmdaExtension>[] getExtensions();
@@ -75,7 +76,7 @@ public interface Configuration extends Loggable {
 		return new ConfigurationBuilder();
 	}
 
-	private static <T> Stream<T> toStream(T[] array) {
+	private static <T> Stream<T> toStream(final T[] array) {
 		return null == array ? Stream.empty() : Arrays.stream(array);
 	}
 }

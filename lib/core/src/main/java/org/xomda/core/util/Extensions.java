@@ -11,35 +11,35 @@ import org.xomda.core.extension.XOmdaExtension;
 
 public class Extensions {
 
-	public static void init(ParseContext context) {
-		getExtensions(context).forEach((XOmdaExtension extension) -> extension.init(context));
+	public static void init(final ParseContext context) {
+		getExtensions(context).forEach((final XOmdaExtension extension) -> extension.init(context));
 	}
 
-	public static void process(ParseContext context, CsvSchema schema) {
-		getSchemaProcessors(context).forEach((CsvSchemaProcessor extension) -> extension.process(schema));
+	public static void process(final ParseContext context, final CsvSchema schema) {
+		getSchemaProcessors(context).forEach((final CsvSchemaProcessor extension) -> extension.process(schema));
 	}
 
-	public static void process(ParseContext context, CsvObject csvObject) {
-		getObjectProcessors(context).forEach((CsvObjectProcessor extension) -> extension.process(csvObject));
+	public static void process(final ParseContext context, final CsvObject csvObject) {
+		getObjectProcessors(context).forEach((final CsvObjectProcessor extension) -> extension.process(csvObject));
 	}
 
-	public static Stream<CsvSchemaProcessor> getSchemaProcessors(ParseContext context) {
+	public static Stream<CsvSchemaProcessor> getSchemaProcessors(final ParseContext context) {
 		return getExtensions(context, CsvSchemaProcessor.class);
 	}
 
-	public static Stream<CsvObjectProcessor> getObjectProcessors(ParseContext context) {
+	public static Stream<CsvObjectProcessor> getObjectProcessors(final ParseContext context) {
 		return getExtensions(context, CsvObjectProcessor.class);
 	}
 
-	public static Stream<ValueParserProvider> getValueParserProviders(ParseContext context) {
+	public static Stream<ValueParserProvider> getValueParserProviders(final ParseContext context) {
 		return getExtensions(context, ValueParserProvider.class);
 	}
 
-	static <T> Stream<T> getExtensions(ParseContext context, Class<T> type) {
+	static <T> Stream<T> getExtensions(final ParseContext context, final Class<T> type) {
 		return getExtensions(context).filter(type::isInstance).map(type::cast);
 	}
 
-	static Stream<? extends XOmdaExtension> getExtensions(ParseContext context) {
+	static Stream<? extends XOmdaExtension> getExtensions(final ParseContext context) {
 		return context.getExtensions().stream();
 	}
 

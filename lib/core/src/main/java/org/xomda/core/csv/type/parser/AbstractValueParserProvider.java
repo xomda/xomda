@@ -13,57 +13,57 @@ public abstract class AbstractValueParserProvider implements ValueParserProvider
 	private final Predicate<Class<?>> test;
 	private final Function<Class<?>, ValueParser> parserFunction;
 
-	protected AbstractValueParserProvider(Predicate<Class<?>> test, ValueParser parser) {
+	protected AbstractValueParserProvider(final Predicate<Class<?>> test, final ValueParser parser) {
 		this(test, (Function<Class<?>, ValueParser>) o -> parser);
 	}
 
-	AbstractValueParserProvider(Predicate<Class<?>> test, Function<Class<?>, ValueParser> parserFunction) {
+	AbstractValueParserProvider(final Predicate<Class<?>> test, final Function<Class<?>, ValueParser> parserFunction) {
 		this.test = test;
 		this.parserFunction = parserFunction;
 	}
 
 	@Override
-	public boolean test(Class<?> c) {
+	public boolean test(final Class<?> c) {
 		return null != test && test.test(c);
 	}
 
 	@Override
-	public ValueParser apply(Class<?> c) {
+	public ValueParser apply(final Class<?> c) {
 		return parserFunction.apply(c);
 	}
 
 	@SuppressWarnings("unchecked")
-	static Predicate<Class<?>> createPredicate(Class<?>... classes) {
-		return (Predicate<Class<?>>) Stream.of(classes).map(Predicate::isEqual).reduce(Predicate::or)
+	static Predicate<Class<?>> createPredicate(final Class<?>... classes) {
+		return Stream.of(classes).map(Predicate::isEqual).reduce(Predicate::or)
 				.map(Predicate.class::cast).orElseGet(Predicates::alwaysFalse);
 	}
 
-	static ValueParser asParser(ValueParser p) {
+	static ValueParser asParser(final ValueParser p) {
 		return p;
 	}
 
-	static ValueParser asParser(ValueParser p, Object defaultValue) {
-		return (String s) -> null == s || s.isBlank() ? defaultValue : p.apply(s);
+	static ValueParser asParser(final ValueParser p, final Object defaultValue) {
+		return (final String s) -> null == s || s.isBlank() ? defaultValue : p.apply(s);
 	}
 
-	static ValueParser.Primitive asPrimitiveParser(ValueParser.Primitive p) {
+	static ValueParser.Primitive asPrimitiveParser(final ValueParser.Primitive p) {
 		return p;
 	}
 
-	static ValueParser.Primitive asPrimitiveParser(ValueParser.Primitive p, Object defaultValue) {
-		return (String s) -> null == s || s.isBlank() ? defaultValue : p.apply(s);
+	static ValueParser.Primitive asPrimitiveParser(final ValueParser.Primitive p, final Object defaultValue) {
+		return (final String s) -> null == s || s.isBlank() ? defaultValue : p.apply(s);
 	}
 
 	static abstract class Nullable extends AbstractValueParserProvider {
 
-		Nullable(Predicate<Class<?>> test, ValueParser parser) {
+		Nullable(final Predicate<Class<?>> test, final ValueParser parser) {
 			super(test, parser);
 		}
 
 		@Override
-		public ValueParser apply(Class<?> c) {
-			ValueParser parser = super.apply(c);
-			return (String s) -> null == s || s.isEmpty() ? null : parser.apply(s);
+		public ValueParser apply(final Class<?> c) {
+			final ValueParser parser = super.apply(c);
+			return (final String s) -> null == s || s.isEmpty() ? null : parser.apply(s);
 		}
 
 	}

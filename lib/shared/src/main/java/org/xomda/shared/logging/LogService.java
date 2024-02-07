@@ -17,15 +17,15 @@ public class LogService {
 		Configurator.setRootLevel(DEFAULT_LOG_LEVEL);
 	}
 
-	public static void setLogProvider(Function<Class<?>, Logger> provider) {
+	public static void setLogProvider(final Function<Class<?>, Logger> provider) {
 		logProvider = provider;
 	}
 
-	public static void setDefaultLogLevel(Level level) {
+	public static void setDefaultLogLevel(final Level level) {
 		Configurator.setRootLevel(level);
 	}
 
-	public static Logger getLogger(Class<?> clz) {
+	public static Logger getLogger(final Class<?> clz) {
 		return logProvider.apply(clz);
 	}
 

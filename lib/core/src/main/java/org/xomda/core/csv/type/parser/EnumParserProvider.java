@@ -17,13 +17,14 @@ public class EnumParserProvider extends AbstractValueParserProvider.Nullable {
 	}
 
 	@Override
-	public ValueParser.Primitive apply(Class<?> c) {
+	public ValueParser.Primitive apply(final Class<?> c) {
 		return getEnumMap(c)::get;
 	}
 
 	private static Map<String, Object> getEnumMap(final Class<?> enumClazz) {
-		if (!enumClazz.isEnum())
+		if (!enumClazz.isEnum()) {
 			return Collections.emptyMap();
+		}
 		final Object[] enumValues = enumClazz.getEnumConstants();
 		try {
 			final Method m = enumClazz.getMethod("name");

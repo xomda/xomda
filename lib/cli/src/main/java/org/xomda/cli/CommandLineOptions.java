@@ -71,7 +71,7 @@ public class CommandLineOptions extends Options {
 
 	private final static Option OPT_HELP = Option.builder("h")
 			.longOpt("help")
-			.desc("Show this help")
+			.desc("Show this help.")
 			.build();
 
 	public CommandLineOptions() {

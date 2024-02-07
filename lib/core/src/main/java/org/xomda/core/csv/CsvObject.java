@@ -40,8 +40,9 @@ public class CsvObject {
 	}
 
 	public <T> T setValue(final String name, final T value) {
-		if (null == value)
+		if (null == value) {
 			return null;
+		}
 		@SuppressWarnings("unchecked")
 		final T t = (T) getState().put(name, value);
 		return t;
@@ -58,8 +59,9 @@ public class CsvObject {
 	}
 
 	private synchronized Object createProxy() {
-		if (null != proxy)
+		if (null != proxy) {
 			return proxy;
+		}
 		return proxy = org.xomda.core.csv.CsvProxyObject.create(this);
 	}
 

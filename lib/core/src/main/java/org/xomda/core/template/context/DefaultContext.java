@@ -9,27 +9,30 @@ import java.util.stream.Stream;
 public interface DefaultContext<R extends DefaultContext<R>>
 		extends DeferrableContext<R>, WritableContext<R>, TabbableContext<R> {
 
-	default R consume(Runnable runnable) {
+	default R consume(final Runnable runnable) {
 		runnable.run();
 		return unchecked(this);
 	}
 
-	default <T> R forEach(Iterable<T> it, Consumer<T> consumer) {
-		if (null != it)
+	default <T> R forEach(final Iterable<T> it, final Consumer<T> consumer) {
+		if (null != it) {
 			it.forEach(consumer);
+		}
 		return unchecked(this);
 	}
 
-	default <T> R forEach(Stream<T> it, Consumer<T> consumer) {
-		if (null != it)
+	default <T> R forEach(final Stream<T> it, final Consumer<T> consumer) {
+		if (null != it) {
 			it.forEach(consumer);
+		}
 		return unchecked(this);
 	}
 
-	default <T> R forEach(Supplier<Iterable<T>> supplier, Consumer<T> consumer) {
-		Iterable<T> it = supplier.get();
-		if (null != it)
+	default <T> R forEach(final Supplier<Iterable<T>> supplier, final Consumer<T> consumer) {
+		final Iterable<T> it = supplier.get();
+		if (null != it) {
 			it.forEach(consumer);
+		}
 		return unchecked(this);
 	}
 

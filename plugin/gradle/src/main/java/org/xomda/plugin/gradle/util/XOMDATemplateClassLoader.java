@@ -13,16 +13,17 @@ import org.gradle.api.tasks.compile.JavaCompile;
 import org.xomda.plugin.gradle.task.XOmdaCompileTemplatesTask;
 
 public class XOMDATemplateClassLoader extends URLClassLoader {
-	public XOMDATemplateClassLoader(JavaCompile task) {
+
+	public XOMDATemplateClassLoader(final JavaCompile task) {
 		this(task, XOmdaCompileTemplatesTask.class.getClassLoader());
 	}
 
-	public XOMDATemplateClassLoader(JavaCompile task, ClassLoader parent) {
+	public XOMDATemplateClassLoader(final JavaCompile task, final ClassLoader parent) {
 		super(getUrls(task), parent);
 	}
 
-	static URL[] getUrls(JavaCompile task) {
-		Project project = task.getProject();
+	private static URL[] getUrls(final JavaCompile task) {
+		final Project project = task.getProject();
 		URL[] urls = null;
 		try {
 			urls = Stream
@@ -33,7 +34,7 @@ public class XOMDATemplateClassLoader extends URLClassLoader {
 									.getFiles().stream().map(f -> {
 										try {
 											return f.toURI().toURL();
-										} catch (MalformedURLException e) {
+										} catch (final MalformedURLException e) {
 											project.getLogger().error("", e);
 											return null;
 										}
@@ -41,7 +42,7 @@ public class XOMDATemplateClassLoader extends URLClassLoader {
 									.filter(Objects::nonNull)
 					)
 					.toArray(URL[]::new);
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 			project.getLogger().error("", e);
 			urls = new URL[0];
 		}

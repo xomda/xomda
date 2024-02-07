@@ -14,6 +14,10 @@ import java.util.stream.Stream;
 
 import org.xomda.shared.util.ReflectionUtils;
 
+/**
+ * This service is used to provide import-functionality when generating code.
+ * It will correctly determine whether a Class or static method needs to be fully qualified or not.
+ */
 public class JavaImportService {
 
 	private final Map<String, String> imports = new ConcurrentHashMap<>();

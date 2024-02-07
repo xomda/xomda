@@ -19,12 +19,12 @@ class CsvProxyObject implements InvocationHandler {
 
 	private final CsvObjectState state;
 
-	CsvProxyObject(CsvObjectState state) {
+	CsvProxyObject(final CsvObjectState state) {
 		this.state = state;
 	}
 
-	static Object create(CsvObject parent) {
-		CsvProxyObject p = new CsvProxyObject(parent.getState());
+	static Object create(final CsvObject parent) {
+		final CsvProxyObject p = new CsvProxyObject(parent.getState());
 		return Proxy.newProxyInstance(parent.getClass().getClassLoader(), parent.classes, p);
 	}
 
@@ -38,14 +38,14 @@ class CsvProxyObject implements InvocationHandler {
 			return proxy.hashCode();
 		}
 		if ("toString".equals(name)) {
-			String className = Arrays.stream(proxy.getClass().getInterfaces()).map(Class::getSimpleName)
+			final String className = Arrays.stream(proxy.getClass().getInterfaces()).map(Class::getSimpleName)
 					.collect(Collectors.joining("|"));
 			return className + "{" + state + "}";
 		}
 		if (name.startsWith("get") && name.length() > 3) {
 			final String propName = StringUtils.toLower1(name.substring(3));
 			final Object result = state.get(propName);
-			return result instanceof CsvObject csvObject ? csvObject.getProxy() : result;
+			return result instanceof final CsvObject csvObject ? csvObject.getProxy() : result;
 		}
 		return null;
 	}

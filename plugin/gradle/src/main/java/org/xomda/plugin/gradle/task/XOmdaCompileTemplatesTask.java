@@ -26,9 +26,10 @@ import org.xomda.shared.util.ReflectionUtils;
 
 public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 
-	public void execute(JavaCompile task) {
-		Project project = task.getProject();
-		SourceSet omdaSourceSet = SourceSetUtils.getOmdaSourceSet(project);
+	@Override
+	public void execute(final JavaCompile task) {
+		final Project project = task.getProject();
+		final SourceSet omdaSourceSet = SourceSetUtils.getOmdaSourceSet(project);
 
 		task.setClasspath(project.files(project.getConfigurations().getAt(XOMDA_CONFIGURATION)));
 
@@ -36,31 +37,31 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 		task.setSource(omdaSourceSet.getJava().getFiles());
 	}
 
-	public static void withClassLoader(JavaCompile compileTask, Consumer<ClassLoader> classLoaderConsumer) {
+	public static void withClassLoader(final JavaCompile compileTask, final Consumer<ClassLoader> classLoaderConsumer) {
 		try (XOMDATemplateClassLoader classLoader = new XOMDATemplateClassLoader(compileTask, XOmdaCompileTemplatesTask.class.getClassLoader())) {
 			classLoaderConsumer.accept(classLoader);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			compileTask.getLogger().error("", e);
 		}
 	}
 
-	private static <T> void executeTemplate(Template<T> template, String cwd, List<T> objects) throws IOException {
-		TemplateContext templateContext = new TemplateContext(cwd);
+	private static <T> void executeTemplate(final Template<T> template, final String cwd, final List<T> objects) throws IOException {
+		final TemplateContext templateContext = new TemplateContext(cwd);
 		template.generate(objects.get(0), templateContext);
 	}
 
-	public static <T> void executeTemplates(Task someTask, List<T> objects) {
-		Project project = someTask.getProject();
-		JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
-		String cwd = project.getProjectDir().getPath();
+	public static <T> void executeTemplates(final Task someTask, final List<T> objects) {
+		final Project project = someTask.getProject();
+		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
+		final String cwd = project.getProjectDir().getPath();
 
-		withClassLoader(task, (ClassLoader cl) -> {
+		withClassLoader(task, (final ClassLoader cl) -> {
 
-			Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
-			Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
+			final Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
+			final Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
 			compiledClasses.stream()
 					.map(File::toPath)
-					.map((Path p) -> taskDestinationPath.relativize(p).toString()
+					.map((final Path p) -> taskDestinationPath.relativize(p).toString()
 							.replaceAll("\\/", ".")
 							.replaceAll("\\.class$", "")
 					)
@@ -70,7 +71,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 							.map(c -> {
 								try {
 									return (Template<?>) c.getDeclaredConstructor().newInstance();
-								} catch (Exception e) {
+								} catch (final Exception e) {
 									project.getLogger().error("", e);
 									return null;
 								}
@@ -79,7 +80,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 					.map(Optional::get)
 					.forEach(SneakyThrow.sneaky(template -> {
 						@SuppressWarnings("unchecked")
-						Template<T> t = (Template<T>) template;
+						final Template<T> t = (Template<T>) template;
 						executeTemplate(t, cwd, objects);
 					}));
 		});

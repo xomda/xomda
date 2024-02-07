@@ -32,9 +32,9 @@ public class XOMDAUtils {
 		return null == pkg
 				? Stream.empty()
 				: Stream.concat(
-				stream(pkg::getPackageList).flatMap(XOMDAUtils::getAllEntities),
-				stream(pkg::getEntityList)
-		);
+						stream(pkg::getPackageList).flatMap(XOMDAUtils::getAllEntities),
+						stream(pkg::getEntityList)
+				);
 	}
 
 	private static <T> Stream<T> stream(final Supplier<Collection<T>> supplier) {

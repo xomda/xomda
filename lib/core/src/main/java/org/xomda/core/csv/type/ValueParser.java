@@ -10,7 +10,6 @@ public interface ValueParser extends Function<String, Object> {
 	 */
 	@FunctionalInterface
 	interface Primitive extends ValueParser {
-
 	}
 
 	/**

@@ -29,7 +29,7 @@ public class CsvService implements Loggable {
 			.setSkipHeaderRecord(true).setIgnoreEmptyLines(false).build();
 
 	public <T> List<T> read(final String filename, final Configuration context) throws IOException {
-		File absoluteFile = new File(filename).getAbsoluteFile();
+		final File absoluteFile = new File(filename).getAbsoluteFile();
 		if (!absoluteFile.exists()) {
 			throw new FileNotFoundException("Unable to open " + absoluteFile);
 		}
@@ -44,8 +44,8 @@ public class CsvService implements Loggable {
 		}
 	}
 
-	public <T> List<T> read(Reader reader, final Configuration config) throws IOException {
-		ParseContext context = new ParseContext(config);
+	public <T> List<T> read(final Reader reader, final Configuration config) throws IOException {
+		final ParseContext context = new ParseContext(config);
 
 		try (final CSVParser parser = DEFAULT_CSV_FORMAT.parse(reader)) {
 			// init the extensions
@@ -64,8 +64,9 @@ public class CsvService implements Loggable {
 			// read the rest
 			getLogger().trace("Reading model definitions");
 			while (it.hasNext() && null != (record = it.next())) {
-				if (isEmpty(record))
+				if (isEmpty(record)) {
 					continue;
+				}
 				final CsvObject obj = schema.readObject(record, context);
 				if (null == obj) {
 					getLogger().error("Couldn't parse {}", record.toList());

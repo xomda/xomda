@@ -41,7 +41,7 @@ public class XOmdaReverseEntity implements CsvObjectProcessor, CsvSchemaProcesso
 			final String name = schemaObject.getName();
 			final String listIdentifier = StringUtils.toPascalCase(name + " List");
 			schema.stream().forEach((final CsvSchemaObject otherObject) -> {
-				String parentIdentifier = StringUtils.toPascalCase(otherObject.getName());
+				final String parentIdentifier = StringUtils.toPascalCase(otherObject.getName());
 				// getChildList()
 				ReflectionUtils.getGetter(otherObject.getObjectClass(), listIdentifier)
 						// getParent()

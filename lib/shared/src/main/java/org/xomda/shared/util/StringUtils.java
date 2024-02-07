@@ -17,10 +17,10 @@ public class StringUtils {
 		return null == in || in.isEmpty()
 				? in
 				: Arrays
-				.stream(in.split("\\s+"))
-				.map(String::toLowerCase)
-				.map(StringUtils::toUpper1)
-				.collect(Collectors.joining());
+						.stream(in.split("\\s+"))
+						.map(String::toLowerCase)
+						.map(StringUtils::toUpper1)
+						.collect(Collectors.joining());
 	}
 
 	/**
@@ -34,8 +34,9 @@ public class StringUtils {
 	 * Turns the first character of the given string to lowercase. That's it.
 	 */
 	public static String toLower1(final String in) {
-		if (null == in || in.isEmpty())
+		if (null == in || in.isEmpty()) {
 			return in;
+		}
 		return Character.toLowerCase(in.charAt(0)) + in.substring(1);
 	}
 
@@ -43,34 +44,36 @@ public class StringUtils {
 	 * Turns the first character of the given string to UPPERCASE. That's it.
 	 */
 	public static String toUpper1(final String in) {
-		if (null == in || in.isEmpty())
+		if (null == in || in.isEmpty()) {
 			return in;
+		}
 		return Character.toUpperCase(in.charAt(0)) + in.substring(1);
 	}
 
-	public static boolean isNullOrEmpty(String str) {
+	public static boolean isNullOrEmpty(final String str) {
 		return null == str || str.isEmpty();
 	}
 
-	public static boolean isNullOrBlank(String str) {
+	public static boolean isNullOrBlank(final String str) {
 		return null == str || str.isBlank();
 	}
 
 	/**
 	 * Escape text to conform HTML.
 	 */
-	public static String escapeHTML(CharSequence text) {
-		if (null == text) return null;
-		StringBuilder sb = new StringBuilder();
-		int length = text.length();
+	public static String escapeHTML(final CharSequence text) {
+		if (null == text) {
+			return null;
+		}
+		final StringBuilder sb = new StringBuilder();
+		final int length = text.length();
 
 		for (int i = 0; i < length; i++) {
-			char c = text.charAt(i);
+			final char c = text.charAt(i);
 			if (Character.isAlphabetic(c)
 					|| Character.isDigit(c)
 					|| Character.isSpaceChar(c)
-					|| ALLOWED_HTML_PUNCTATION.test("" + c)
-			) {
+					|| ALLOWED_HTML_PUNCTATION.test("" + c)) {
 				sb.append(c);
 				continue;
 			}

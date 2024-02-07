@@ -16,6 +16,7 @@ import org.junit.jupiter.api.io.TempDir;
  * A simple functional test for the XOMDA Gradle plugin.
  */
 class XOmdaGradlePluginPluginFunctionalTest {
+
 	@TempDir
 	File projectDir;
 
@@ -33,18 +34,18 @@ class XOmdaGradlePluginPluginFunctionalTest {
 		writeString(getBuildFile(), "plugins {" + "  id('org.xomda.plugin-gradle')" + "}");
 
 		// Run the build
-		GradleRunner runner = GradleRunner.create();
+		final GradleRunner runner = GradleRunner.create();
 		runner.forwardOutput();
 		runner.withPluginClasspath();
 		runner.withArguments("xomda");
 		runner.withProjectDir(projectDir);
-		BuildResult result = runner.build();
+		final BuildResult result = runner.build();
 
 		// Verify the result
 		assertTrue(result.getOutput().contains(" "));
 	}
 
-	private void writeString(File file, String string) throws IOException {
+	private void writeString(final File file, final String string) throws IOException {
 		try (Writer writer = new FileWriter(file)) {
 			writer.write(string);
 		}

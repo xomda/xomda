@@ -9,7 +9,7 @@ public class Registry<V> {
 
 	private final Collection<V> cache;
 
-	public boolean register(V item) {
+	public boolean register(final V item) {
 		return cache.add(item);
 	}
 
@@ -17,8 +17,8 @@ public class Registry<V> {
 		return cache.stream();
 	}
 
-	public Registry(Supplier<Collection<V>> cacheSupplier) {
-		this.cache = cacheSupplier.get();
+	public Registry(final Supplier<Collection<V>> cacheSupplier) {
+		cache = cacheSupplier.get();
 	}
 
 	public Registry() {

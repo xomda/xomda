@@ -9,16 +9,16 @@ public class SourceSetUtils {
 
 	public static final String OMDA_SOURCESET_NAME = Constants.XOMDA_CONFIGURATION;
 
-	public static SourceSetContainer getSourceSetContainer(Project project) {
+	public static SourceSetContainer getSourceSetContainer(final Project project) {
 		return project.getExtensions().getByType(SourceSetContainer.class);
 	}
 
-	public static SourceSet createOmdaSourceSet(Project project) {
+	public static SourceSet createOmdaSourceSet(final Project project) {
 		return createOmdaSourceSet(getSourceSetContainer(project));
 	}
 
-	public static SourceSet createOmdaSourceSet(SourceSetContainer sourceSets) {
-		SourceSet omdaSourceSet = sourceSets.create(OMDA_SOURCESET_NAME);
+	public static SourceSet createOmdaSourceSet(final SourceSetContainer sourceSets) {
+		final SourceSet omdaSourceSet = sourceSets.create(OMDA_SOURCESET_NAME);
 
 		// Configure the source set's directories
 		omdaSourceSet.getResources().srcDirs(Constants.XOMDA_CSV_CONFIG_PATH);
@@ -30,7 +30,7 @@ public class SourceSetUtils {
 		return omdaSourceSet;
 	}
 
-	public static SourceSet getOmdaSourceSet(Project project) {
+	public static SourceSet getOmdaSourceSet(final Project project) {
 		return getSourceSetContainer(project).findByName(OMDA_SOURCESET_NAME);
 	}
 

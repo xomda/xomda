@@ -41,53 +41,56 @@ public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 
 	@Override
 	public ValueParser apply(final Class<?> type) {
-		return (String stringValue) -> {
-			if (null == stringValue || stringValue.isEmpty())
+		return (final String stringValue) -> {
+			if (null == stringValue || stringValue.isEmpty()) {
 				return null;
+			}
 			return resolve(type, stringValue);
 		};
 	}
 
-	private <T> T resolve(final Class<?> type, String ref) {
-		String[] parts = ref.split("\\/");
-		List<CsvObject> objects = context.getCache();
+	private <T> T resolve(final Class<?> type, final String ref) {
+		final String[] parts = ref.split("\\/");
+		final List<CsvObject> objects = context.getCache();
 
 		@SuppressWarnings("unchecked")
-		T result = (T) findByKey(objects.stream(), parts).findFirst().map(CsvObject::getProxy).orElse(null);
+		final T result = (T) findByKey(objects.stream(), parts).findFirst().map(CsvObject::getProxy).orElse(null);
 
 		return result;
 	}
 
-	private boolean isOmdaObject(Object o) {
-		Class<?> oClass = o.getClass();
+	private boolean isOmdaObject(final Object o) {
+		final Class<?> oClass = o.getClass();
 		return schema.stream().anyMatch(f -> Stream.concat(Stream.of(oClass), Stream.of(oClass.getInterfaces()))
 				.anyMatch(i -> i.isAssignableFrom(f.getObjectClass())));
 	}
 
 	private Stream<CsvObject> findByKey(final Stream<CsvObject> rootObjects, final String[] parts) {
-		if (null == parts || parts.length == 0)
+		if (null == parts || parts.length == 0) {
 			return Stream.empty();
+		}
 		final String key = parts[0];
 		return rootObjects.filter(csvObject -> key.equals(csvObject.getValue("name"))).flatMap(csvObject -> {
-			String[] subKeys = Arrays.copyOfRange(parts, 1, parts.length);
+			final String[] subKeys = Arrays.copyOfRange(parts, 1, parts.length);
 			return subKeys.length > 0 ? findByKey(getChildren(csvObject), subKeys) : Stream.of(csvObject);
 		});
 	}
 
-	private Stream<CsvObject> getChildren(CsvObject csvObject) {
+	private Stream<CsvObject> getChildren(final CsvObject csvObject) {
 		return csvObject.getState().values().stream().filter(Iterable.class::isInstance).map(Iterable.class::cast)
 				.filter(it -> it.iterator().hasNext()).flatMap(it -> {
-					Object next = it.iterator().next();
-					if (!isOmdaObject(next))
+					final Object next = it.iterator().next();
+					if (!isOmdaObject(next)) {
 						return Stream.empty();
+					}
 					@SuppressWarnings("unchecked")
-					Stream<CsvObject> children = StreamSupport.stream(it.spliterator(), true).map(this::getCsvObject)
+					final Stream<CsvObject> children = StreamSupport.stream(it.spliterator(), true).map(this::getCsvObject)
 							.filter(o -> ((Optional<?>) o).isPresent()).map(o -> ((Optional<?>) o).get());
 					return children;
 				});
 	}
 
-	private Optional<CsvObject> getCsvObject(Object proxy) {
+	private Optional<CsvObject> getCsvObject(final Object proxy) {
 		return context.getCache().stream().filter(o -> o.getProxy() == proxy).findFirst();
 	}
 

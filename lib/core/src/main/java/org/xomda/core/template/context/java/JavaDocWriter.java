@@ -14,7 +14,7 @@ public class JavaDocWriter extends DelegateContext<JavaDocWriter> implements Aut
 
 	private boolean isOpen;
 
-	JavaDocWriter(JavaTemplateContext parent) {
+	JavaDocWriter(final JavaTemplateContext parent) {
 		super(parent);
 	}
 
@@ -40,8 +40,9 @@ public class JavaDocWriter extends DelegateContext<JavaDocWriter> implements Aut
 
 	@Override
 	public JavaDocWriter println() {
-		if (isNewLine())
+		if (isNewLine()) {
 			return println("");
+		}
 		open();
 		return super.println();
 	}
@@ -51,20 +52,22 @@ public class JavaDocWriter extends DelegateContext<JavaDocWriter> implements Aut
 	}
 
 	synchronized void open() {
-		if (isOpen())
+		if (isOpen()) {
 			return;
+		}
 		isOpen = true;
 		super.println(DOC_OPEN_TAG);
 	}
 
 	@Override
 	public void close() {
-		if (!isOpen())
+		if (!isOpen()) {
 			return;
+		}
 		super.println(DOC_CLOSE_TAG);
 	}
 
-	private static CharSequence process(CharSequence text) {
+	private static CharSequence process(final CharSequence text) {
 		return rxNewLine.matcher(text).replaceAll("$1" + LINE_PREFIX);
 	}
 }

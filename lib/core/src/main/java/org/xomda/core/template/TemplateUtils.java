@@ -11,62 +11,66 @@ import org.xomda.shared.util.StringUtils;
 
 public class TemplateUtils {
 
-	public static String getJavaPackage(org.xomda.model.Package pkg) {
-		if (null == pkg)
+	public static String getJavaPackage(final org.xomda.model.Package pkg) {
+		if (null == pkg) {
 			return "";
-		String prefix = getJavaPackage(pkg.getPackage()).trim();
+		}
+		final String prefix = getJavaPackage(pkg.getPackage()).trim();
 		return prefix + (prefix.isBlank() ? "" : ".") + pkg.getPackageName();
 	}
 
-	public static String getJavaInterfaceName(org.xomda.model.Entity entity) {
+	public static String getJavaInterfaceName(final org.xomda.model.Entity entity) {
 		final String pkg = getJavaPackage(entity.getPackage());
 		final String interfaceName = StringUtils.toPascalCase(entity.getName());
 		return pkg + "." + interfaceName;
 	}
 
-	public static String getJavaEnumName(org.xomda.model.Enum enm) {
+	public static String getJavaEnumName(final org.xomda.model.Enum enm) {
 		final String pkg = getJavaPackage(enm.getPackage());
 		final String interfaceName = StringUtils.toPascalCase(enm.getName());
 		return pkg + "." + interfaceName;
 	}
 
-	public static Path getPath(org.xomda.model.Package pkg) {
-		String pkgName = getJavaPackage(pkg);
-		String[] pkgs = pkgName.trim().split("\\.");
+	public static Path getPath(final org.xomda.model.Package pkg) {
+		final String pkgName = getJavaPackage(pkg);
+		final String[] pkgs = pkgName.trim().split("\\.");
 		Path parentPath = null;
 
-		for (String p : pkgs)
+		for (final String p : pkgs) {
 			parentPath = null == parentPath ? Paths.get(p) : parentPath.resolve(p);
+		}
 
 		return parentPath;
 	}
 
-	public static Path getEnumPath(org.xomda.model.Enum enm) {
+	public static Path getEnumPath(final org.xomda.model.Enum enm) {
 		return getPath(enm.getPackage()).resolve(StringUtils.toPascalCase(enm.getName()) + ".java");
 	}
 
-	public static Path getInterfacePath(Entity entity) {
+	public static Path getInterfacePath(final Entity entity) {
 		return getPath(entity.getPackage()).resolve(StringUtils.toPascalCase(entity.getName()) + ".java");
 	}
 
-	public static String getJavaType(Entity entity) {
-		if (entity == null)
+	public static String getJavaType(final Entity entity) {
+		if (entity == null) {
 			return "java.lang.Object";
+		}
 		return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
 	}
 
-	public static String getJavaType(org.xomda.model.Enum enm) {
-		if (enm == null)
+	public static String getJavaType(final org.xomda.model.Enum enm) {
+		if (enm == null) {
 			return "java.lang.Object";
+		}
 		return getJavaPackage(enm.getPackage()) + "." + StringUtils.toPascalCase(enm.getName());
 	}
 
-	public static String getType(Entity entity) {
+	public static String getType(final Entity entity) {
 		return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
 	}
 
-	public static String getJavaType(Attribute attribute) {
-		AttributeType type = attribute.getType();
+	public static String getJavaType(final Attribute attribute) {
+		final AttributeType type = attribute.getType();
 		if (null == type) {
 			return "java.lang.Object";
 		}
@@ -84,7 +88,7 @@ public class TemplateUtils {
 		};
 	}
 
-	public static String getJavaIdentifier(String idr) {
+	public static String getJavaIdentifier(final String idr) {
 		return JavaUtils.toIdentifier(idr);
 	}
 

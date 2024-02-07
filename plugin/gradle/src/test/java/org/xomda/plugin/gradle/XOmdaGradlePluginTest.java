@@ -13,7 +13,7 @@ class XOmdaGradlePluginTest {
 	@Test
 	void pluginRegistersATask() {
 		// Create a test project and apply the plugin
-		Project project = ProjectBuilder.builder().build();
+		final Project project = ProjectBuilder.builder().build();
 		project.getPlugins().apply("org.xomda.plugin-gradle");
 
 		// Verify the result

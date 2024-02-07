@@ -19,7 +19,7 @@ public class TemplateFormat {
 	 * perform that escaping for us.
 	 */
 	public static String escapePattern(final CharSequence pattern) {
-		Matcher matcher = rxBrackets.matcher(pattern.toString().replace("'", "''"));
+		final Matcher matcher = rxBrackets.matcher(pattern.toString().replace("'", "''"));
 		return matcher.replaceAll("'$1'");
 	}
 
@@ -29,7 +29,7 @@ public class TemplateFormat {
 	 * placeholders with their respective counterparts, found in the given
 	 * "</code>args</code>" varargs parameter.
 	 */
-	public static CharSequence format(CharSequence pattern, Object... args) {
+	public static CharSequence format(final CharSequence pattern, final Object... args) {
 		return 0 == args.length ? pattern : MessageFormat.format(escapePattern(pattern), args);
 	}
 

@@ -29,15 +29,16 @@ public class CsvSchemaObject {
 	private final List<CsvSchemaObjectAttribute> attributes = new ArrayList<>();
 
 	CsvSchemaObject(final CSVRecord record, final ParseContext context) {
-		if (record.size() < 1)
+		if (record.size() < 1) {
 			throw new IllegalArgumentException(
 					"A schema object should contain at least one field which specifies the name of the object.");
+		}
 
-		this.name = record.get(0);
-		this.clazz = getObjectClass(name, context.getConfig().getClasspath())
+		name = record.get(0);
+		clazz = getObjectClass(name, context.getConfig().getClasspath())
 				.orElseThrow(() -> new NoSuchElementException("Could not find appropriate class for " + name));
 
-		TypeFactory typeFactory = new TypeFactory().register(Extensions.getValueParserProviders(context));
+		final TypeFactory typeFactory = new TypeFactory().register(Extensions.getValueParserProviders(context));
 
 		IntStream.range(1, record.size()).filter(i -> !record.get(i).isEmpty()).forEach(i -> {
 			final String propName = record.get(i);

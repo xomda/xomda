@@ -8,7 +8,7 @@ public class TemplateContext {
 	private final String outDir;
 	private final Map<Object, Object> userData = new ConcurrentHashMap<>();
 
-	public TemplateContext(String outDir) {
+	public TemplateContext(final String outDir) {
 		this.outDir = outDir;
 	}
 
@@ -17,7 +17,7 @@ public class TemplateContext {
 	}
 
 	public String outDir() {
-		return this.outDir;
+		return outDir;
 	}
 
 	public static TemplateContext defaultContext() {

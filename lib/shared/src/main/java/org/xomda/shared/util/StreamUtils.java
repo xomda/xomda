@@ -5,23 +5,26 @@ import java.util.function.Supplier;
 
 import org.xomda.shared.exception.SneakyThrow;
 
+/**
+ * Utils that provide functionality for when working with {@link java.util.stream.Stream streams}.
+ */
 public class StreamUtils {
 
-	public static <T, R, E extends Throwable> Function<T, R> mapOrGet(SneakyThrow.ThrowingFunction<T, R, E> fn, Supplier<R> defaultSupplier) {
-		return (T o) -> {
+	public static <T, R, E extends Throwable> Function<T, R> mapOrGet(final SneakyThrow.ThrowingFunction<T, R, E> fn, final Supplier<R> defaultSupplier) {
+		return (final T o) -> {
 			try {
 				return fn.applyThrowing(o);
-			} catch (Throwable e) {
+			} catch (final Throwable e) {
 				return defaultSupplier.get();
 			}
 		};
 	}
 
-	public static <T, R, E extends Throwable> Function<T, R> mapOr(SneakyThrow.ThrowingFunction<T, R, E> fn, R defaultValue) {
+	public static <T, R, E extends Throwable> Function<T, R> mapOr(final SneakyThrow.ThrowingFunction<T, R, E> fn, final R defaultValue) {
 		return mapOrGet(fn, () -> null);
 	}
 
-	public static <T, R, E extends Throwable> Function<T, R> mapOrNull(SneakyThrow.ThrowingFunction<T, R, E> fn) {
+	public static <T, R, E extends Throwable> Function<T, R> mapOrNull(final SneakyThrow.ThrowingFunction<T, R, E> fn) {
 		return mapOr(fn, null);
 	}
 

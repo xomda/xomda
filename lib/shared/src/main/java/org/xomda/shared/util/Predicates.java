@@ -2,13 +2,16 @@ package org.xomda.shared.util;
 
 import java.util.function.Predicate;
 
+/**
+ * Utils for creating and working with {@link Predicate predicates}.
+ */
 public class Predicates {
 
 	private static final Predicate<?> ALWAYS_TRUE = always(true);
 	private static final Predicate<?> ALWAYS_FALSE = always(false);
 
-	public static <T> Predicate<T> always(boolean result) {
-		return (T value) -> result;
+	public static <T> Predicate<T> always(final boolean result) {
+		return (final T value) -> result;
 	}
 
 	@SuppressWarnings("unchecked")

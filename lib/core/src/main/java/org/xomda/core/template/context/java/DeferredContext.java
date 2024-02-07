@@ -9,8 +9,7 @@ import java.util.function.Consumer;
 
 import org.xomda.core.template.context.DefaultContext;
 
-public class DeferredContext extends DelegateContext<DeferredContext>
-		implements DefaultContext<JavaTemplateContext>, Flushable, Closeable {
+public class DeferredContext extends DelegateContext<DeferredContext> implements DefaultContext<JavaTemplateContext>, Flushable, Closeable {
 
 	private final List<Runnable> actions = new ArrayList<>();
 
@@ -19,13 +18,13 @@ public class DeferredContext extends DelegateContext<DeferredContext>
 	}
 
 	@Override
-	public DeferredContext print(CharSequence text, Object... args) {
+	public DeferredContext print(final CharSequence text, final Object... args) {
 		actions.add(() -> super.print(text, args));
 		return this;
 	}
 
 	@Override
-	public DeferredContext println(CharSequence text, Object... args) {
+	public DeferredContext println(final CharSequence text, final Object... args) {
 		actions.add(() -> super.println(text, args));
 		return this;
 	}
@@ -43,13 +42,13 @@ public class DeferredContext extends DelegateContext<DeferredContext>
 	}
 
 	@Override
-	public DeferredContext tab(int count) {
+	public DeferredContext tab(final int count) {
 		actions.add(() -> super.tab(count));
 		return this;
 	}
 
 	@Override
-	public DeferredContext tab(Consumer<JavaTemplateContext> consumer) {
+	public DeferredContext tab(final Consumer<JavaTemplateContext> consumer) {
 		actions.add(() -> super.tab(consumer));
 		return this;
 	}
@@ -71,7 +70,7 @@ public class DeferredContext extends DelegateContext<DeferredContext>
 	@Override
 	public void flush() {
 		synchronized (this) {
-			Iterator<Runnable> it = actions.iterator();
+			final Iterator<Runnable> it = actions.iterator();
 			while (it.hasNext()) {
 				it.next().run();
 				it.remove();
