@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
@@ -28,24 +26,20 @@ public class CsvService implements Loggable {
 	private static final CSVFormat DEFAULT_CSV_FORMAT = CSVFormat.DEFAULT.builder().setDelimiter(DEFAULT_CSV_DELIMITER)
 			.setSkipHeaderRecord(true).setIgnoreEmptyLines(false).build();
 
-	public <T> List<T> read(final String filename, final Configuration context) throws IOException {
+	public <T> List<T> read(final String filename, final Configuration config) throws IOException {
 		final File absoluteFile = new File(filename).getAbsoluteFile();
 		if (!absoluteFile.exists()) {
 			throw new FileNotFoundException("Unable to open " + absoluteFile);
 		}
+
+		final ParseContext context = new ParseContext(config);
+
 		try (final Reader reader = new FileReader(absoluteFile)) {
 			return read(reader, context);
 		}
 	}
 
-	public <T> List<T> read(final InputStream in, final Configuration context) throws IOException {
-		try (final Reader reader = new InputStreamReader(in)) {
-			return read(reader, context);
-		}
-	}
-
-	public <T> List<T> read(final Reader reader, final Configuration config) throws IOException {
-		final ParseContext context = new ParseContext(config);
+	public <T> List<T> read(final Reader reader, final ParseContext context) throws IOException {
 
 		try (final CSVParser parser = DEFAULT_CSV_FORMAT.parse(reader)) {
 			// init the extensions

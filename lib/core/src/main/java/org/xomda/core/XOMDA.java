@@ -10,7 +10,13 @@ public class XOMDA {
 
 	public static <T> List<T> read(final String filename, final Configuration config) throws IOException {
 
+		// read the CSV files
 		return new CsvService().read(filename, config);
+	}
+
+	// TODO: process the parsed objects (send to template service)
+	public static void process() {
+
 	}
 
 	public static void initExtensions(final Configuration config) {
