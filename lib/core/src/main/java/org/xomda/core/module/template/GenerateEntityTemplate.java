@@ -28,7 +28,7 @@ public class GenerateEntityTemplate extends PackageTemplate {
 					.addDocs(docs -> Optional
 							.ofNullable(entity.getDescription())
 							.filter(not(String::isBlank))
-							.ifPresent(docs::println)
+							.ifPresent(docs::printlnEscaped)
 					)
 					.println("public interface {0} {", ctx.getClassName()).tab(tabbed -> tabbed
 							.println()

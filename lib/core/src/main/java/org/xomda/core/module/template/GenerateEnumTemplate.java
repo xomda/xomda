@@ -1,6 +1,9 @@
 package org.xomda.core.module.template;
 
+import static java.util.function.Predicate.not;
+
 import java.io.IOException;
+import java.util.Optional;
 
 import org.xomda.core.java.JavaClassWriter;
 import org.xomda.model.Value;
@@ -18,6 +21,11 @@ public class GenerateEnumTemplate extends org.xomda.core.module.template.Package
 						.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "");
 		) {
 			ctx
+					.addDocs(docs -> Optional
+							.ofNullable(enm.getDescription())
+							.filter(not(String::isBlank))
+							.ifPresent(docs::printlnEscaped)
+					)
 					.println("public enum {0} {", ctx.getClassName())
 					.tab(tabbed -> tabbed.forEach(
 							enm::getValueList,

@@ -30,23 +30,23 @@ Enum;Dependency;dpc;;;;;;;;;
 Value;Aggregate;1;;;;;;;;;
 Value;Composite;2;;;;;;;;;
 ;;;;;;;;;;;
-Entity;Package;pkg;;Static;;Aggregate;;;;;
-Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;
-Attribute;Name;nm;String;255;;;;;;TRUE;
-Attribute;Package Name;idr;String;255;;;;;;TRUE;
-Attribute;Description;dsc;Text;2048;;;;;;;
+Entity;Package;pkg;;Static;;Aggregate;;;;;A container of other Package, Enum and Entity objects.
+Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;The parent package, if there is one. Otherwise it’s a root package.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the package.
+Attribute;Package Name;idr;String;255;;;;;;TRUE;The java package name of the package.
+Attribute;Description;dsc;Text;2048;;;;;;;The description of the package.
 ;;;;;;;;;;;
-Entity;Enum;en;;Static;;Aggregate;;;;;
-Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;
-Attribute;Name;nm;String;255;;;;;;TRUE;
-Attribute;Identifier;idr;String;255;;;;;;TRUE;
-Attribute;Description;dsc;Text;2048;;;;;;;
+Entity;Enum;en;;Static;;Aggregate;;;;;A representation for a static list of values.
+Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;The package to which the enum belongs.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the enum.
+Attribute;Identifier;idr;String;255;;;;;;TRUE;The unique identifier of the enum.
+Attribute;Description;dsc;Text;2048;;;;;;;The description of the enum.
 ;;;;;;;;;;;
-Entity;Value;en_val;;Static;;Aggregate;;;;;
-Attribute;Enum;enm;Entity;;;;XOMDA/Core/Enum;Composite;;TRUE;
-Attribute;Identifier;idr;Integer;;;;;;;TRUE;
-Attribute;Name;nm;String;255;;;;;;TRUE;
-Attribute;Description;dsc;Text;2048;;;;;;;
+Entity;Value;en_val;;Static;;Aggregate;;;;;A single (static) value of an enum.
+Attribute;Enum;enm;Entity;;;;XOMDA/Core/Enum;Composite;;TRUE;The enum to which the value belongs.
+Attribute;Identifier;idr;Integer;;;;;;;TRUE;The unique identifier for the value.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the value.
+Attribute;Description;dsc;Text;2048;;;;;;;The description of the value.
 ;;;;;;;;;;;
 Entity;Entity;ntt;;Static;;Aggregate;;;;;Entity represents an object in the Object Model.
 Attribute;Package;pkg;Entity;;;;XOMDA/Core/Package;Composite;;TRUE;The package to which the entity belongs.
@@ -58,17 +58,16 @@ Attribute;Dependency;dpc;Enum;;;XOMDA/Core/Dependency;;;;TRUE;
 Attribute;Parent;prt_ntt;Entity;;;;XOMDA/Core/Entity;;;;The parent Entity from which the Entity inherits.
 Attribute;Description;dsc;Text;2048;;;;;;;A meaningful description of the Entity.
 ;;;;;;;;;;;
-Entity;Attribute;att;;Static;;Aggregate;;;;;
-Attribute;Entity;ntt;Entity;;;;XOMDA/Core/Entity;Composite;;TRUE;
-Attribute;Name;nm;String;255;;;;;;TRUE;
-Attribute;Identifier;idr;String;255;;;;;;TRUE;
-Attribute;Type;tp;Enum;;;XOMDA/Core/Attribute Type;;;;TRUE;
-Attribute;Size;sz;Integer;;;;;;;;
+Entity;Attribute;att;;Static;;Aggregate;;;;;An attribute of an entity.
+Attribute;Entity;ntt;Entity;;;;XOMDA/Core/Entity;Composite;;TRUE;The entity to which the attribute belongs.
+Attribute;Name;nm;String;255;;;;;;TRUE;The name of the attribute.
+Attribute;Identifier;idr;String;255;;;;;;TRUE;The unique identifier of the Attribute.
+Attribute;Type;tp;Enum;;;XOMDA/Core/Attribute Type;;;;TRUE;The type of Attribute.
+Attribute;Size;sz;Integer;;;;;;;;The size of the attribute, for String or Text types.
 Attribute;Scale;sc;Integer;;;;;;;;
-Attribute;Enum Ref;ref_enm;Entity;;;;XOMDA/Core/Enum;;;;
-Attribute;Entity Ref;ref_ntt;Entity;;;;XOMDA/Core/Entity;;;;
+Attribute;Enum Ref;ref_enm;Entity;;;;XOMDA/Core/Enum;;;;The reference to an enum value, if the type is Enum.
+Attribute;Entity Ref;ref_ntt;Entity;;;;XOMDA/Core/Entity;;;;The reference to an entity value, if the type is Entity.
 Attribute;Dependency;dpc;Enum;;;XOMDA/Core/Dependency;;;;;
-Attribute;Multi Valued;mul_val;Boolean;;;;;;;;
-Attribute;Required;rqd;Boolean;;;;;;;TRUE;
-Attribute;Internal;itl;Boolean;;;;;;;;
+Attribute;Multi Valued;mul_val;Boolean;;;;;;;;Specifies whether the attribute is multi-valued or not.
+Attribute;Required;rqd;Boolean;;;;;;;TRUE;Specifies whether the attribute is required or not.
 Attribute;Description;dsc;Text;2048;;;;;;;
