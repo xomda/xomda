@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.csv.CSVRecord;
+import org.xomda.core.java.JavaUtils;
 import org.xomda.core.util.Extensions;
 import org.xomda.parser.ParseContext;
 import org.xomda.parser.csv.type.TypeFactory;
@@ -34,9 +35,16 @@ public class CsvSchemaObject {
 					"A schema object should contain at least one field which specifies the name of the object.");
 		}
 
-		name = record.get(0);
-		clazz = getObjectClass(name, context.getConfig().getClasspath())
-				.orElseThrow(() -> new NoSuchElementException("Could not find appropriate class for " + name));
+		String recordName = record.get(0);
+		clazz = getObjectClass(recordName, context.getConfig().getClasspath())
+				.orElseThrow(() -> new NoSuchElementException("Could not find appropriate class for " + recordName));
+
+		// if the name is fully qualified, we should trim off the package name
+		if (JavaUtils.hasPackage(recordName)) {
+			name = JavaUtils.getClassName(recordName);
+		} else {
+			name = recordName;
+		}
 
 		final TypeFactory typeFactory = new TypeFactory().register(Extensions.getValueParserProviders(context));
 
@@ -58,9 +66,31 @@ public class CsvSchemaObject {
 		return clazz;
 	}
 
+	/**
+	 * Tries to find the matching class for the given name (and classpaths)
+	 */
 	private static Optional<Class<?>> getObjectClass(final String name, final String[] classpath) {
-		return Stream.of(classpath).map(cp -> cp + "." + name).map(ReflectionUtils::findClass)
-				.filter(Optional::isPresent).findFirst().orElseGet(Optional::empty).map(Function.identity());
+		return getClassNameCandidates(name, classpath)
+				.map(ReflectionUtils::findClass)
+				.filter(Optional::isPresent)
+				.findFirst()
+				.orElseGet(Optional::empty)
+				.map(Function.identity());
+	}
+
+	/**
+	 * Returns a stream of fully qualified class names,
+	 * which then can be looked for using the by the classloader.
+	 * <p>
+	 * If the name happens to be fully qualified already,
+	 * then a <code>Stream.of(name)</code> will be returned.
+	 */
+	private static Stream<String> getClassNameCandidates(final String name, final String[] classpath) {
+		return JavaUtils.hasPackage(name)
+				// if the name if fully qualified, just take that one
+				? Stream.of(name)
+				// otherwise try to scan the defined locations
+				: Stream.of(classpath).map(cp -> cp + "." + name);
 	}
 
 	public List<CsvSchemaObjectAttribute> getAttributes() {

@@ -22,76 +22,72 @@ public class GetterSetterTest {
 		assertEquals("String getName();\n\nvoid setName(final String name);\n\n", withContext(
 				GetterSetter.create("java.lang.String", "name")
 						.declareOnly()
-						.withModifiers(Modifier.PRIVATE)
-						::writeTo
+						.withModifiers(Modifier.PRIVATE)::writeTo
 		));
 
 		assertEquals(
 				"""
 						private String name;
-												
+
 						/**
 						 * Test
 						 */
 						private String getName() {
 						\treturn name;
 						}
-						    
+
 						""",
 				withContext(
 						GetterSetter.create("java.lang.String", "name")
 								.withModifiers(Modifier.PRIVATE)
 								.withJavaDoc("Test")
-								.getOnly()
-								::writeTo
+								.getOnly()::writeTo
 				)
 		);
 
 		assertEquals(
 				"""
 						private String name;
-												
+
 						/**
 						 * Test
 						 */
 						private void setName(final String name) {
 						\tthis.name = name;
 						}
-						    
+
 						""",
 				withContext(
 						GetterSetter.create("java.lang.String", "name")
 								.withModifiers(Modifier.PRIVATE)
 								.withJavaDoc("Test")
-								.setOnly()
-								::writeTo
+								.setOnly()::writeTo
 				)
 		);
 
 		assertEquals(
 				"""
 						private String name;
-												
+
 						/**
 						 * Test
 						 */
 						private String getName() {
 						\treturn name;
 						}
-						    
+
 						/**
 						 * Test
 						 */
 						private void setName(final String name) {
 						\tthis.name = name;
 						}
-						    
+
 						""",
 				withContext(
 						GetterSetter.create("java.lang.String", "name")
 								.withModifiers(Modifier.PRIVATE)
-								.withJavaDoc("Test")
-								::writeTo
+								.withJavaDoc("Test")::writeTo
 				)
 		);
 

@@ -20,7 +20,8 @@ public class GenerateEntityTemplate extends PackageTemplate {
 	@Override
 	public void generate(final Entity entity, final TemplateContext context) throws IOException {
 		try (
-				@SuppressWarnings("resource") final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaInterfaceName(entity))
+				@SuppressWarnings("resource")
+				final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaInterfaceName(entity))
 						.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "");
 		) {
 			ctx

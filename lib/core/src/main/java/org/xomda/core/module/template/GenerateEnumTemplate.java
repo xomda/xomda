@@ -13,7 +13,8 @@ public class GenerateEnumTemplate extends org.xomda.core.module.template.Package
 	@Override
 	public void generate(final org.xomda.model.Enum enm, final TemplateContext context) throws IOException {
 		try (
-				@SuppressWarnings("resource") final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaEnumName(enm))
+				@SuppressWarnings("resource")
+				final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaEnumName(enm))
 						.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "");
 		) {
 			ctx
