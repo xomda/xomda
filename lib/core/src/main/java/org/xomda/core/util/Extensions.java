@@ -2,12 +2,13 @@ package org.xomda.core.util;
 
 import java.util.stream.Stream;
 
-import org.xomda.core.csv.CsvObject;
-import org.xomda.core.csv.CsvSchema;
 import org.xomda.core.extension.CsvObjectProcessor;
 import org.xomda.core.extension.CsvSchemaProcessor;
 import org.xomda.core.extension.ValueParserProvider;
 import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.parser.ParseContext;
+import org.xomda.parser.csv.CsvObject;
+import org.xomda.parser.csv.CsvSchema;
 
 public class Extensions {
 

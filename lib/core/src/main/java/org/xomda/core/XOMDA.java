@@ -4,16 +4,22 @@ import java.io.IOException;
 import java.util.List;
 
 import org.xomda.core.config.Configuration;
-import org.xomda.core.csv.CsvService;
+import org.xomda.parser.csv.CsvService;
 
 public class XOMDA {
 
 	public static <T> List<T> read(final String filename, final Configuration config) throws IOException {
+
+		// read the CSV files
 		return new CsvService().read(filename, config);
 	}
 
-	public static void initExtensions(final Configuration config) {
+	// TODO: process the parsed objects (send to template service)
+	public static void process() {
 
+	}
+
+	public static void initExtensions(final Configuration config) {
 	}
 
 }

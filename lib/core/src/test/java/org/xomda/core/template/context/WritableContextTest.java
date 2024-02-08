@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
-import org.xomda.core.template.context.java.JavaTemplateContext;
+import org.xomda.core.java.JavaTemplateContext;
 import org.xomda.shared.exception.SneakyThrow;
+import org.xomda.template.context.WritableContext;
 
 public class WritableContextTest {
 

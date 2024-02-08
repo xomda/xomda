@@ -1,6 +1,6 @@
 package org.xomda.core.extension;
 
-import org.xomda.core.csv.CsvObject;
+import org.xomda.parser.csv.CsvObject;
 
 @FunctionalInterface
 public interface CsvObjectProcessor extends XOmdaExtension {

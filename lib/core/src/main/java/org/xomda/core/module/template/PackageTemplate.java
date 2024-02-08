@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-import org.xomda.core.template.Template;
-import org.xomda.core.template.TemplateContext;
 import org.xomda.model.Entity;
 import org.xomda.model.Value;
+import org.xomda.template.Template;
+import org.xomda.template.TemplateContext;
 
 public class PackageTemplate implements Template<org.xomda.model.Package> {
 

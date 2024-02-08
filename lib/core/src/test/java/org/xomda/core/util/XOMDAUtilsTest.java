@@ -10,8 +10,8 @@ import org.xomda.core.XOMDA;
 import org.xomda.core.extension.XOmdaExtension;
 import org.xomda.core.module.XOmdaTypeRefs;
 import org.xomda.core.module.template.GenerateEntityTemplate;
-import org.xomda.core.template.Template;
-import org.xomda.core.template.TemplateContext;
+import org.xomda.template.Template;
+import org.xomda.template.TemplateContext;
 
 public class XOMDAUtilsTest {
 

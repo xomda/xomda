@@ -7,12 +7,12 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import org.xomda.core.csv.CsvObject;
-import org.xomda.core.csv.CsvSchema;
-import org.xomda.core.csv.type.ValueParser;
 import org.xomda.core.extension.CsvSchemaProcessor;
 import org.xomda.core.extension.ValueParserProvider;
-import org.xomda.core.util.ParseContext;
+import org.xomda.parser.ParseContext;
+import org.xomda.parser.csv.CsvObject;
+import org.xomda.parser.csv.CsvSchema;
+import org.xomda.parser.csv.type.ValueParser;
 
 public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 

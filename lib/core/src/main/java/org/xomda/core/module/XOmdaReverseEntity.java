@@ -9,12 +9,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.xomda.core.csv.CsvObject;
-import org.xomda.core.csv.CsvSchema;
-import org.xomda.core.csv.CsvSchemaObject;
 import org.xomda.core.extension.CsvObjectProcessor;
 import org.xomda.core.extension.CsvSchemaProcessor;
-import org.xomda.core.util.ParseContext;
+import org.xomda.parser.ParseContext;
+import org.xomda.parser.csv.CsvObject;
+import org.xomda.parser.csv.CsvSchema;
+import org.xomda.parser.csv.CsvSchemaObject;
 import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.shared.util.StringUtils;
 

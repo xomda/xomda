@@ -11,7 +11,9 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
-import org.xomda.core.csv.type.parser.AbstractValueParserProvider;
+import org.xomda.parser.csv.type.TypeFactory;
+import org.xomda.parser.csv.type.ValueParser;
+import org.xomda.parser.csv.type.parser.AbstractValueParserProvider;
 
 class TypeFactoryTest {
 
@@ -181,8 +183,10 @@ class TypeFactoryTest {
 
 	@Test
 	void testCustomType() {
-		AbstractValueParserProvider custom = new AbstractValueParserProvider(Predicate.isEqual(CustomType.class),
-				CustomType::new) {
+		AbstractValueParserProvider custom = new AbstractValueParserProvider(
+				Predicate.isEqual(CustomType.class),
+				CustomType::new
+		) {
 		};
 		ValueParser parser = createFactory(custom).getSetter(CustomType.class);
 		assertEquals(CustomType.class, parser.apply("1").getClass());

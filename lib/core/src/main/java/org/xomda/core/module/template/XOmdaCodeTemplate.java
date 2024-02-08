@@ -2,8 +2,8 @@ package org.xomda.core.module.template;
 
 import java.io.IOException;
 
-import org.xomda.core.template.TemplateContext;
 import org.xomda.model.Entity;
+import org.xomda.template.TemplateContext;
 
 public class XOmdaCodeTemplate extends PackageTemplate {
 
