@@ -14,6 +14,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.xomda.core.config.Configuration;
 import org.xomda.core.extension.Loggable;
 import org.xomda.core.util.Extensions;
+import org.xomda.parser.InternalParseContext;
 import org.xomda.parser.ParseContext;
 
 /**
@@ -23,8 +24,10 @@ public class CsvService implements Loggable {
 
 	public static final String DEFAULT_CSV_DELIMITER = ";";
 
-	private static final CSVFormat DEFAULT_CSV_FORMAT = CSVFormat.DEFAULT.builder().setDelimiter(DEFAULT_CSV_DELIMITER)
-			.setSkipHeaderRecord(true).setIgnoreEmptyLines(false).build();
+	private static final CSVFormat DEFAULT_CSV_FORMAT = CSVFormat.DEFAULT.builder()
+			.setDelimiter(DEFAULT_CSV_DELIMITER)
+			.setSkipHeaderRecord(true)
+			.setIgnoreEmptyLines(false).build();
 
 	public <T> List<T> read(final String filename, final Configuration config) throws IOException {
 		final File absoluteFile = new File(filename).getAbsoluteFile();
@@ -32,7 +35,7 @@ public class CsvService implements Loggable {
 			throw new FileNotFoundException("Unable to open " + absoluteFile);
 		}
 
-		final ParseContext context = new ParseContext(config);
+		final ParseContext context = new InternalParseContext(config);
 
 		try (final Reader reader = new FileReader(absoluteFile)) {
 			return read(reader, context);
@@ -79,11 +82,12 @@ public class CsvService implements Loggable {
 			}
 
 			// run the deferred actions
-			context.runDeferred();
+			((InternalParseContext) context).runDeferred();
 
 			getLogger().info("Parsed {} objects.", count);
 
-			return context.getObjects();
+			// leave the original list intact and return a new unmodifiable one instead
+			return List.copyOf(context.getObjects());
 		}
 	}
 
