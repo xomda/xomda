@@ -52,13 +52,18 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 		final SourceSet omdaSourceSet = SourceSetUtils.createOmdaSourceSet(project);
 
 		// Inherit dependencies
-		Stream.of(omdaSourceSet.getCompileClasspathConfigurationName(),
-				omdaSourceSet.getRuntimeClasspathConfigurationName()).map(project.getConfigurations()::getAt)
+		Stream.of(
+						omdaSourceSet.getCompileClasspathConfigurationName(),
+						omdaSourceSet.getRuntimeClasspathConfigurationName()
+				)
+				.map(project.getConfigurations()::getAt)
 				.forEach(confImp -> confImp.extendsFrom(conf));
 
 		// plugin extension (config)
-		final XOmdaGradlePluginExtension extension = project.getExtensions().create(Constants.XOMDA_CONFIGURATION,
-				XOmdaGradlePluginExtension.class);
+		final XOmdaGradlePluginExtension extension = project.getExtensions().create(
+				Constants.XOMDA_CONFIGURATION,
+				XOmdaGradlePluginExtension.class
+		);
 		extension.getClasspath().convention(Set.of(Configuration.DEFAULT_CLASSPATH));
 		extension.getModels().convention(omdaSourceSet.getResources().getFiles().stream().map(File::toString).toList());
 
@@ -66,12 +71,11 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 		LogService.setLogProvider((final Class<?> clazz) -> project.getLogger());
 
 		// define tasks
-		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME,
-				new XOmdaProcessModelsTask(omdaSourceSet, extension));
+		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME, new XOmdaProcessModelsTask(omdaSourceSet, extension));
 		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES, JavaCompile.class, new XOmdaCompileTemplatesTask());
 
 		// add to build task
-		final Task buildTask = project.getTasks().getAt("build");
+		final Task buildTask = project.getTasks().getAt("compileJava");
 		buildTask.dependsOn(XOMDA_TASK_COMPILE_TEMPLATES, XOMDA_TASK_GENERATE_TEMPLATE_NAME);
 	}
 
