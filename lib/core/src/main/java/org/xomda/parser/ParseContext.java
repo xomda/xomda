@@ -17,6 +17,9 @@ public interface ParseContext {
 	 */
 	<T> List<T> getObjects();
 
+	/**
+	 * Adds a newly parsed object to the object cache
+	 */
 	void add(final CsvObject object);
 
 	void runDeferred(final Runnable action);
