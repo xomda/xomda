@@ -1,8 +1,8 @@
 package org.xomda.plugin.gradle;
 
-import static org.xomda.core.Constants.XOMDA_GROUP;
 import static org.xomda.plugin.gradle.Constants.XOMDA_CONFIGURATION;
-import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_COMPILE_TEMPLATES;
+import static org.xomda.plugin.gradle.Constants.XOMDA_GROUP;
+import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_COMPILE_TEMPLATES_NAME;
 import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_GENERATE_TEMPLATE_NAME;
 
 import java.io.File;
@@ -47,7 +47,7 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 								project.getDependencies().add(conf.getName(), dep);
 							});
 				});
-		
+
 		// Add "generated" sources to java
 		SourceSetUtils.addGeneratedSources(project);
 
@@ -74,12 +74,12 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 		LogService.setLogProvider((final Class<?> clazz) -> project.getLogger());
 
 		// define tasks
+		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES_NAME, JavaCompile.class, new XOmdaCompileTemplatesTask());
 		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME, new XOmdaProcessModelsTask(omdaSourceSet, extension));
-		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES, JavaCompile.class, new XOmdaCompileTemplatesTask());
 
 		// add to build task
 		final Task buildTask = project.getTasks().getAt("compileJava");
-		buildTask.dependsOn(XOMDA_TASK_COMPILE_TEMPLATES, XOMDA_TASK_GENERATE_TEMPLATE_NAME);
+		buildTask.dependsOn(XOMDA_TASK_COMPILE_TEMPLATES_NAME, XOMDA_TASK_GENERATE_TEMPLATE_NAME);
 	}
 
 }

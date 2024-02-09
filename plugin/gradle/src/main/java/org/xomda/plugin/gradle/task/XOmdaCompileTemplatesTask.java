@@ -1,7 +1,9 @@
 package org.xomda.plugin.gradle.task;
 
 import static org.xomda.plugin.gradle.Constants.XOMDA_CONFIGURATION;
-import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_COMPILE_TEMPLATES;
+import static org.xomda.plugin.gradle.Constants.XOMDA_GRADLE_GROUP;
+import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_COMPILE_TEMPLATES_DESC;
+import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_COMPILE_TEMPLATES_NAME;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +33,8 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 	public void execute(final JavaCompile task) {
 		final Project project = task.getProject();
 		final SourceSet omdaSourceSet = SourceSetUtils.getOmdaSourceSet(project);
-
+		task.setGroup(XOMDA_GRADLE_GROUP);
+		task.setDescription(XOMDA_TASK_COMPILE_TEMPLATES_DESC);
 		task.setClasspath(project.files(project.getConfigurations().getAt(XOMDA_CONFIGURATION)));
 		task.getDestinationDirectory().set(omdaSourceSet.getJava().getDestinationDirectory().get());
 		task.setSource(omdaSourceSet.getJava().getFiles());
@@ -52,7 +55,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 
 	private static Stream<Template<?>> getCompiledTemplates(Task someTask, final ClassLoader classLoader) {
 		final Project project = someTask.getProject();
-		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
+		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES_NAME, false).iterator().next();
 
 		final Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
 		final Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
@@ -79,7 +82,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 
 	public static <T> void executeTemplates(final Task someTask, final List<T> objects) {
 		final Project project = someTask.getProject();
-		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
+		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES_NAME, false).iterator().next();
 		final String cwd = project.getProjectDir().getPath();
 
 		withClassLoader(task, (final ClassLoader cl) -> {

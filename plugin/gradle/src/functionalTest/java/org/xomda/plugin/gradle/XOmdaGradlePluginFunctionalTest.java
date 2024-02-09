@@ -37,7 +37,7 @@ class XOmdaGradlePluginFunctionalTest {
 		final GradleRunner runner = GradleRunner.create();
 		runner.forwardOutput();
 		runner.withPluginClasspath();
-		runner.withArguments("xomda");
+		runner.withArguments("xomdaGenerate");
 		runner.withProjectDir(projectDir);
 		final BuildResult result = runner.build();
 

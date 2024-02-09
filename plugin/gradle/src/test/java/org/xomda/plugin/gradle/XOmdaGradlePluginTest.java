@@ -17,6 +17,6 @@ class XOmdaGradlePluginTest {
 		project.getPlugins().apply("org.xomda.plugin-gradle");
 
 		// Verify the result
-		assertNotNull(project.getTasks().findByName("generateXOmdaTemplates"));
+		assertNotNull(project.getTasks().findByName("xomdaGenerate"));
 	}
 }

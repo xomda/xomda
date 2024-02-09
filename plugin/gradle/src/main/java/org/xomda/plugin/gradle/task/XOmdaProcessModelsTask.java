@@ -1,6 +1,6 @@
 package org.xomda.plugin.gradle.task;
 
-import static org.xomda.core.Constants.XOMDA_GROUP;
+import static org.xomda.plugin.gradle.Constants.XOMDA_GRADLE_GROUP;
 import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_GENERATE_TEMPLATE_DESC;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 	@Override
 	public void execute(final Task task) {
 		final Project project = task.getProject();
-		task.setGroup(XOMDA_GROUP);
+		task.setGroup(XOMDA_GRADLE_GROUP);
 		task.setDescription(XOMDA_TASK_GENERATE_TEMPLATE_DESC);
 		task.doLast(t -> {
 			final List<String> files = getModelFiles(project);

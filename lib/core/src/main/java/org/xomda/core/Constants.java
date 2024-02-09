@@ -9,7 +9,7 @@ public interface Constants {
 	// but also "src/[OMDA_CONFIGURATION]/java"
 	String XOMDA = "xomda";
 	String XOMDA_GROUP = "org.xomda";
-
+	
 	// .xomda
 	String DOT_XOMDA = "." + XOMDA;
 
