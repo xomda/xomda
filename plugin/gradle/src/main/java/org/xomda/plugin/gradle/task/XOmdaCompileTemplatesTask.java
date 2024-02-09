@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import org.gradle.api.Action;
 import org.gradle.api.Project;
@@ -32,7 +33,6 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 		final SourceSet omdaSourceSet = SourceSetUtils.getOmdaSourceSet(project);
 
 		task.setClasspath(project.files(project.getConfigurations().getAt(XOMDA_CONFIGURATION)));
-
 		task.getDestinationDirectory().set(omdaSourceSet.getJava().getDestinationDirectory().get());
 		task.setSource(omdaSourceSet.getJava().getFiles());
 	}
@@ -50,34 +50,40 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 		template.generate(objects.get(0), templateContext);
 	}
 
+	private static Stream<Template<?>> getCompiledTemplates(Task someTask, final ClassLoader classLoader) {
+		final Project project = someTask.getProject();
+		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
+
+		final Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
+		final Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
+		return compiledClasses.stream()
+				.map(File::toPath)
+				.map((final Path p) -> taskDestinationPath.relativize(p).toString()
+						.replaceAll("\\/", ".")
+						.replaceAll("\\.class$", "")
+				)
+				.distinct()
+				.map(k -> ReflectionUtils.findClass(k, classLoader)
+						.filter(XOMDAUtils::isTemplateClass)
+						.map(c -> {
+							try {
+								return (Template<?>) c.getDeclaredConstructor().newInstance();
+							} catch (final Exception e) {
+								project.getLogger().error("", e);
+								return null;
+							}
+						}))
+				.filter(Optional::isPresent)
+				.map(Optional::get);
+	}
+
 	public static <T> void executeTemplates(final Task someTask, final List<T> objects) {
 		final Project project = someTask.getProject();
 		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES, false).iterator().next();
 		final String cwd = project.getProjectDir().getPath();
 
 		withClassLoader(task, (final ClassLoader cl) -> {
-
-			final Set<File> compiledClasses = task.getDestinationDirectory().get().getAsFileTree().getFiles();
-			final Path taskDestinationPath = task.getDestinationDirectory().get().getAsFile().toPath();
-			compiledClasses.stream()
-					.map(File::toPath)
-					.map((final Path p) -> taskDestinationPath.relativize(p).toString()
-							.replaceAll("\\/", ".")
-							.replaceAll("\\.class$", "")
-					)
-					.distinct()
-					.map(k -> ReflectionUtils.findClass(k, cl)
-							.filter(XOMDAUtils::isTemplateClass)
-							.map(c -> {
-								try {
-									return (Template<?>) c.getDeclaredConstructor().newInstance();
-								} catch (final Exception e) {
-									project.getLogger().error("", e);
-									return null;
-								}
-							}))
-					.filter(Optional::isPresent)
-					.map(Optional::get)
+			getCompiledTemplates(task, cl)
 					.forEach(SneakyThrow.sneaky(template -> {
 						@SuppressWarnings("unchecked")
 						final Template<T> t = (Template<T>) template;

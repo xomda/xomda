@@ -11,15 +11,15 @@ import org.xomda.shared.util.StringUtils;
 import org.xomda.template.TemplateContext;
 import org.xomda.template.TemplateUtils;
 
-public class GenerateEnumTemplate extends org.xomda.core.module.template.PackageTemplate {
+public class GenerateEnumTemplate extends PackageTemplate {
 
 	@Override
 	public void generate(final org.xomda.model.Enum enm, final TemplateContext context) throws IOException {
 		try (
 				@SuppressWarnings("resource")
 				final JavaClassWriter ctx = new JavaClassWriter(TemplateUtils.getJavaEnumName(enm))
-						.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "");
-		) {
+						.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "")
+        ) {
 			ctx
 					.addDocs(docs -> Optional
 							.ofNullable(enm.getDescription())
