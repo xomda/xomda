@@ -16,7 +16,7 @@ public interface Constants extends org.xomda.core.Constants {
 	String XOMDA_TASK_COMPILE_TEMPLATES_NAME = "xomdaCompile";
 	String XOMDA_TASK_COMPILE_TEMPLATES_DESC = "Compile the java XOMDA template code.";
 
-	String XOMDA_TASK_GENERATE_TEMPLATE_NAME = "xomdaGenerateomd";
+	String XOMDA_TASK_GENERATE_TEMPLATE_NAME = "xomdaGenerate";
 	String XOMDA_TASK_GENERATE_TEMPLATE_DESC = "Parse the models and execute the XOMDA templates.";
 
 }

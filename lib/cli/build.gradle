@@ -1,25 +1,29 @@
 plugins {
-	id 'xomda-java-library'
+    id 'xomda-java-library'
 }
 
 dependencies {
-	implementation libs.commons.cli
-	implementation libs.log4j
-	implementation libs.log4j.slf4j
+    implementation libs.commons.cli
+    implementation libs.log4j
+    implementation libs.log4j.slf4j
 
-	implementation project(":lib:api")
-	implementation project(":lib:core")
+    implementation project(":lib:api")
+    implementation project(":lib:core")
 }
 
-tasks.register('generateXOmdaModel', JavaExec) {
-	Project modelProject = project(":lib:model")
-	group = "XOMDA"
-	description = "Generate the XOMDA model"
-	classpath = sourceSets.main.runtimeClasspath
-	mainClass = "org.xomda.cli.Main"
-	workingDir = modelProject.projectDir
-	args = [
-			"--models", modelProject.file("src/xomda/config/Model.csv"),
-			"--out", modelProject.file("src/generated/java"),
-	]
+final String GENERATE_MODEL_NAME = "xomdaGenerateModel"
+
+tasks.register(GENERATE_MODEL_NAME, JavaExec) {
+    Project modelProject = project(":lib:model")
+    group = "XOMDA"
+    description = "Generate the XOMDA object model."
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "org.xomda.cli.Main"
+    workingDir = modelProject.projectDir
+    args = [
+            "--models", modelProject.file("src/xomda/config/Model.csv"),
+            "--out", modelProject.file("src/generated/java"),
+    ]
 }
+
+tasks.named("build") { finalizedBy(GENERATE_MODEL_NAME) }
