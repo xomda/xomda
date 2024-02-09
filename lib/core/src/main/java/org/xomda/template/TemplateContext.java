@@ -1,15 +1,18 @@
 package org.xomda.template;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TemplateContext {
 
 	private final String outDir;
+	private final List<?> parseResult;
 	private final Map<Object, Object> userData = new ConcurrentHashMap<>();
 
-	public TemplateContext(final String outDir) {
+	public TemplateContext(final String outDir, List<?> parseResult) {
 		this.outDir = outDir;
+		this.parseResult = parseResult;
 	}
 
 	public Map<Object, Object> userData() {
@@ -20,8 +23,8 @@ public class TemplateContext {
 		return outDir;
 	}
 
-	public static TemplateContext defaultContext() {
-		return new TemplateContext(System.getProperty("user.dir"));
+	public List<?> getParseResults() {
+		return parseResult;
 	}
 
 }

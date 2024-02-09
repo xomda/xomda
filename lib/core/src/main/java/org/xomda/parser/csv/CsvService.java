@@ -12,79 +12,93 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.xomda.core.config.Configuration;
-import org.xomda.core.extension.Loggable;
 import org.xomda.core.util.Extensions;
-import org.xomda.parser.ParseContext;
+import org.xomda.parser.InternalParseContext;
+import org.xomda.parser.Parser;
 
 /**
  * The CSV Service reads CSV files into parsed objects (proxies).
  */
-public class CsvService implements Loggable {
+public class CsvService implements Parser {
 
 	public static final String DEFAULT_CSV_DELIMITER = ";";
 
-	private static final CSVFormat DEFAULT_CSV_FORMAT = CSVFormat.DEFAULT.builder().setDelimiter(DEFAULT_CSV_DELIMITER)
-			.setSkipHeaderRecord(true).setIgnoreEmptyLines(false).build();
+	private static final CSVFormat DEFAULT_CSV_FORMAT = CSVFormat.DEFAULT.builder()
+			.setDelimiter(DEFAULT_CSV_DELIMITER)
+			.setSkipHeaderRecord(true)
+			.setIgnoreEmptyLines(false).build();
 
-	public <T> List<T> read(final String filename, final Configuration config) throws IOException {
-		final File absoluteFile = new File(filename).getAbsoluteFile();
-		if (!absoluteFile.exists()) {
-			throw new FileNotFoundException("Unable to open " + absoluteFile);
-		}
+	@Override
+	public <T> List<T> parse(final String[] filenames, final Configuration config) throws IOException {
 
-		final ParseContext context = new ParseContext(config);
+		final InternalParseContext context = new InternalParseContext(config);
+		CsvSchema globalSchema = null;
+		int count = 0;
 
-		try (final Reader reader = new FileReader(absoluteFile)) {
-			return read(reader, context);
-		}
-	}
+		// parse each file
+		for (final String filename : filenames) {
 
-	public <T> List<T> read(final Reader reader, final ParseContext context) throws IOException {
-
-		try (final CSVParser parser = DEFAULT_CSV_FORMAT.parse(reader)) {
-			// init the extensions
-			Extensions.init(context);
-
-			final Iterator<CSVRecord> it = parser.iterator();
-
-			// init the schema and let the extensions know
-			final CsvSchema schema = CsvSchema.load(it, context);
-			Extensions.process(context, schema);
-
-			// read the schema
-			CSVRecord record;
-			int count = 0;
-
-			// read the rest
-			getLogger().trace("Reading model definitions");
-			while (it.hasNext() && null != (record = it.next())) {
-				if (isEmpty(record)) {
-					continue;
-				}
-				final CsvObject obj = schema.readObject(record, context);
-				if (null == obj) {
-					getLogger().error("Couldn't parse {}", record.toList());
-					continue;
-				} else {
-					count++;
-				}
-
-				getLogger().debug("Read {}", (Object[]) obj.getClasses());
-
-				// feed it to the reverse master
-				Extensions.process(context, obj);
-
-				// add to processed cache
-				context.add(obj);
+			final File absoluteFile = new File(filename).getAbsoluteFile();
+			if (!absoluteFile.exists()) {
+				throw new FileNotFoundException("Unable to open " + absoluteFile);
 			}
 
-			// run the deferred actions
-			context.runDeferred();
+			try (
+					final Reader reader = new FileReader(absoluteFile);
+					final CSVParser parser = DEFAULT_CSV_FORMAT.parse(reader)
+			) {
+				// init the extensions
+				Extensions.init(context);
 
-			getLogger().info("Parsed {} objects.", count);
+				final Iterator<CSVRecord> it = parser.iterator();
 
-			return context.getObjects();
+				// init the schema and let the extensions know
+				final CsvSchema schema = CsvSchema.load(it, context);
+
+				// check if the schemas are compatible
+				if (null != globalSchema && !schema.isCompatible(globalSchema)) {
+					throw new RuntimeException("Incompatible schema's detected.");
+				}
+				globalSchema = schema;
+
+				// feed the schema to the extensions
+				Extensions.process(context, schema);
+
+				// read the schema
+				CSVRecord record;
+
+				// read the rest
+				getLogger().trace("Reading model definitions");
+				while (it.hasNext() && null != (record = it.next())) {
+					if (isEmpty(record)) {
+						continue;
+					}
+					final CsvObject obj = schema.readObject(record, context);
+					if (null == obj) {
+						getLogger().error("Couldn't parse {}", record.toList());
+						continue;
+					} else {
+						count++;
+					}
+
+					getLogger().debug("Read {}", (Object[]) obj.getClasses());
+
+					// feed it to the extensions
+					Extensions.process(context, obj);
+
+					// add to processed cache
+					context.add(obj);
+				}
+			}
 		}
+
+		// run the deferred actions
+		context.runDeferred();
+
+		getLogger().info("Parsed {} objects.", count);
+
+		// return the unmodifiable list of parsed objects
+		return context.getObjects();
 	}
 
 	static boolean isEmpty(final CSVRecord record) {

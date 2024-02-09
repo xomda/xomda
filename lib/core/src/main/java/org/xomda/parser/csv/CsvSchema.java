@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
@@ -63,7 +64,7 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 			final ValueParser valueParser = attr.getSetter();
 			final Runnable setVal = valueParser instanceof ValueParser.Optional
 					? () -> ((Optional<?>) valueParser.apply(value.isEmpty() ? null : value))
-							.ifPresent(v -> obj.setValue(attr.getName(), v))
+					.ifPresent(v -> obj.setValue(attr.getName(), v))
 					: () -> obj.setValue(attr.getName(), valueParser.apply(value.isEmpty() ? null : value));
 			if (valueParser instanceof ValueParser.Primitive) {
 				setVal.run();
@@ -111,6 +112,15 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 
 		// return the schema
 		return schema;
+	}
+
+	public boolean isCompatible(CsvSchema other) {
+		return objects.stream().allMatch(csvSchemaObject ->
+				other.objects.stream()
+						.anyMatch(ocso -> Objects.equals(csvSchemaObject.getClass(), ocso.getObjectClass()))
+						|| other.objects.stream()
+						.noneMatch(ocso -> Objects.equals(csvSchemaObject.getName(), ocso.getName()))
+		);
 	}
 
 }

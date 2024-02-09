@@ -9,6 +9,7 @@ import java.util.stream.StreamSupport;
 
 import org.xomda.core.extension.CsvSchemaProcessor;
 import org.xomda.core.extension.ValueParserProvider;
+import org.xomda.parser.InternalParseContext;
 import org.xomda.parser.ParseContext;
 import org.xomda.parser.csv.CsvObject;
 import org.xomda.parser.csv.CsvSchema;
@@ -51,7 +52,7 @@ public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 
 	private <T> T resolve(final Class<?> type, final String ref) {
 		final String[] parts = ref.split("\\/");
-		final List<CsvObject> objects = context.getCache();
+		final List<CsvObject> objects = ((InternalParseContext) context).getCache();
 
 		@SuppressWarnings("unchecked")
 		final T result = (T) findByKey(objects.stream(), parts).findFirst().map(CsvObject::getProxy).orElse(null);
@@ -91,7 +92,10 @@ public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 	}
 
 	private Optional<CsvObject> getCsvObject(final Object proxy) {
-		return context.getCache().stream().filter(o -> o.getProxy() == proxy).findFirst();
+		return ((InternalParseContext) context).getCache()
+				.stream()
+				.filter(o -> o.getProxy() == proxy)
+				.findFirst();
 	}
 
 }

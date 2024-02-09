@@ -23,7 +23,7 @@ public final class ConfigurationBuilder implements Loggable {
 
 	static private class Impl implements Configuration {
 
-		private String outDir;
+		private String outDir = System.getProperty("user.dir");
 		private String[] classpath;
 		private Level logLevel;
 		private String[] models;

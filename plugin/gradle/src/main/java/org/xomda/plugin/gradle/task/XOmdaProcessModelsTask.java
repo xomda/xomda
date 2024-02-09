@@ -48,7 +48,7 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 
 			LogService.setLogProvider((final Class<?> clazz) -> project.getLogger());
 
-			return new CsvService().read(file, config);
+			return new CsvService().parse(file, config);
 		} catch (final IOException e) {
 			project.getLogger().error("", e);
 		}

@@ -46,7 +46,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 	}
 
 	private static <T> void executeTemplate(final Template<T> template, final String cwd, final List<T> objects) throws IOException {
-		final TemplateContext templateContext = new TemplateContext(cwd);
+		final TemplateContext templateContext = new TemplateContext(cwd, objects);
 		template.generate(objects.get(0), templateContext);
 	}
 
