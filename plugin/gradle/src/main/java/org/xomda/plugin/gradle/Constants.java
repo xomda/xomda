@@ -8,6 +8,9 @@ public interface Constants extends org.xomda.core.Constants {
 	// but also "src/[XOMDA_CONFIGURATION]/java"
 	String XOMDA_CONFIGURATION = XOMDA;
 
+	String XOMDA_SOURCESET_NAME = XOMDA;
+	String XOMDA_GENERATED_SOURCE_NAME = "generated";
+
 	// gradle tasks
 	String XOMDA_TASK_GENERATE_TEMPLATE_NAME = "generateXOmdaTemplates";
 	String XOMDA_TASK_COMPILE_TEMPLATES = "compileXOmdaTemplates";

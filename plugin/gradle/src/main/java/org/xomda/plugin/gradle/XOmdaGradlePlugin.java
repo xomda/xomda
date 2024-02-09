@@ -47,6 +47,9 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 								project.getDependencies().add(conf.getName(), dep);
 							});
 				});
+		
+		// Add "generated" sources to java
+		SourceSetUtils.addGeneratedSources(project);
 
 		// Create a custom source set
 		final SourceSet omdaSourceSet = SourceSetUtils.createOmdaSourceSet(project);
