@@ -28,6 +28,9 @@ public class CsvService implements Parser {
 			.setSkipHeaderRecord(true)
 			.setIgnoreEmptyLines(false).build();
 
+	/**
+	 * Parse a CSV file into objects
+	 */
 	@Override
 	public <T> List<T> parse(final String[] filenames, final Configuration config) throws IOException {
 
@@ -37,10 +40,11 @@ public class CsvService implements Parser {
 
 		// parse each file
 		for (final String filename : filenames) {
+			count = 0;
 
 			final File absoluteFile = new File(filename).getAbsoluteFile();
 			if (!absoluteFile.exists()) {
-				throw new FileNotFoundException("Unable to open " + absoluteFile);
+				throw new FileNotFoundException("Unable to read CSV document: " + absoluteFile);
 			}
 
 			try (
@@ -57,7 +61,7 @@ public class CsvService implements Parser {
 
 				// check if the schemas are compatible
 				if (null != globalSchema && !schema.isCompatible(globalSchema)) {
-					throw new RuntimeException("Incompatible schema's detected.");
+					throw new IllegalArgumentException("Incompatible CSV Schema's detected. (" + filename + ")");
 				}
 				globalSchema = schema;
 
@@ -90,17 +94,27 @@ public class CsvService implements Parser {
 					context.add(obj);
 				}
 			}
+
+			getLogger().info("Parsed {} objects.", count);
 		}
 
 		// run the deferred actions
 		context.runDeferred();
 
-		getLogger().info("Parsed {} objects.", count);
+		List<T> result = context.getObjects();
+
+		// if we did multiple models, report the total amount of object parsed
+		if (count < result.size()) {
+			getLogger().info("Parsed {} objects in total.", result.size());
+		}
 
 		// return the unmodifiable list of parsed objects
-		return context.getObjects();
+		return result;
 	}
 
+	/**
+	 * Returns whether a record is empty, or whether each of its cells is blank.
+	 */
 	static boolean isEmpty(final CSVRecord record) {
 		return null == record || record.size() == 0 || record.stream().allMatch(String::isBlank)
 				|| record.get(0).startsWith("#");
