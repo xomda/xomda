@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.cli.ParseException;
+import org.xomda.core.XOMDA;
 import org.xomda.core.config.Configuration;
-import org.xomda.parser.csv.CsvService;
 import org.xomda.shared.logging.LogService;
 import org.xomda.template.TemplateContext;
 
@@ -28,7 +28,7 @@ public class Main {
 		LogService.setDefaultLogLevel(config.getLogLevel());
 
 		// parse each model
-		List<?> result = new CsvService().read(config.getModels(), config);
+		List<?> result = XOMDA.parse(config.getModels(), config);
 
 		if (result.isEmpty()) {
 			return;

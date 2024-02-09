@@ -12,14 +12,14 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.xomda.core.config.Configuration;
-import org.xomda.core.extension.Loggable;
 import org.xomda.core.util.Extensions;
 import org.xomda.parser.InternalParseContext;
+import org.xomda.parser.Parser;
 
 /**
  * The CSV Service reads CSV files into parsed objects (proxies).
  */
-public class CsvService implements Loggable {
+public class CsvService implements Parser {
 
 	public static final String DEFAULT_CSV_DELIMITER = ";";
 
@@ -28,17 +28,15 @@ public class CsvService implements Loggable {
 			.setSkipHeaderRecord(true)
 			.setIgnoreEmptyLines(false).build();
 
-	public <T> List<T> read(final String filename, final Configuration config) throws IOException {
-		return read(new String[] { filename }, config);
-	}
-
-	public <T> List<T> read(final String[] filenames, final Configuration config) throws IOException {
+	@Override
+	public <T> List<T> parse(final String[] filenames, final Configuration config) throws IOException {
 
 		final InternalParseContext context = new InternalParseContext(config);
 		CsvSchema globalSchema = null;
+		int count = 0;
 
 		// parse each file
-		for (String filename : filenames) {
+		for (final String filename : filenames) {
 
 			final File absoluteFile = new File(filename).getAbsoluteFile();
 			if (!absoluteFile.exists()) {
@@ -68,7 +66,6 @@ public class CsvService implements Loggable {
 
 				// read the schema
 				CSVRecord record;
-				int count = 0;
 
 				// read the rest
 				getLogger().trace("Reading model definitions");
@@ -92,13 +89,13 @@ public class CsvService implements Loggable {
 					// add to processed cache
 					context.add(obj);
 				}
-
-				// run the deferred actions
-				context.runDeferred();
-
-				getLogger().info("Parsed {} objects.", count);
 			}
 		}
+
+		// run the deferred actions
+		context.runDeferred();
+
+		getLogger().info("Parsed {} objects.", count);
 
 		// return the unmodifiable list of parsed objects
 		return context.getObjects();
