@@ -22,7 +22,6 @@ tasks.register(GENERATE_MODEL_NAME, JavaExec) {
     workingDir = modelProject.projectDir
     args = [
             "--models", modelProject.file("src/xomda/config/Model.csv"),
-            "--out", modelProject.file("src/generated/java"),
     ]
 }
 

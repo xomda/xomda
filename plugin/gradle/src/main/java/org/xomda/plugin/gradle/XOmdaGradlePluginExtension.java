@@ -10,13 +10,13 @@ public interface XOmdaGradlePluginExtension {
 	SetProperty<String> getClasspath();
 
 	/**
-	 * Specifies the model CSV's to load, instead of just automagically picking them
+	 * Specifies the model definitions to load, instead of just automagically picking them
 	 * up
 	 */
 	SetProperty<String> getModels();
 
 	/**
-	 * Specifies the CSV extensions
+	 * Specifies the XOMDA extensions
 	 */
 	SetProperty<Object> getPlugins();
 

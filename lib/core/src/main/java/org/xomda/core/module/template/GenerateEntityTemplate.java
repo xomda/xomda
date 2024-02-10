@@ -11,7 +11,8 @@ public class GenerateEntityTemplate extends PackageTemplate {
 
 	@Override
 	public void generate(final Entity entity, final TemplateContext context) throws IOException {
-		PojoWriter.createInterface(context.outDir(), TemplateUtils.getJavaInterfaceName(entity))
+		PojoWriter.createInterface(getJavaSrcDir(context), TemplateUtils.getJavaInterfaceName(entity))
+				.withBanner("// THIS FILE WAS AUTOMATICALLY GENERATED", "")
 				.write(entity);
 	}
 

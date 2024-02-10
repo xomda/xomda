@@ -134,8 +134,9 @@ public class CommandLineOptions extends Options {
 				line.hasOption(OPT_MODELS)
 						? stream(line.getOptionValues(OPT_MODELS)).toList()
 						: Stream.of(
-								Constants.XOMDA_DOT_PATH,
-								Constants.XOMDA_CSV_CONFIG_PATH)
+										Constants.XOMDA_DOT_PATH,
+										Constants.XOMDA_CSV_CONFIG_PATH
+								)
 								.filter(Files::exists)
 								.flatMap(SneakyThrow.sneaky(Files::list))
 								.filter(Predicate.not(Files::isDirectory))

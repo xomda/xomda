@@ -28,7 +28,7 @@ public class JavaClassWriter extends JavaTemplateContext {
 	}
 
 	public JavaClassWriter withHeaders(final String... headers) {
-		return withHeaders(null == headers ? Collections.emptyList() : Arrays.asList(headers));
+		return withHeaders(null == headers || (headers.length == 1 && headers[0] == null) ? Collections.emptyList() : Arrays.asList(headers));
 	}
 
 	public JavaClassWriter withHeaders(final List<String> headers) {
@@ -58,7 +58,7 @@ public class JavaClassWriter extends JavaTemplateContext {
 
 		try (
 				final OutputStream os = Files.newOutputStream(outFile);
-				final PrintStream ps = new PrintStream(os, false, StandardCharsets.UTF_8);
+				final PrintStream ps = new PrintStream(os, false, StandardCharsets.UTF_8)
 		) {
 			if (null != headers) {
 				headers.forEach(ps::println);

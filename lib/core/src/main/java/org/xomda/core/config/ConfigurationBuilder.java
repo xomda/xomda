@@ -21,69 +21,6 @@ import org.xomda.shared.util.ReflectionUtils;
  */
 public final class ConfigurationBuilder implements Loggable {
 
-	static private class Impl implements Configuration {
-
-		private String outDir = System.getProperty("user.dir");
-		private String[] classpath;
-		private Level logLevel;
-		private String[] models;
-
-		private Class<? extends XOmdaExtension>[] extensions;
-
-		@Override
-		public String[] getClasspath() {
-			return classpath;
-		}
-
-		@Override
-		public void setClasspath(final String[] classpath) {
-			this.classpath = classpath;
-		}
-
-		@Override
-		public Level getLogLevel() {
-			return logLevel;
-		}
-
-		@Override
-		public void setLogLevel(final Level logLevel) {
-			if (null != logLevel) {
-				this.logLevel = logLevel;
-			}
-		}
-
-		@Override
-		public Class<? extends XOmdaExtension>[] getExtensions() {
-			return extensions;
-		}
-
-		@Override
-		public void setExtensions(final Class<? extends XOmdaExtension>[] extensions) {
-			this.extensions = extensions;
-		}
-
-		@Override
-		public String[] getModels() {
-			return models;
-		}
-
-		@Override
-		public void setModels(final String[] models) {
-			this.models = models;
-		}
-
-		@Override
-		public String getOutDir() {
-			return outDir;
-		}
-
-		@Override
-		public void setOutDir(final String outDir) {
-			this.outDir = outDir;
-		}
-
-	}
-
 	private static final Collection<Object> DEFAULT_OMDA_EXTENSIONS = Set.of(
 			// TODO -> OmdaModule
 			XOmdaReverseEntity.class, XOmdaTypeRefs.class, XOmdaCodeTemplate.class);
@@ -91,7 +28,7 @@ public final class ConfigurationBuilder implements Loggable {
 	private Collection<Class<? extends XOmdaExtension>> extensions = ConcurrentHashMap.newKeySet();
 	private Set<String> classpath = ConcurrentHashMap.newKeySet();
 	private final Set<String> models = ConcurrentHashMap.newKeySet();
-	private String outDir;
+	private String outDir = System.getProperty("user.dir");
 	private Level logLevel;
 
 	public ConfigurationBuilder create() {
@@ -240,6 +177,69 @@ public final class ConfigurationBuilder implements Loggable {
 			}
 		}
 		return null;
+	}
+
+	static private class Impl implements Configuration {
+
+		private String outDir;
+		private String[] classpath;
+		private Level logLevel;
+		private String[] models;
+
+		private Class<? extends XOmdaExtension>[] extensions;
+
+		@Override
+		public String[] getClasspath() {
+			return classpath;
+		}
+
+		@Override
+		public void setClasspath(final String[] classpath) {
+			this.classpath = classpath;
+		}
+
+		@Override
+		public Level getLogLevel() {
+			return logLevel;
+		}
+
+		@Override
+		public void setLogLevel(final Level logLevel) {
+			if (null != logLevel) {
+				this.logLevel = logLevel;
+			}
+		}
+
+		@Override
+		public Class<? extends XOmdaExtension>[] getExtensions() {
+			return extensions;
+		}
+
+		@Override
+		public void setExtensions(final Class<? extends XOmdaExtension>[] extensions) {
+			this.extensions = extensions;
+		}
+
+		@Override
+		public String[] getModels() {
+			return models;
+		}
+
+		@Override
+		public void setModels(final String[] models) {
+			this.models = models;
+		}
+
+		@Override
+		public String getOutDir() {
+			return outDir;
+		}
+
+		@Override
+		public void setOutDir(final String outDir) {
+			this.outDir = outDir;
+		}
+
 	}
 
 }

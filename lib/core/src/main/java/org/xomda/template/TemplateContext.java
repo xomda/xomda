@@ -6,12 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TemplateContext {
 
-	private final String outDir;
+	private final String workingDir;
 	private final List<?> parseResult;
 	private final Map<Object, Object> userData = new ConcurrentHashMap<>();
 
-	public TemplateContext(final String outDir, List<?> parseResult) {
-		this.outDir = outDir;
+	public TemplateContext(final String workingDir, List<?> parseResult) {
+		this.workingDir = workingDir;
 		this.parseResult = parseResult;
 	}
 
@@ -19,8 +19,8 @@ public class TemplateContext {
 		return userData;
 	}
 
-	public String outDir() {
-		return outDir;
+	public String cwd() {
+		return workingDir;
 	}
 
 	public List<?> getParseResults() {

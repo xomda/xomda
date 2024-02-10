@@ -30,6 +30,7 @@ public class PojoWriter {
 	private String outputPath;
 	private String className;
 	private boolean declareOnly;
+	private List<String> banner;
 
 	private final List<String> extendList = new ArrayList<>();
 	private final List<String> implementList = new ArrayList<>();
@@ -49,6 +50,11 @@ public class PojoWriter {
 
 	public PojoWriter withImplements(String... ext) {
 		implementList.addAll(Arrays.asList(ext));
+		return this;
+	}
+
+	public PojoWriter withBanner(String... ext) {
+		this.banner = List.of(ext);
 		return this;
 	}
 
@@ -76,12 +82,12 @@ public class PojoWriter {
 		return sb.toString();
 	}
 
-	public void write(Entity entity) throws IOException {
+	public void write(final Entity entity) throws IOException {
 		boolean declareOnly = getDeclareOnly();
 		String type = declareOnly ? "interface" : "class";
 		try (final JavaClassWriter ctx = new JavaClassWriter(getClassName())) {
 			ctx
-					.withHeaders("// THIS FILE WAS AUTOMATICALLY GENERATED", "")
+					.withHeaders(banner)
 					.addDocs(docs -> Optional
 							.ofNullable(entity.getDescription())
 							.filter(not(String::isBlank))

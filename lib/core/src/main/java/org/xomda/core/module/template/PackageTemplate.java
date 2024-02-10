@@ -3,6 +3,7 @@ package org.xomda.core.module.template;
 import static org.xomda.shared.exception.SneakyThrow.sneaky;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -35,4 +36,9 @@ public class PackageTemplate implements Template<org.xomda.model.Package> {
 	static <D, C extends Collection<D>> void processList(final Supplier<C> supplier, final BiConsumer<D, TemplateContext> consumer, final TemplateContext context) {
 		Optional.ofNullable(supplier.get()).ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
 	}
+
+	public String getJavaSrcDir(TemplateContext context) {
+		return Paths.get(context.cwd(), "src", "generated", "java").toString();
+	}
+
 }
