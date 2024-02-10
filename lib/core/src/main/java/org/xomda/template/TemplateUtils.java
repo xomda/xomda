@@ -19,10 +19,16 @@ public class TemplateUtils {
 		return prefix + (prefix.isBlank() ? "" : ".") + pkg.getPackageName();
 	}
 
-	public static String getJavaInterfaceName(final org.xomda.model.Entity entity) {
+	public static String getJavaInterfaceName(final Entity entity) {
 		final String pkg = getJavaPackage(entity.getPackage());
 		final String interfaceName = StringUtils.toPascalCase(entity.getName());
 		return pkg + "." + interfaceName;
+	}
+
+	public static String getJavaBeanName(final Entity entity) {
+		final String pkg = getJavaPackage(entity.getPackage());
+		final String interfaceName = StringUtils.toPascalCase(entity.getName());
+		return pkg + "." + interfaceName + "Bean";
 	}
 
 	public static String getJavaEnumName(final org.xomda.model.Enum enm) {
@@ -80,10 +86,8 @@ public class TemplateUtils {
 			case Integer -> "java.lang.Long";
 			case Decimal -> "java.lang.Double";
 			case Date, Time, Timestamp -> "java.util.Date";
-
 			case Entity -> getType(attribute.getEntityRef());
 			case Enum -> getJavaType(attribute.getEnumRef());
-
 			default -> "java.lang.Object";
 		};
 	}

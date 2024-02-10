@@ -5,7 +5,6 @@ import java.io.Flushable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.xomda.template.context.DefaultContext;
 
@@ -35,30 +34,6 @@ public class DeferredContext extends DelegateContext<DeferredContext> implements
 		return this;
 	}
 
-	@Override
-	public DeferredContext tab() {
-		actions.add(super::tab);
-		return this;
-	}
-
-	@Override
-	public DeferredContext tab(final int count) {
-		actions.add(() -> super.tab(count));
-		return this;
-	}
-
-	@Override
-	public DeferredContext tab(final Consumer<JavaTemplateContext> consumer) {
-		actions.add(() -> super.tab(consumer));
-		return this;
-	}
-
-	@Override
-	public DeferredContext tab(final int count, final Consumer<JavaTemplateContext> consumer) {
-		actions.add(() -> super.tab(count, consumer));
-		return this;
-	}
-
 	public boolean isEmpty() {
 		return actions.isEmpty();
 	}
@@ -69,7 +44,10 @@ public class DeferredContext extends DelegateContext<DeferredContext> implements
 
 	@Override
 	public void flush() {
-		synchronized (this) {
+		if (actions.isEmpty()) {
+			return;
+		}
+		synchronized (actions) {
 			final Iterator<Runnable> it = actions.iterator();
 			while (it.hasNext()) {
 				it.next().run();
