@@ -8,12 +8,12 @@ import org.xomda.core.extension.XOmdaModule;
 import org.xomda.core.module.template.GenerateEntityTemplate;
 import org.xomda.core.module.template.GenerateEnumTemplate;
 
-public class XOmdaCodeGeneration extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
+public class XOMDACodeGeneration extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
 
 	@Serial
 	private static final long serialVersionUID = -1573308256999316945L;
 
-	public XOmdaCodeGeneration() {
+	public XOMDACodeGeneration() {
 		super(2);
 		// code generation
 		add(GenerateEnumTemplate.class);

@@ -18,7 +18,7 @@ import org.xomda.parser.csv.CsvSchemaObject;
 import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.shared.util.StringUtils;
 
-public class XOmdaReverseEntity implements CsvObjectProcessor, CsvSchemaProcessor {
+public class XOMDAReverseEntity implements CsvObjectProcessor, CsvSchemaProcessor {
 
 	private final Map<CsvSchemaObject, List<CsvSchemaObject>> rev = new ConcurrentHashMap<>();
 	private final Deque<CsvObject> stack = new ArrayDeque<>();

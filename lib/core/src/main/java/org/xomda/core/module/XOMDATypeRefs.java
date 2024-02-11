@@ -15,7 +15,7 @@ import org.xomda.parser.csv.CsvObject;
 import org.xomda.parser.csv.CsvSchema;
 import org.xomda.parser.csv.type.ValueParser;
 
-public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
+public class XOMDATypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 
 	private ParseContext context = null;
 	private CsvSchema schema = null;

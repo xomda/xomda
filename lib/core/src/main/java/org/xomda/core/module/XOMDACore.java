@@ -6,17 +6,17 @@ import java.util.HashSet;
 import org.xomda.core.extension.XOmdaExtension;
 import org.xomda.core.extension.XOmdaModule;
 
-public class XOmdaCore extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
+public class XOMDACore extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
 
 	@Serial
 	private static final long serialVersionUID = -287571412358053236L;
 
-	public XOmdaCore() {
+	public XOMDACore() {
 		super(2);
 		// parse reverse entities
-		add(XOmdaReverseEntity.class);
+		add(XOMDAReverseEntity.class);
 		// parse object references (ie "XOMDA/Core/Entity")
-		add(XOmdaTypeRefs.class);
+		add(XOMDATypeRefs.class);
 	}
 
 }

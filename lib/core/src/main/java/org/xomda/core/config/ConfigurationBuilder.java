@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.Level;
 import org.xomda.core.extension.Loggable;
 import org.xomda.core.extension.XOmdaExtension;
-import org.xomda.core.module.XOmdaReverseEntity;
-import org.xomda.core.module.XOmdaTypeRefs;
-import org.xomda.core.module.template.XOmdaCodeTemplate;
+import org.xomda.core.module.XOMDAReverseEntity;
+import org.xomda.core.module.XOMDATypeRefs;
+import org.xomda.core.module.template.XOMDACodeTemplate;
 import org.xomda.shared.util.ReflectionUtils;
 
 /**
@@ -23,7 +23,7 @@ public final class ConfigurationBuilder implements Loggable {
 
 	private static final Collection<Object> DEFAULT_OMDA_EXTENSIONS = Set.of(
 			// TODO -> OmdaModule
-			XOmdaReverseEntity.class, XOmdaTypeRefs.class, XOmdaCodeTemplate.class);
+			XOMDAReverseEntity.class, XOMDATypeRefs.class, XOMDACodeTemplate.class);
 
 	private Collection<Class<? extends XOmdaExtension>> extensions = ConcurrentHashMap.newKeySet();
 	private Set<String> classpath = ConcurrentHashMap.newKeySet();
