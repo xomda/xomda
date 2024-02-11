@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.xomda.model.Entity;
 import org.xomda.template.TemplateContext;
 
-public class XOmdaCodeTemplate extends PackageTemplate {
+public class XOmdaCodeTemplate extends BasePackageTemplate {
 
 	private final GenerateEnumTemplate enumTemplate = new GenerateEnumTemplate();
 	private final GenerateEntityTemplate entityTemplate = new GenerateEntityTemplate();

@@ -7,7 +7,7 @@ import org.xomda.model.Entity;
 import org.xomda.template.TemplateContext;
 import org.xomda.template.TemplateUtils;
 
-public class GenerateEntityTemplate extends PackageTemplate {
+public class GenerateEntityTemplate extends BasePackageTemplate {
 
 	@Override
 	public void generate(final Entity entity, final TemplateContext context) throws IOException {

@@ -30,6 +30,19 @@ public class SneakyThrow {
 		return c;
 	}
 
+	// use the methods below when ambiguous
+	public static <T, E extends Throwable> Consumer<T> sneakyConsumer(final ThrowingConsumer<T, E> c) {
+		return c;
+	}
+
+	public static <T, R, E extends Throwable> Function<T, R> sneakyFunction(final ThrowingFunction<T, R, E> fn) {
+		return fn;
+	}
+
+	public static <T, E extends Throwable> Supplier<T> sneakySupplier(final ThrowingSupplier<T, E> c) {
+		return c;
+	}
+
 	/**
 	 * Throws a given {@link Exception Checked Exception} as a generic.
 	 * This way the given {@link Exception Checked Exception} will be treated as
