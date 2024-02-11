@@ -17,8 +17,8 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.xomda.core.config.Configuration;
-import org.xomda.plugin.gradle.task.XOmdaCompileTask;
-import org.xomda.plugin.gradle.task.XOmdaGenerateTask;
+import org.xomda.plugin.gradle.task.XOMDACompileTask;
+import org.xomda.plugin.gradle.task.XOMDAGenerateTask;
 import org.xomda.plugin.gradle.util.SourceSetUtils;
 import org.xomda.shared.logging.LogService;
 
@@ -26,7 +26,7 @@ import org.xomda.shared.logging.LogService;
  * The XOMDA Gradle plugin
  */
 @SuppressWarnings("unused")
-public class XOmdaGradlePlugin implements Plugin<Project> {
+public class XOMDAGradlePlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(final Project project) {
@@ -62,9 +62,9 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 				.forEach(confImp -> confImp.extendsFrom(conf));
 
 		// plugin extension (config)
-		final XOmdaGradlePluginExtension extension = project.getExtensions().create(
+		final XOMDAGradlePluginExtension extension = project.getExtensions().create(
 				Constants.XOMDA_CONFIGURATION,
-				XOmdaGradlePluginExtension.class
+				XOMDAGradlePluginExtension.class
 		);
 		extension.getClasspath().convention(Set.of(Configuration.DEFAULT_CLASSPATH));
 		extension.getModels().convention(omdaSourceSet.getResources().getFiles().stream().map(File::toString).toList());
@@ -73,8 +73,8 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 		LogService.setLogProvider((final Class<?> clazz) -> project.getLogger());
 
 		// define tasks
-		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES_NAME, JavaCompile.class, new XOmdaCompileTask());
-		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME, new XOmdaGenerateTask(omdaSourceSet, extension));
+		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES_NAME, JavaCompile.class, new XOMDACompileTask());
+		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME, new XOMDAGenerateTask(omdaSourceSet, extension));
 
 		// add to build task
 		final Task buildTask = project.getTasks().getAt("compileJava");

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 /**
  * A simple unit test for the 'xomda' plugin.
  */
-class XOmdaGradlePluginTest {
+class XOMDAGradlePluginTest {
 	@Test
 	void pluginRegistersATask() {
 		// Create a test project and apply the plugin

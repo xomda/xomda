@@ -17,15 +17,15 @@ import org.gradle.api.tasks.SourceSet;
 import org.xomda.core.XOMDA;
 import org.xomda.core.config.Configuration;
 import org.xomda.parser.csv.CsvService;
-import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
+import org.xomda.plugin.gradle.XOMDAGradlePluginExtension;
 import org.xomda.plugin.gradle.util.DependencyScanner;
 import org.xomda.shared.logging.LogService;
 
-public class XOmdaGenerateTask implements Action<Task> {
+public class XOMDAGenerateTask implements Action<Task> {
 
-	private final XOmdaGradlePluginExtension extension;
+	private final XOMDAGradlePluginExtension extension;
 
-	public XOmdaGenerateTask(final SourceSet sources, final XOmdaGradlePluginExtension extension) {
+	public XOMDAGenerateTask(final SourceSet sources, final XOMDAGradlePluginExtension extension) {
 		this.extension = extension;
 	}
 
@@ -91,9 +91,9 @@ public class XOmdaGenerateTask implements Action<Task> {
 
 			try {
 				List<?> objects = XOMDA.parse(models, config);
-				
+
 				// try to execute each template with the given objects
-				XOmdaCompileTask.executeTemplates(task, objects);
+				XOMDACompileTask.executeTemplates(task, objects);
 				// job done.
 			} catch (final IOException e) {
 				project.getLogger().error("", e);

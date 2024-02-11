@@ -1,14 +1,14 @@
 package org.xomda.plugin.gradle.util;
 
 import org.gradle.api.provider.SetProperty;
-import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
+import org.xomda.plugin.gradle.XOMDAGradlePluginExtension;
 import org.xomda.shared.util.ReflectionUtils;
 
-public class XOmdaGradlePluginUndecoratedExtension implements XOmdaGradlePluginExtension {
+public class XOMDAGradlePluginUndecoratedExtension implements XOMDAGradlePluginExtension {
 
 	private final Object object;
 
-	public XOmdaGradlePluginUndecoratedExtension(Object object) {
+	public XOMDAGradlePluginUndecoratedExtension(Object object) {
 		this.object = object;
 	}
 

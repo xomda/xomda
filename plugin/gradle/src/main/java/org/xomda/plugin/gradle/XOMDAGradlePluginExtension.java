@@ -2,7 +2,7 @@ package org.xomda.plugin.gradle;
 
 import org.gradle.api.provider.SetProperty;
 
-public interface XOmdaGradlePluginExtension {
+public interface XOMDAGradlePluginExtension {
 
 	/**
 	 * Specifies the classpath where to look for interfaces and enums
