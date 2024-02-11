@@ -13,7 +13,6 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.artifacts.ProjectDependency;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
@@ -21,6 +20,7 @@ import org.xomda.core.config.Configuration;
 import org.xomda.plugin.gradle.task.XOmdaCompileTemplatesTask;
 import org.xomda.plugin.gradle.task.XOmdaProcessModelsTask;
 import org.xomda.plugin.gradle.util.SourceSetUtils;
+import org.xomda.plugin.gradle.util.XOMDADepencyScanner;
 import org.xomda.shared.logging.LogService;
 
 /**
@@ -31,24 +31,10 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(final Project project) {
-
-		project.getLogger().warn("DEP SCAN");
-
-		project.getConfigurations().forEach(configuration -> {
-			configuration.getAllDependencies().forEach(dependency -> {
-				// Check if the dependency is a project dependency
-				if (dependency instanceof ProjectDependency projectDependency) {
-					Project dependentProject = projectDependency.getDependencyProject();
-
-					// Now you can use 'dependentProject' as needed
-					String dependentProjectPath = dependentProject.getPath();
-					project.getLogger().warn("Current project depends on: " + dependentProjectPath);
-				}
-			});
-		});
-
 		// build config
 		project.getPluginManager().apply(JavaPlugin.class);
+
+		XOMDADepencyScanner.scanDeps(project);
 
 		// Define the "xomda" configuration
 		final org.gradle.api.artifacts.Configuration conf = project.getConfigurations().register(XOMDA_CONFIGURATION).get();

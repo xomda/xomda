@@ -1,5 +1,7 @@
 package org.xomda.shared.util;
 
+import static org.xomda.shared.exception.SneakyThrow.sneaky;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -7,6 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.xomda.shared.logging.LogService;
@@ -63,8 +66,8 @@ public class ReflectionUtils {
 	public static boolean extendsFrom(final Class clz, final Class generic) {
 		return clz == generic
 				|| Stream.concat(Stream.of(clz.getGenericSuperclass()), Stream.of(clz.getGenericInterfaces()))
-						.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
-						.anyMatch(extendsFrom(generic));
+				.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
+				.anyMatch(extendsFrom(generic));
 	}
 
 	public static Optional<Method> getGetter(final Class<?> clazz, final String name) {
@@ -74,6 +77,17 @@ public class ReflectionUtils {
 		final String trimmed = name.trim();
 		final String getterName = "get" + Character.toUpperCase(trimmed.charAt(0)) + trimmed.substring(1);
 		return Arrays.stream(clazz.getDeclaredMethods()).filter(isGetter(getterName)).findFirst();
+	}
+
+	public static <T> Supplier<T> getGetterSupplier(final Object obj, final String name) {
+		return getGetter(obj.getClass(), name)
+				.map((Method m) -> {
+							@SuppressWarnings("unchecked")
+							Supplier<T> supplier = (Supplier<T>) sneaky(() -> m.invoke(obj));
+							return supplier;
+						}
+				)
+				.orElseGet(() -> () -> null);
 	}
 
 	private static Predicate<Method> isGetter(final String methodName) {
