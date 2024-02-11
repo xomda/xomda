@@ -27,7 +27,7 @@ import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.template.Template;
 import org.xomda.template.TemplateContext;
 
-public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
+public class XOmdaCompileTask implements Action<JavaCompile> {
 
 	@Override
 	public void execute(final JavaCompile task) {
@@ -41,7 +41,7 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 	}
 
 	public static void withClassLoader(final JavaCompile compileTask, final Consumer<ClassLoader> classLoaderConsumer) {
-		try (XOMDATemplateClassLoader classLoader = new XOMDATemplateClassLoader(compileTask, XOmdaCompileTemplatesTask.class.getClassLoader())) {
+		try (XOMDATemplateClassLoader classLoader = new XOMDATemplateClassLoader(compileTask, XOmdaCompileTask.class.getClassLoader())) {
 			classLoaderConsumer.accept(classLoader);
 		} catch (final IOException e) {
 			compileTask.getLogger().error("", e);
@@ -84,7 +84,6 @@ public class XOmdaCompileTemplatesTask implements Action<JavaCompile> {
 		final Project project = someTask.getProject();
 		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES_NAME, false).iterator().next();
 		final String cwd = project.getProjectDir().getPath();
-
 		withClassLoader(task, (final ClassLoader cl) -> {
 			getCompiledTemplates(task, cl)
 					.forEach(SneakyThrow.sneaky(template -> {

@@ -6,17 +6,18 @@ import org.gradle.api.Project;
 import org.gradle.api.artifacts.ProjectDependency;
 import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
 
-public class XOMDADepencyScanner {
+public class DependencyScanner {
 
+	/**
+	 * Returns a stream of projects upon the given project depends (deep)
+	 */
 	static Stream<Project> scanDepsPost(Project project) {
 		return project.getConfigurations().stream().flatMap(configuration -> configuration.getDependencies()
 				.stream()
 				.filter(ProjectDependency.class::isInstance)
 				.flatMap(dependency -> {
 					ProjectDependency projectDependency = (ProjectDependency) dependency;
-					// Check if the dependency is a project dependency
 					Project dependentProject = projectDependency.getDependencyProject();
-
 					return Stream.concat(
 							Stream.of(dependentProject),
 							scanDepsPost(dependentProject)
@@ -24,21 +25,23 @@ public class XOMDADepencyScanner {
 				}));
 	}
 
-	public static void scanDeps(Project project) {
-		project.getLogger().lifecycle("DEP SCAN");
-		project.afterEvaluate(proj -> {
-
-			scanDepsPost(proj).forEach(p -> {
-				// Now you can use 'dependentProject' as needed
-				String dependentProjectPath = p.getPath();
-				project.getLogger().lifecycle("Current project (" + project.getName() + ") depends on: " + dependentProjectPath);
-
-				Object ext = p.getExtensions().findByName("xomda");
-				if (null != ext) {
+	/**
+	 * Returns a stream of distinct models definitions (CSV) upon which this project relies
+	 */
+	public static Stream<String> dependentModels(Project project) {
+		return scanDepsPost(project)
+				.flatMap(p -> {
+					Object ext = p.getExtensions().findByName("xomda");
+					if (null == ext) {
+						return Stream.empty();
+					}
 					XOmdaGradlePluginExtension xomdaExt = new XOmdaGradlePluginUndecoratedExtension(ext);
-					project.getLogger().lifecycle(" > models: " + xomdaExt.getModels().get());
-				}
-			});
-		});
+					return xomdaExt.getModels().get().stream();
+				})
+				.distinct();
+	}
+
+	public static String[] getDependentModels(Project project) {
+		return dependentModels(project).toArray(String[]::new);
 	}
 }
