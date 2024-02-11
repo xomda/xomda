@@ -22,7 +22,6 @@ import org.gradle.api.tasks.compile.JavaCompile;
 import org.xomda.core.util.XOMDAUtils;
 import org.xomda.plugin.gradle.util.SourceSetUtils;
 import org.xomda.plugin.gradle.util.XOMDATemplateClassLoader;
-import org.xomda.shared.exception.SneakyThrow;
 import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.template.Template;
 import org.xomda.template.TemplateContext;
@@ -85,12 +84,15 @@ public class XOmdaCompileTask implements Action<JavaCompile> {
 		final JavaCompile task = (JavaCompile) project.getTasksByName(XOMDA_TASK_COMPILE_TEMPLATES_NAME, false).iterator().next();
 		final String cwd = project.getProjectDir().getPath();
 		withClassLoader(task, (final ClassLoader cl) -> {
-			getCompiledTemplates(task, cl)
-					.forEach(SneakyThrow.sneaky(template -> {
-						@SuppressWarnings("unchecked")
-						final Template<T> t = (Template<T>) template;
-						executeTemplate(t, cwd, objects);
-					}));
+			getCompiledTemplates(task, cl).forEach(template -> {
+				try {
+					@SuppressWarnings("unchecked")
+					final Template<T> t = (Template<T>) template;
+					executeTemplate(t, cwd, objects);
+				} catch (Exception e) {
+					project.getLogger().error("Failed to process template", e);
+				}
+			});
 		});
 
 	}

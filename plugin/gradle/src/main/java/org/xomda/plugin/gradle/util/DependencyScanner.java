@@ -9,23 +9,6 @@ import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
 public class DependencyScanner {
 
 	/**
-	 * Returns a stream of projects upon the given project depends (deep)
-	 */
-	static Stream<Project> scanDepsPost(Project project) {
-		return project.getConfigurations().stream().flatMap(configuration -> configuration.getDependencies()
-				.stream()
-				.filter(ProjectDependency.class::isInstance)
-				.flatMap(dependency -> {
-					ProjectDependency projectDependency = (ProjectDependency) dependency;
-					Project dependentProject = projectDependency.getDependencyProject();
-					return Stream.concat(
-							Stream.of(dependentProject),
-							scanDepsPost(dependentProject)
-					);
-				}));
-	}
-
-	/**
 	 * Returns a stream of distinct models definitions (CSV) upon which this project relies
 	 */
 	public static Stream<String> dependentModels(Project project) {
@@ -41,7 +24,27 @@ public class DependencyScanner {
 				.distinct();
 	}
 
+	/**
+	 * Returns an array of distinct models definitions (CSV) upon which this project relies
+	 */
 	public static String[] getDependentModels(Project project) {
 		return dependentModels(project).toArray(String[]::new);
+	}
+
+	/**
+	 * Returns a stream of projects upon the given project depends (deep)
+	 */
+	private static Stream<Project> scanDepsPost(Project project) {
+		return project.getConfigurations().stream().flatMap(configuration -> configuration.getDependencies()
+				.stream()
+				.filter(ProjectDependency.class::isInstance)
+				.flatMap(dependency -> {
+					ProjectDependency projectDependency = (ProjectDependency) dependency;
+					Project dependentProject = projectDependency.getDependencyProject();
+					return Stream.concat(
+							Stream.of(dependentProject),
+							scanDepsPost(dependentProject)
+					);
+				}));
 	}
 }

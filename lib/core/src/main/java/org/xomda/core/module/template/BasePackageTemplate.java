@@ -34,7 +34,8 @@ public class BasePackageTemplate implements Template<org.xomda.model.Package> {
 	}
 
 	static <D, C extends Collection<D>> void processList(final Supplier<C> supplier, final BiConsumer<D, TemplateContext> consumer, final TemplateContext context) {
-		Optional.ofNullable(supplier.get()).ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
+		Optional.ofNullable(supplier.get())
+				.ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
 	}
 
 	public String getJavaSrcDir(TemplateContext context) {

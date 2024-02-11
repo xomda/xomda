@@ -91,6 +91,7 @@ public class XOmdaGenerateTask implements Action<Task> {
 
 			try {
 				List<?> objects = XOMDA.parse(models, config);
+				
 				// try to execute each template with the given objects
 				XOmdaCompileTask.executeTemplates(task, objects);
 				// job done.

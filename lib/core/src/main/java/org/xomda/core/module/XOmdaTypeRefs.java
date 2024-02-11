@@ -55,12 +55,15 @@ public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 		final List<CsvObject> objects = ((InternalParseContext) context).getCache();
 
 		@SuppressWarnings("unchecked")
-		final T result = (T) findByKey(objects.stream(), parts).findFirst().map(CsvObject::getProxy).orElse(null);
-
+		final T result = (T) findByKey(objects.stream(), parts).findFirst().map(CsvObject::getProxy)
+				.orElseGet(() -> {
+					getLogger().error("Can't find ref [" + ref + "]");
+					return null;
+				});
 		return result;
 	}
 
-	private boolean isOmdaObject(final Object o) {
+	private boolean isXOMDAObject(final Object o) {
 		final Class<?> oClass = o.getClass();
 		return schema.stream().anyMatch(f -> Stream.concat(Stream.of(oClass), Stream.of(oClass.getInterfaces()))
 				.anyMatch(i -> i.isAssignableFrom(f.getObjectClass())));
@@ -71,21 +74,26 @@ public class XOmdaTypeRefs implements ValueParserProvider, CsvSchemaProcessor {
 			return Stream.empty();
 		}
 		final String key = parts[0];
-		return rootObjects.filter(csvObject -> key.equals(csvObject.getValue("name"))).flatMap(csvObject -> {
-			final String[] subKeys = Arrays.copyOfRange(parts, 1, parts.length);
-			return subKeys.length > 0 ? findByKey(getChildren(csvObject), subKeys) : Stream.of(csvObject);
-		});
+		return rootObjects
+				.filter(csvObject -> key.equals(csvObject.getValue("name")))
+				.flatMap(csvObject -> {
+					final String[] subKeys = Arrays.copyOfRange(parts, 1, parts.length);
+					return subKeys.length > 0 ? findByKey(getChildren(csvObject), subKeys) : Stream.of(csvObject);
+				});
 	}
 
 	private Stream<CsvObject> getChildren(final CsvObject csvObject) {
-		return csvObject.getState().values().stream().filter(Iterable.class::isInstance).map(Iterable.class::cast)
+		return csvObject.getState().values().stream()
+				.filter(Iterable.class::isInstance).map(Iterable.class::cast)
 				.filter(it -> it.iterator().hasNext()).flatMap(it -> {
 					final Object next = it.iterator().next();
-					if (!isOmdaObject(next)) {
+					if (!isXOMDAObject(next)) {
 						return Stream.empty();
 					}
 					@SuppressWarnings("unchecked")
-					final Stream<CsvObject> children = StreamSupport.stream(it.spliterator(), true).map(this::getCsvObject)
+					final Stream<CsvObject> children = StreamSupport
+							.stream(it.spliterator(), true)
+							.map(this::getCsvObject)
 							.filter(o -> ((Optional<?>) o).isPresent()).map(o -> ((Optional<?>) o).get());
 					return children;
 				});

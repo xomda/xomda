@@ -34,17 +34,27 @@ public class CsvService implements Parser {
 	 */
 	@Override
 	public <T> List<T> parse(final String[] filenames, final Configuration config) throws IOException {
+		// First create the parse context
 		final InternalParseContext context = new InternalParseContext(config);
-		List<T> dependencies = parse(config.getDependentModels(), context);
-		parse(filenames, context);
 
+		// Parse all dependencies (so they end up in the cache)
+		List<T> dependencies = process(config.getDependentModels(), context);
+
+		// parse the files themselves
+		process(filenames, context);
+
+		// run all the deferred actions (de-referencing)
+		context.runDeferred();
+
+		// subtract the dependency models from the result
+		// (to avoid confusing the end-user)
 		List<T> result = new ArrayList<>(context.getObjects());
 		result.removeAll(dependencies);
 
 		return result;
 	}
 
-	private <T> List<T> parse(final String[] filenames, final InternalParseContext context) throws IOException {
+	private <T> List<T> process(final String[] filenames, final InternalParseContext context) throws IOException {
 		CsvSchema globalSchema = null;
 		int count = 0;
 
@@ -114,18 +124,7 @@ public class CsvService implements Parser {
 			getLogger().info("Parsed {} objects.", count);
 		}
 
-		// run the deferred actions
-		context.runDeferred();
-
-		List<T> result = context.getObjects();
-
-		// if we did multiple models, report the total amount of object parsed
-		if (count < result.size()) {
-			getLogger().info("Parsed {} objects in total.", result.size());
-		}
-
-		// return the unmodifiable list of parsed objects
-		return result;
+		return context.getObjects();
 	}
 
 	/**
