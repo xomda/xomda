@@ -12,10 +12,10 @@ import org.xomda.core.module.XOMDAReverseEntity;
 import org.xomda.core.module.XOMDATypeRefs;
 import org.xomda.core.module.template.XOMDACodeTemplate;
 
-public class CliOptionsTest {
+public class CommandLineOptionsTest {
 
 	@Test
-	public void test() throws ParseException {
+	public void testCommandLineOptions() throws ParseException {
 		final String extensions = Stream.of(XOMDAReverseEntity.class, XOMDATypeRefs.class, XOMDACodeTemplate.class)
 				.map(Class::getName).collect(Collectors.joining(","));
 
