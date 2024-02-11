@@ -63,7 +63,11 @@ public class CsvService implements Parser {
 				if (null != globalSchema && !schema.isCompatible(globalSchema)) {
 					throw new IllegalArgumentException("Incompatible CSV Schema's detected. (" + filename + ")");
 				}
-				globalSchema = schema;
+
+				// assign the global schema
+				if (globalSchema == null) {
+					globalSchema = schema;
+				}
 
 				// feed the schema to the extensions
 				Extensions.process(context, schema);
