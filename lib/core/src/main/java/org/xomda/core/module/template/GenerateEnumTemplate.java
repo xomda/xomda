@@ -6,7 +6,7 @@ import org.xomda.core.module.util.EnumWriter;
 import org.xomda.template.TemplateContext;
 import org.xomda.template.TemplateUtils;
 
-public class GenerateEnumTemplate extends PackageTemplate {
+public class GenerateEnumTemplate extends BasePackageTemplate {
 
 	@Override
 	public void generate(final org.xomda.model.Enum enm, final TemplateContext context) throws IOException {

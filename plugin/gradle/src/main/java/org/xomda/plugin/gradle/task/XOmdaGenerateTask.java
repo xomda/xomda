@@ -14,16 +14,18 @@ import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
 import org.gradle.api.tasks.SourceSet;
+import org.xomda.core.XOMDA;
 import org.xomda.core.config.Configuration;
 import org.xomda.parser.csv.CsvService;
 import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
+import org.xomda.plugin.gradle.util.DependencyScanner;
 import org.xomda.shared.logging.LogService;
 
-public class XOmdaProcessModelsTask implements Action<Task> {
+public class XOmdaGenerateTask implements Action<Task> {
 
 	private final XOmdaGradlePluginExtension extension;
 
-	public XOmdaProcessModelsTask(final SourceSet sources, final XOmdaGradlePluginExtension extension) {
+	public XOmdaGenerateTask(final SourceSet sources, final XOmdaGradlePluginExtension extension) {
 		this.extension = extension;
 	}
 
@@ -55,9 +57,12 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 		return Collections.emptyList();
 	}
 
-	private List<String> getModelFiles(final Project project) {
+	private String[] getModelFiles(final Project project) {
 		return extension.getModels().get().stream().map(File::new)
-				.map(f -> f.isAbsolute() ? f.getAbsoluteFile() : project.file(f)).map(File::toString).toList();
+				.map(f -> f.isAbsolute() ? f.getAbsoluteFile() : project.file(f))
+				.map(File::toString)
+				.distinct()
+				.toArray(String[]::new);
 	}
 
 	@Override
@@ -66,12 +71,33 @@ public class XOmdaProcessModelsTask implements Action<Task> {
 		task.setGroup(XOMDA_GRADLE_GROUP);
 		task.setDescription(XOMDA_TASK_GENERATE_TEMPLATE_DESC);
 		task.doLast(t -> {
-			final List<String> files = getModelFiles(project);
-			project.getLogger().info("Found model definitions: {}", files);
-			files.forEach((final String file) -> {
-				final List<Object> objects = readModel(project, file);
-				XOmdaCompileTemplatesTask.executeTemplates(task, objects);
-			});
+			// assign the logger to XOMDA
+			LogService.setLogProvider((final Class<?> clazz) -> project.getLogger());
+			// a list of dependent models (from other projects), which first need to be processed
+			final String[] dependentModels = DependencyScanner.getDependentModels(project);
+			final String[] models = getModelFiles(project);
+			project.getLogger().info("Found model definitions: {}", List.of(models));
+			if (dependentModels.length > 0) {
+				project.getLogger().info(" > with dependencies: {}", List.of(dependentModels));
+			}
+
+			// initialize the configuration
+			final Configuration config = Configuration.builder()
+					.withDependentModels(dependentModels)
+					.withClassPath(extension.getClasspath().get())
+					.withLogLevel(getLogLevel(project))
+					.withExtensions(extension.getPlugins().get())
+					.build();
+
+			try {
+				List<?> objects = XOMDA.parse(models, config);
+				// try to execute each template with the given objects
+				XOmdaCompileTask.executeTemplates(task, objects);
+				// job done.
+			} catch (final IOException e) {
+				project.getLogger().error("", e);
+			}
+
 		});
 	}
 

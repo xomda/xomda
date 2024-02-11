@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,13 +34,24 @@ public class CsvService implements Parser {
 	 */
 	@Override
 	public <T> List<T> parse(final String[] filenames, final Configuration config) throws IOException {
-
 		final InternalParseContext context = new InternalParseContext(config);
+		List<T> dependencies = parse(config.getDependentModels(), context);
+		parse(filenames, context);
+
+		List<T> result = new ArrayList<>(context.getObjects());
+		result.removeAll(dependencies);
+
+		return result;
+	}
+
+	private <T> List<T> parse(final String[] filenames, final InternalParseContext context) throws IOException {
 		CsvSchema globalSchema = null;
 		int count = 0;
 
 		// parse each file
 		for (final String filename : filenames) {
+			getLogger().info("Parsing {}", filename);
+
 			count = 0;
 
 			final File absoluteFile = new File(filename).getAbsoluteFile();
@@ -63,7 +75,11 @@ public class CsvService implements Parser {
 				if (null != globalSchema && !schema.isCompatible(globalSchema)) {
 					throw new IllegalArgumentException("Incompatible CSV Schema's detected. (" + filename + ")");
 				}
-				globalSchema = schema;
+
+				// assign the global schema
+				if (globalSchema == null) {
+					globalSchema = schema;
+				}
 
 				// feed the schema to the extensions
 				Extensions.process(context, schema);
@@ -72,7 +88,7 @@ public class CsvService implements Parser {
 				CSVRecord record;
 
 				// read the rest
-				getLogger().trace("Reading model definitions");
+				getLogger().info("Reading model definitions");
 				while (it.hasNext() && null != (record = it.next())) {
 					if (isEmpty(record)) {
 						continue;

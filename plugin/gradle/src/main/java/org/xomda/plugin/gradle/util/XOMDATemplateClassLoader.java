@@ -10,12 +10,12 @@ import java.util.stream.Stream;
 
 import org.gradle.api.Project;
 import org.gradle.api.tasks.compile.JavaCompile;
-import org.xomda.plugin.gradle.task.XOmdaCompileTemplatesTask;
+import org.xomda.plugin.gradle.task.XOmdaCompileTask;
 
 public class XOMDATemplateClassLoader extends URLClassLoader {
 
 	public XOMDATemplateClassLoader(final JavaCompile task) {
-		this(task, XOmdaCompileTemplatesTask.class.getClassLoader());
+		this(task, XOmdaCompileTask.class.getClassLoader());
 	}
 
 	public XOMDATemplateClassLoader(final JavaCompile task, final ClassLoader parent) {

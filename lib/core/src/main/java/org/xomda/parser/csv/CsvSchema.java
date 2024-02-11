@@ -115,11 +115,11 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 	}
 
 	public boolean isCompatible(CsvSchema other) {
-		return objects.stream().allMatch(csvSchemaObject ->
-				other.objects.stream()
-						.anyMatch(ocso -> Objects.equals(csvSchemaObject.getClass(), ocso.getObjectClass()))
-						|| other.objects.stream()
-						.noneMatch(ocso -> Objects.equals(csvSchemaObject.getName(), ocso.getName()))
+		return objects.stream().allMatch(csvSchemaObject -> other.objects.stream().anyMatch(
+						ocso -> Objects.equals(csvSchemaObject.getObjectClass(), ocso.getObjectClass())
+				) || other.objects.stream().noneMatch(
+						ocso -> Objects.equals(csvSchemaObject.getName(), ocso.getName())
+				)
 		);
 	}
 

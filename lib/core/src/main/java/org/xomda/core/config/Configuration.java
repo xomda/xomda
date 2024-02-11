@@ -55,9 +55,9 @@ public interface Configuration extends Loggable {
 
 	void setModels(String[] models);
 
-	default Stream<String> models() {
-		return toStream(getModels());
-	}
+	String[] getDependentModels();
+
+	void setDependentModels(final String[] models);
 
 	String getOutDir();
 

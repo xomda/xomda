@@ -3,6 +3,7 @@ package org.xomda.shared.exception;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Turns regular java functions into throwing ones. They will still throw the original exception,
@@ -22,6 +23,23 @@ public class SneakyThrow {
 	}
 
 	public static <T, U, E extends Throwable> BiConsumer<T, U> sneaky(final ThrowingBiConsumer<T, U, E> c) {
+		return c;
+	}
+
+	public static <T, E extends Throwable> Supplier<T> sneaky(final ThrowingSupplier<T, E> c) {
+		return c;
+	}
+
+	// use the methods below when ambiguous
+	public static <T, E extends Throwable> Consumer<T> sneakyConsumer(final ThrowingConsumer<T, E> c) {
+		return c;
+	}
+
+	public static <T, R, E extends Throwable> Function<T, R> sneakyFunction(final ThrowingFunction<T, R, E> fn) {
+		return fn;
+	}
+
+	public static <T, E extends Throwable> Supplier<T> sneakySupplier(final ThrowingSupplier<T, E> c) {
 		return c;
 	}
 
@@ -82,6 +100,23 @@ public class SneakyThrow {
 		}
 
 		void acceptThrowing(T t, U u) throws E;
+
+	}
+
+	@FunctionalInterface
+	public interface ThrowingSupplier<T, E extends Throwable> extends Supplier<T> {
+
+		@Override
+		default T get() {
+			try {
+				return getThrowing();
+			} catch (final Throwable e) {
+				throwSneaky(e);
+				return null;
+			}
+		}
+
+		T getThrowing() throws E;
 
 	}
 

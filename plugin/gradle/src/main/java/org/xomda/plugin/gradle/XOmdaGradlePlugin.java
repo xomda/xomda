@@ -17,8 +17,8 @@ import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.xomda.core.config.Configuration;
-import org.xomda.plugin.gradle.task.XOmdaCompileTemplatesTask;
-import org.xomda.plugin.gradle.task.XOmdaProcessModelsTask;
+import org.xomda.plugin.gradle.task.XOmdaCompileTask;
+import org.xomda.plugin.gradle.task.XOmdaGenerateTask;
 import org.xomda.plugin.gradle.util.SourceSetUtils;
 import org.xomda.shared.logging.LogService;
 
@@ -30,7 +30,6 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(final Project project) {
-
 		// build config
 		project.getPluginManager().apply(JavaPlugin.class);
 
@@ -74,8 +73,8 @@ public class XOmdaGradlePlugin implements Plugin<Project> {
 		LogService.setLogProvider((final Class<?> clazz) -> project.getLogger());
 
 		// define tasks
-		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES_NAME, JavaCompile.class, new XOmdaCompileTemplatesTask());
-		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME, new XOmdaProcessModelsTask(omdaSourceSet, extension));
+		project.getTasks().register(XOMDA_TASK_COMPILE_TEMPLATES_NAME, JavaCompile.class, new XOmdaCompileTask());
+		project.getTasks().register(XOMDA_TASK_GENERATE_TEMPLATE_NAME, new XOmdaGenerateTask(omdaSourceSet, extension));
 
 		// add to build task
 		final Task buildTask = project.getTasks().getAt("compileJava");

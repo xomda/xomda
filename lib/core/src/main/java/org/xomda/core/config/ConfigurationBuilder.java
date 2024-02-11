@@ -27,7 +27,8 @@ public final class ConfigurationBuilder implements Loggable {
 
 	private Collection<Class<? extends XOmdaExtension>> extensions = ConcurrentHashMap.newKeySet();
 	private Set<String> classpath = ConcurrentHashMap.newKeySet();
-	private final Set<String> models = ConcurrentHashMap.newKeySet();
+	private Set<String> models = ConcurrentHashMap.newKeySet();
+	private Set<String> dependentModels = ConcurrentHashMap.newKeySet();
 	private String outDir = System.getProperty("user.dir");
 	private Level logLevel;
 
@@ -42,6 +43,7 @@ public final class ConfigurationBuilder implements Loggable {
 		impl.extensions = extensions;
 		impl.classpath = classpath.toArray(String[]::new);
 		impl.models = models.toArray(String[]::new);
+		impl.dependentModels = dependentModels.toArray(String[]::new);
 		impl.outDir = outDir;
 		impl.logLevel = logLevel;
 		return impl;
@@ -99,12 +101,12 @@ public final class ConfigurationBuilder implements Loggable {
 	}
 
 	public ConfigurationBuilder withModels(final String... models) {
-		classpath = ConcurrentHashMap.newKeySet();
+		this.models = ConcurrentHashMap.newKeySet();
 		return addModels(models);
 	}
 
 	public ConfigurationBuilder withModels(final Collection<String> models) {
-		classpath = ConcurrentHashMap.newKeySet();
+		this.models = ConcurrentHashMap.newKeySet();
 		return addModels(models);
 	}
 
@@ -117,6 +119,28 @@ public final class ConfigurationBuilder implements Loggable {
 
 	public ConfigurationBuilder addModels(final Collection<String> models) {
 		this.models.addAll(models);
+		return this;
+	}
+
+	public ConfigurationBuilder withDependentModels(final String... models) {
+		dependentModels = ConcurrentHashMap.newKeySet();
+		return addDependentModels(models);
+	}
+
+	public ConfigurationBuilder withDependentModels(final Collection<String> models) {
+		dependentModels = ConcurrentHashMap.newKeySet();
+		return addDependentModels(models);
+	}
+
+	public ConfigurationBuilder addDependentModels(final String... models) {
+		if (null != models) {
+			this.dependentModels.addAll(Arrays.asList(models));
+		}
+		return this;
+	}
+
+	public ConfigurationBuilder addDependentModels(final Collection<String> models) {
+		this.dependentModels.addAll(models);
 		return this;
 	}
 
@@ -185,6 +209,7 @@ public final class ConfigurationBuilder implements Loggable {
 		private String[] classpath;
 		private Level logLevel;
 		private String[] models;
+		private String[] dependentModels;
 
 		private Class<? extends XOmdaExtension>[] extensions;
 
@@ -228,6 +253,16 @@ public final class ConfigurationBuilder implements Loggable {
 		@Override
 		public void setModels(final String[] models) {
 			this.models = models;
+		}
+
+		@Override
+		public String[] getDependentModels() {
+			return dependentModels;
+		}
+
+		@Override
+		public void setDependentModels(final String[] models) {
+			this.dependentModels = models;
 		}
 
 		@Override

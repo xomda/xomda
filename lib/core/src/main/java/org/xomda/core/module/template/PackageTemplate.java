@@ -1,44 +1,37 @@
 package org.xomda.core.module.template;
 
-import static org.xomda.shared.exception.SneakyThrow.sneaky;
+import static org.xomda.shared.exception.SneakyThrow.sneakyConsumer;
 
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.xomda.model.Entity;
-import org.xomda.model.Value;
-import org.xomda.template.Template;
+import org.xomda.model.Package;
 import org.xomda.template.TemplateContext;
 
-public class PackageTemplate implements Template<org.xomda.model.Package> {
+/**
+ * This Template will call the {@link BasePackageTemplate#generate(Package, TemplateContext)} method
+ * for each root package encountered.
+ */
+public class PackageTemplate extends BasePackageTemplate {
+
+	private final AtomicBoolean bool = new AtomicBoolean();
 
 	@Override
 	public void generate(final org.xomda.model.Package pkg, final TemplateContext context) throws IOException {
-		processList(pkg::getPackageList, sneaky(this::generate), context);
-		processList(pkg::getEnumList, sneaky(this::generate), context);
-		processList(pkg::getEntityList, sneaky(this::generate), context);
-	}
-
-	public void generate(final org.xomda.model.Enum enm, final TemplateContext context) throws IOException {
-		processList(enm::getValueList, sneaky(this::generate), context);
-	}
-
-	public void generate(final Value enumValue, final TemplateContext context) throws IOException {
-	}
-
-	public void generate(final Entity entity, final TemplateContext context) throws IOException {
-	}
-
-	static <D, C extends Collection<D>> void processList(final Supplier<C> supplier, final BiConsumer<D, TemplateContext> consumer, final TemplateContext context) {
-		Optional.ofNullable(supplier.get()).ifPresent(lst -> lst.forEach(it -> consumer.accept(it, context)));
-	}
-
-	public String getJavaSrcDir(TemplateContext context) {
-		return Paths.get(context.cwd(), "src", "generated", "java").toString();
+		synchronized (this) {
+			// 💀 dirty trickery 💀
+			// when this method is first called, it will determine all packages and call generate upon then
+			// but that's this method too, so when the boolean is set, leave the cannoli
+			if (!bool.getAndSet(true)) {
+				context.getParseResults().stream()
+						.filter(org.xomda.model.Package.class::isInstance)
+						.map(org.xomda.model.Package.class::cast)
+						.filter(p -> p.getPackage() == null)
+						.forEach(sneakyConsumer(p -> super.generate(p, context)));
+			} else {
+				super.generate(pkg, context);
+			}
+		}
 	}
 
 }
