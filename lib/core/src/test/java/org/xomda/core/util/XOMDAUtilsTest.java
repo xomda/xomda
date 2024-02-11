@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 import org.xomda.core.XOMDA;
-import org.xomda.core.extension.XOmdaExtension;
-import org.xomda.core.module.XOmdaTypeRefs;
+import org.xomda.core.extension.XOMDAExtension;
+import org.xomda.core.module.XOMDATypeRefs;
 import org.xomda.core.module.template.GenerateEntityTemplate;
 import org.xomda.template.Template;
 import org.xomda.template.TemplateContext;
@@ -31,12 +31,12 @@ public class XOMDAUtilsTest {
 
 	@Test
 	public void testIsExtensionClass() {
-		assertTrue(XOMDAUtils.isExtensionClass((new XOmdaExtension() {
+		assertTrue(XOMDAUtils.isExtensionClass((new XOMDAExtension() {
 		}).getClass()));
 
 		assertTrue(XOMDAUtils.isExtensionClass(GenerateEntityTemplate.class));
 		assertTrue(XOMDAUtils.isExtensionClass(TestTemplate.class));
-		assertTrue(XOMDAUtils.isExtensionClass(XOmdaTypeRefs.class));
+		assertTrue(XOMDAUtils.isExtensionClass(XOMDATypeRefs.class));
 
 		assertFalse(XOMDAUtils.isExtensionClass(XOMDAUtils.class));
 	}
@@ -45,7 +45,7 @@ public class XOMDAUtilsTest {
 	public void testIsTemplateClass() {
 		assertTrue(XOMDAUtils.isTemplateClass(TestTemplate.class));
 		assertFalse(XOMDAUtils.isTemplateClass(XOMDAUtils.class));
-		assertFalse(XOMDAUtils.isTemplateClass(XOmdaTypeRefs.class));
+		assertFalse(XOMDAUtils.isTemplateClass(XOMDATypeRefs.class));
 
 		assertTrue(XOMDAUtils.isTemplateClass(TestTemplate.class, XOMDAUtilsTest.class));
 		assertTrue(XOMDAUtils.isTemplateClass(TestTemplate2.class, XOMDAUtilsTest.class));
@@ -58,7 +58,7 @@ public class XOMDAUtilsTest {
 	public void testIsTemplate() {
 		assertTrue(XOMDAUtils.isTemplateClass(TestTemplate.class));
 		assertFalse(XOMDAUtils.isTemplateClass(XOMDAUtils.class));
-		assertFalse(XOMDAUtils.isTemplateClass(XOmdaTypeRefs.class));
+		assertFalse(XOMDAUtils.isTemplateClass(XOMDATypeRefs.class));
 	}
 
 }

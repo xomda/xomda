@@ -1,29 +1,29 @@
 plugins {
-	id 'xomda-gradle-plugin'
+    id 'xomda-gradle-plugin'
 }
 
 dependencies {
-	implementation project(":lib:core")
+    implementation project(":lib:core")
 }
 
 gradlePlugin {
-	// Define the plugin
-	plugins {
-		xomda {
-			id = "org.xomda.plugin-gradle"
-			displayName = "XOMDA Gradle Plugin"
-			description = "Generate models with XOMDA in a Gradle build"
-			website = "http://xomda.org"
-			group "org.xomda"
-			version = libs.versions.xomda.get()
-			implementationClass = "org.xomda.plugin.gradle.XOmdaGradlePlugin"
-		}
-	}
+    // Define the plugin
+    plugins {
+        xomda {
+            id = "org.xomda.plugin-gradle"
+            displayName = "XOMDA Gradle Plugin"
+            description = "Generate models with XOMDA in a Gradle build"
+            website = "http://xomda.org"
+            group "org.xomda"
+            version = libs.versions.xomda.get()
+            implementationClass = "org.xomda.plugin.gradle.XOMDAGradlePlugin"
+        }
+    }
 }
 
 // Add a source set for the functional test suite
 sourceSets {
-	functionalTest {}
+    functionalTest {}
 }
 
 configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
@@ -31,14 +31,14 @@ configurations.functionalTestRuntimeOnly.extendsFrom(configurations.testRuntimeO
 
 // Add a task to run the functional tests
 tasks.register('functionalTest', Test) {
-	testClassesDirs = sourceSets.functionalTest.output.classesDirs
-	classpath = sourceSets.functionalTest.runtimeClasspath
-	useJUnitPlatform()
+    testClassesDirs = sourceSets.functionalTest.output.classesDirs
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    useJUnitPlatform()
 }
 
 gradlePlugin.testSourceSets.add(sourceSets.functionalTest)
 
 tasks.named('check') {
-	// Run the functional tests as part of `check`
-	dependsOn(tasks.functionalTest)
+    // Run the functional tests as part of `check`
+    dependsOn(tasks.functionalTest)
 }

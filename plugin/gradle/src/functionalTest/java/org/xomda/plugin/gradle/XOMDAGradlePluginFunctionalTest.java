@@ -15,7 +15,7 @@ import org.junit.jupiter.api.io.TempDir;
 /**
  * A simple functional test for the XOMDA Gradle plugin.
  */
-class XOmdaGradlePluginFunctionalTest {
+class XOMDAGradlePluginFunctionalTest {
 
 	@TempDir
 	File projectDir;

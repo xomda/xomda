@@ -4,5 +4,5 @@ import java.util.function.Predicate;
 
 import org.xomda.parser.csv.type.CsvValueParserFunction;
 
-public interface ValueParserProvider extends XOmdaExtension, Predicate<Class<?>>, CsvValueParserFunction {
+public interface ValueParserProvider extends XOMDAExtension, Predicate<Class<?>>, CsvValueParserFunction {
 }

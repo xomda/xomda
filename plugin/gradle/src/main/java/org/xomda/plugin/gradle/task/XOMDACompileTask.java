@@ -26,7 +26,7 @@ import org.xomda.shared.util.ReflectionUtils;
 import org.xomda.template.Template;
 import org.xomda.template.TemplateContext;
 
-public class XOmdaCompileTask implements Action<JavaCompile> {
+public class XOMDACompileTask implements Action<JavaCompile> {
 
 	@Override
 	public void execute(final JavaCompile task) {
@@ -40,7 +40,7 @@ public class XOmdaCompileTask implements Action<JavaCompile> {
 	}
 
 	public static void withClassLoader(final JavaCompile compileTask, final Consumer<ClassLoader> classLoaderConsumer) {
-		try (XOMDATemplateClassLoader classLoader = new XOMDATemplateClassLoader(compileTask, XOmdaCompileTask.class.getClassLoader())) {
+		try (XOMDATemplateClassLoader classLoader = new XOMDATemplateClassLoader(compileTask, XOMDACompileTask.class.getClassLoader())) {
 			classLoaderConsumer.accept(classLoader);
 		} catch (final IOException e) {
 			compileTask.getLogger().error("", e);

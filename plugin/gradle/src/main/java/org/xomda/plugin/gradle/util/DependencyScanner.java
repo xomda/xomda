@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ProjectDependency;
-import org.xomda.plugin.gradle.XOmdaGradlePluginExtension;
+import org.xomda.plugin.gradle.XOMDAGradlePluginExtension;
 
 public class DependencyScanner {
 
@@ -18,7 +18,7 @@ public class DependencyScanner {
 					if (null == ext) {
 						return Stream.empty();
 					}
-					XOmdaGradlePluginExtension xomdaExt = new XOmdaGradlePluginUndecoratedExtension(ext);
+					XOMDAGradlePluginExtension xomdaExt = new XOMDAGradlePluginUndecoratedExtension(ext);
 					return xomdaExt.getModels().get().stream();
 				})
 				.distinct();
