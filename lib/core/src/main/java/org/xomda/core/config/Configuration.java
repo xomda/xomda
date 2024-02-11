@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
 import org.xomda.core.extension.Loggable;
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.model.Entity;
 import org.xomda.shared.util.StreamUtils;
 import org.xomda.template.Template;
@@ -43,11 +43,11 @@ public interface Configuration extends Loggable {
 		}
 	}
 
-	Class<? extends XOmdaExtension>[] getExtensions();
+	Class<? extends XOMDAExtension>[] getExtensions();
 
-	void setExtensions(Class<? extends XOmdaExtension>[] extensions);
+	void setExtensions(Class<? extends XOMDAExtension>[] extensions);
 
-	default Stream<Class<? extends XOmdaExtension>> extensions() {
+	default Stream<Class<? extends XOMDAExtension>> extensions() {
 		return toStream(getExtensions());
 	}
 

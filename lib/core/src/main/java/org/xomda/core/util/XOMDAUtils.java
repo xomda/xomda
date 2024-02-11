@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.model.Dependency;
 import org.xomda.model.Entity;
 import org.xomda.model.Package;
@@ -43,7 +43,7 @@ public class XOMDAUtils {
 	}
 
 	public static boolean isExtensionClass(final Class<?> o) {
-		return getGenericInterfaceClasses(o).anyMatch(XOmdaExtension.class::isAssignableFrom);
+		return getGenericInterfaceClasses(o).anyMatch(XOMDAExtension.class::isAssignableFrom);
 	}
 
 	public static boolean isTemplateClass(final Class<?> o) {
@@ -68,7 +68,7 @@ public class XOMDAUtils {
 				);
 	}
 
-	public static <E extends XOmdaExtension> Stream<?> getExtensionTypes(final Class<?> o, final Class<E> ext) {
+	public static <E extends XOMDAExtension> Stream<?> getExtensionTypes(final Class<?> o, final Class<E> ext) {
 		return getGenericInterfaceClasses(o)
 				.filter(ext::isAssignableFrom);
 	}

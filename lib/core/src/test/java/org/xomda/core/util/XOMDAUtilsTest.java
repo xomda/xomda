@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 import org.xomda.core.XOMDA;
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.core.module.XOMDATypeRefs;
 import org.xomda.core.module.template.GenerateEntityTemplate;
 import org.xomda.template.Template;
@@ -31,7 +31,7 @@ public class XOMDAUtilsTest {
 
 	@Test
 	public void testIsExtensionClass() {
-		assertTrue(XOMDAUtils.isExtensionClass((new XOmdaExtension() {
+		assertTrue(XOMDAUtils.isExtensionClass((new XOMDAExtension() {
 		}).getClass()));
 
 		assertTrue(XOMDAUtils.isExtensionClass(GenerateEntityTemplate.class));

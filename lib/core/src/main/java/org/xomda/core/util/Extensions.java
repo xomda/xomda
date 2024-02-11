@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 import org.xomda.core.extension.CsvObjectProcessor;
 import org.xomda.core.extension.CsvSchemaProcessor;
 import org.xomda.core.extension.ValueParserProvider;
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.parser.ParseContext;
 import org.xomda.parser.csv.CsvObject;
 import org.xomda.parser.csv.CsvSchema;
@@ -13,7 +13,7 @@ import org.xomda.parser.csv.CsvSchema;
 public class Extensions {
 
 	public static void init(final ParseContext context) {
-		getExtensions(context).forEach((final XOmdaExtension extension) -> extension.init(context));
+		getExtensions(context).forEach((final XOMDAExtension extension) -> extension.init(context));
 	}
 
 	public static void process(final ParseContext context, final CsvSchema schema) {
@@ -40,7 +40,7 @@ public class Extensions {
 		return getExtensions(context).filter(type::isInstance).map(type::cast);
 	}
 
-	static Stream<? extends XOmdaExtension> getExtensions(final ParseContext context) {
+	static Stream<? extends XOMDAExtension> getExtensions(final ParseContext context) {
 		return context.getExtensions().stream();
 	}
 

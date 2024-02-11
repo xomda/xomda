@@ -3,10 +3,10 @@ package org.xomda.core.module;
 import java.io.Serial;
 import java.util.HashSet;
 
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.core.extension.XOmdaModule;
 
-public class XOMDACore extends HashSet<Class<? extends XOmdaExtension>> implements XOmdaModule {
+public class XOMDACore extends HashSet<Class<? extends XOMDAExtension>> implements XOmdaModule {
 
 	@Serial
 	private static final long serialVersionUID = -287571412358053236L;

@@ -6,14 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.xomda.core.config.Configuration;
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.core.util.DeferredActions;
 import org.xomda.parser.csv.CsvObject;
 
 public class InternalParseContext implements ParseContext {
 
 	private final Configuration config;
-	private final List<? extends XOmdaExtension> extensions;
+	private final List<? extends XOMDAExtension> extensions;
 	private final List<CsvObject> cache = new ArrayList<>();
 	private final DeferredActions deferredActions = new DeferredActions();
 
@@ -21,14 +21,14 @@ public class InternalParseContext implements ParseContext {
 		this.config = config;
 		extensions = Arrays.stream(config.getExtensions()).map(Class.class::cast).map(c -> {
 			@SuppressWarnings("unchecked")
-			final Class<? super XOmdaExtension> extensionClass = c;
+			final Class<? super XOMDAExtension> extensionClass = c;
 			return createExtension(extensionClass);
 		}).toList();
 	}
 
-	static XOmdaExtension createExtension(final Class<? super XOmdaExtension> clazz) {
+	static XOMDAExtension createExtension(final Class<? super XOMDAExtension> clazz) {
 		try {
-			return (XOmdaExtension) clazz.getDeclaredConstructor().newInstance();
+			return (XOMDAExtension) clazz.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
@@ -38,7 +38,7 @@ public class InternalParseContext implements ParseContext {
 		return config;
 	}
 
-	public List<? extends XOmdaExtension> getExtensions() {
+	public List<? extends XOMDAExtension> getExtensions() {
 		return extensions;
 	}
 

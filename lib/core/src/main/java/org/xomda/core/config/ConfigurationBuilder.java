@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.logging.log4j.Level;
 import org.xomda.core.extension.Loggable;
-import org.xomda.core.extension.XOmdaExtension;
+import org.xomda.core.extension.XOMDAExtension;
 import org.xomda.core.module.XOMDAReverseEntity;
 import org.xomda.core.module.XOMDATypeRefs;
 import org.xomda.core.module.template.XOMDACodeTemplate;
@@ -25,7 +25,7 @@ public final class ConfigurationBuilder implements Loggable {
 			// TODO -> OmdaModule
 			XOMDAReverseEntity.class, XOMDATypeRefs.class, XOMDACodeTemplate.class);
 
-	private Collection<Class<? extends XOmdaExtension>> extensions = ConcurrentHashMap.newKeySet();
+	private Collection<Class<? extends XOMDAExtension>> extensions = ConcurrentHashMap.newKeySet();
 	private Set<String> classpath = ConcurrentHashMap.newKeySet();
 	private Set<String> models = ConcurrentHashMap.newKeySet();
 	private Set<String> dependentModels = ConcurrentHashMap.newKeySet();
@@ -39,7 +39,7 @@ public final class ConfigurationBuilder implements Loggable {
 	public Configuration build() {
 		final Impl impl = new Impl();
 		@SuppressWarnings("unchecked")
-		final Class<? extends XOmdaExtension>[] extensions = this.extensions.toArray(Class[]::new);
+		final Class<? extends XOMDAExtension>[] extensions = this.extensions.toArray(Class[]::new);
 		impl.extensions = extensions;
 		impl.classpath = classpath.toArray(String[]::new);
 		impl.models = models.toArray(String[]::new);
@@ -172,7 +172,7 @@ public final class ConfigurationBuilder implements Loggable {
 		return this;
 	}
 
-	Class<? extends XOmdaExtension> toExtension(Object o) {
+	Class<? extends XOMDAExtension> toExtension(Object o) {
 		// if the argument is a string, we need to try to turn it into a class
 		if (o instanceof final String clz) {
 			final Optional<Class<Object>> clazz = ReflectionUtils.findClass(clz);
@@ -186,15 +186,15 @@ public final class ConfigurationBuilder implements Loggable {
 		if (o instanceof final Class<?> clz) {
 			try {
 				@SuppressWarnings("unchecked")
-				final Class<? extends XOmdaExtension> result = (Class<? extends XOmdaExtension>) clz;
+				final Class<? extends XOMDAExtension> result = (Class<? extends XOMDAExtension>) clz;
 				return result;
 			} catch (final Exception e) {
 				// noop
 			}
 			// check if the class is meaningful to the plugin
-			if (ReflectionUtils.extendsFrom(clz, XOmdaExtension.class)) {
+			if (ReflectionUtils.extendsFrom(clz, XOMDAExtension.class)) {
 				@SuppressWarnings("unchecked")
-				final Class<? extends XOmdaExtension> result = (Class<? extends XOmdaExtension>) clz;
+				final Class<? extends XOMDAExtension> result = (Class<? extends XOMDAExtension>) clz;
 				return result;
 			} else {
 				getLogger().warn("{} is not a CSV Extension and cannot be used at this point.", clz);
@@ -211,7 +211,7 @@ public final class ConfigurationBuilder implements Loggable {
 		private String[] models;
 		private String[] dependentModels;
 
-		private Class<? extends XOmdaExtension>[] extensions;
+		private Class<? extends XOMDAExtension>[] extensions;
 
 		@Override
 		public String[] getClasspath() {
@@ -236,12 +236,12 @@ public final class ConfigurationBuilder implements Loggable {
 		}
 
 		@Override
-		public Class<? extends XOmdaExtension>[] getExtensions() {
+		public Class<? extends XOMDAExtension>[] getExtensions() {
 			return extensions;
 		}
 
 		@Override
-		public void setExtensions(final Class<? extends XOmdaExtension>[] extensions) {
+		public void setExtensions(final Class<? extends XOMDAExtension>[] extensions) {
 			this.extensions = extensions;
 		}
 
