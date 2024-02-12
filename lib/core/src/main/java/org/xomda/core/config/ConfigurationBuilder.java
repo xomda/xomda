@@ -30,7 +30,7 @@ public final class ConfigurationBuilder implements Loggable {
 	private Set<String> models = ConcurrentHashMap.newKeySet();
 	private Set<String> dependentModels = ConcurrentHashMap.newKeySet();
 	private String outDir = System.getProperty("user.dir");
-	private Level logLevel;
+	private Level logLevel = Configuration.DEFAULT_LOG_LEVEL;
 
 	public ConfigurationBuilder create() {
 		return new ConfigurationBuilder();
@@ -225,34 +225,12 @@ public final class ConfigurationBuilder implements Loggable {
 		}
 
 		@Override
-		public void setClasspath(final String[] classpath) {
-			this.classpath = classpath;
-		}
-
-		@Override
 		public Level getLogLevel() {
 			return logLevel;
 		}
 
-		@Override
-		public void setLogLevel(final Level logLevel) {
-			if (null != logLevel) {
-				this.logLevel = logLevel;
-			}
-		}
-
 		public PluginManager getPlugins() {
 			return plugins;
-		}
-
-		@Override
-		public Class<? extends XOMDAExtension>[] getExtensions() {
-			return extensions;
-		}
-
-		@Override
-		public void setExtensions(final Class<? extends XOMDAExtension>[] extensions) {
-			this.extensions = extensions;
 		}
 
 		@Override
@@ -261,28 +239,13 @@ public final class ConfigurationBuilder implements Loggable {
 		}
 
 		@Override
-		public void setModels(final String[] models) {
-			this.models = models;
-		}
-
-		@Override
 		public String[] getDependentModels() {
 			return dependentModels;
 		}
 
 		@Override
-		public void setDependentModels(final String[] models) {
-			this.dependentModels = models;
-		}
-
-		@Override
 		public String getOutDir() {
 			return outDir;
-		}
-
-		@Override
-		public void setOutDir(final String outDir) {
-			this.outDir = outDir;
 		}
 
 	}

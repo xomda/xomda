@@ -46,7 +46,7 @@ public class CsvSchemaObject {
 			name = recordName;
 		}
 
-		final TypeFactory typeFactory = new TypeFactory().register(Extensions.getValueParserProviders(context));
+		final TypeFactory typeFactory = new TypeFactory().register(Extensions.getValueParserProviders(context.getConfig()));
 
 		IntStream.range(1, record.size()).filter(i -> !record.get(i).isBlank()).forEach(i -> {
 			final String propName = record.get(i);
