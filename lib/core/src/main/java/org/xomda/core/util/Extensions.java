@@ -41,7 +41,7 @@ public class Extensions {
 	}
 
 	static Stream<? extends XOMDAExtension> getExtensions(final ParseContext context) {
-		return context.getExtensions().stream();
+		return context.getConfig().getPlugins().stream();
 	}
 
 }

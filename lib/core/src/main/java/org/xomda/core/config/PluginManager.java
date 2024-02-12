@@ -1,8 +1,8 @@
 package org.xomda.core.config;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -15,10 +15,9 @@ import org.xomda.core.extension.XOMDAModule;
  */
 public class PluginManager implements Iterable<XOMDAExtension>, Loggable {
 
-	private Map<Class<? extends XOMDAExtension>, XOMDAExtension> extensions = new TreeMap<>();
+	private final Map<Class<? extends XOMDAExtension>, XOMDAExtension> extensions = new LinkedHashMap<>();
 
-	@SafeVarargs
-	PluginManager(Class<? extends XOMDAExtension>... extensions) {
+	PluginManager(Class<? extends XOMDAExtension>[] extensions) {
 		Stream.of(extensions).forEach(this::add);
 	}
 

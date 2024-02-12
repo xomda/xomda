@@ -46,6 +46,7 @@ public final class ConfigurationBuilder implements Loggable {
 		impl.dependentModels = dependentModels.toArray(String[]::new);
 		impl.outDir = outDir;
 		impl.logLevel = logLevel;
+		impl.plugins = new PluginManager(extensions);
 		return impl;
 	}
 
@@ -65,7 +66,11 @@ public final class ConfigurationBuilder implements Loggable {
 	}
 
 	public ConfigurationBuilder addExtensions(final Collection<Object> extensions) {
-		this.extensions.addAll(extensions.stream().map(this::toExtension).filter(Objects::nonNull).distinct().toList());
+		this.extensions.addAll(extensions.stream()
+				.map(this::toExtension)
+				.filter(Objects::nonNull)
+				.distinct()
+				.toList());
 		return this;
 	}
 
@@ -210,6 +215,7 @@ public final class ConfigurationBuilder implements Loggable {
 		private Level logLevel;
 		private String[] models;
 		private String[] dependentModels;
+		private PluginManager plugins;
 
 		private Class<? extends XOMDAExtension>[] extensions;
 
@@ -233,6 +239,10 @@ public final class ConfigurationBuilder implements Loggable {
 			if (null != logLevel) {
 				this.logLevel = logLevel;
 			}
+		}
+
+		public PluginManager getPlugins() {
+			return plugins;
 		}
 
 		@Override

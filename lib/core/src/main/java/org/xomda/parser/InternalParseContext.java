@@ -2,8 +2,8 @@ package org.xomda.parser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.xomda.core.config.Configuration;
 import org.xomda.core.extension.XOMDAExtension;
@@ -13,17 +13,11 @@ import org.xomda.parser.csv.CsvObject;
 public class InternalParseContext implements ParseContext {
 
 	private final Configuration config;
-	private final List<? extends XOMDAExtension> extensions;
 	private final List<CsvObject> cache = new ArrayList<>();
 	private final DeferredActions deferredActions = new DeferredActions();
 
 	public InternalParseContext(final Configuration config) {
 		this.config = config;
-		extensions = Arrays.stream(config.getExtensions()).map(Class.class::cast).map(c -> {
-			@SuppressWarnings("unchecked")
-			final Class<? super XOMDAExtension> extensionClass = c;
-			return createExtension(extensionClass);
-		}).toList();
 	}
 
 	static XOMDAExtension createExtension(final Class<? super XOMDAExtension> clazz) {
@@ -38,8 +32,8 @@ public class InternalParseContext implements ParseContext {
 		return config;
 	}
 
-	public List<? extends XOMDAExtension> getExtensions() {
-		return extensions;
+	public Stream<XOMDAExtension> getExtensions() {
+		return getConfig().getPlugins().stream();
 	}
 
 	/**

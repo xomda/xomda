@@ -23,6 +23,8 @@ public interface Configuration extends Loggable {
 	String[] DEFAULT_CLASSPATH = { Entity.class.getPackageName() };
 	Level DEFAULT_LOG_LEVEL = Level.INFO;
 
+	PluginManager getPlugins();
+
 	String[] getClasspath();
 
 	void setClasspath(String[] classpath);
