@@ -3,7 +3,6 @@ package org.xomda.parser;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.xomda.core.config.Configuration;
 import org.xomda.core.extension.XOMDAExtension;
@@ -30,10 +29,6 @@ public class InternalParseContext implements ParseContext {
 
 	public Configuration getConfig() {
 		return config;
-	}
-
-	public Stream<XOMDAExtension> getExtensions() {
-		return getConfig().getPlugins().stream();
 	}
 
 	/**
