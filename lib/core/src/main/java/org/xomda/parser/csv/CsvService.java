@@ -55,6 +55,7 @@ public class CsvService implements Parser {
 	}
 
 	private <T> List<T> process(final String[] filenames, final InternalParseContext context) throws IOException {
+		Configuration configuration = context.getConfig();
 		CsvSchema globalSchema = null;
 		int count = 0;
 
@@ -92,7 +93,7 @@ public class CsvService implements Parser {
 				}
 
 				// feed the schema to the extensions
-				Extensions.process(context, schema);
+				Extensions.process(configuration, schema);
 
 				// read the schema
 				CSVRecord record;
@@ -114,7 +115,7 @@ public class CsvService implements Parser {
 					getLogger().debug("Read {}", (Object[]) obj.getClasses());
 
 					// feed it to the extensions
-					Extensions.process(context, obj);
+					Extensions.process(configuration, obj);
 
 					// add to processed cache
 					context.add(obj);

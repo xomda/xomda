@@ -5,9 +5,9 @@ import static org.xomda.shared.exception.SneakyThrow.sneaky;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.cli.ParseException;
 import org.xomda.core.XOMDA;
 import org.xomda.core.config.Configuration;
+import org.xomda.core.util.Extensions;
 import org.xomda.shared.logging.LogService;
 import org.xomda.template.TemplateContext;
 
@@ -18,12 +18,13 @@ import org.xomda.template.TemplateContext;
  */
 public class Main {
 
-	public static void main(final String[] args) throws IOException, ParseException {
+	public static void main(final String[] args) throws IOException {
 		// parse the config (from the command-line)
 		Configuration config = CommandLineOptions
 				.tryBuild(args)
 				.withDefaultOmdaExtensions()
 				.build();
+
 		// set the log level
 		LogService.setDefaultLogLevel(config.getLogLevel());
 
@@ -34,10 +35,12 @@ public class Main {
 			return;
 		}
 
-		// 3) generate
-		config.getTemplates().forEach(sneaky(t -> {
+		Object first = result.get(0);
+
+		// process the templates
+		Extensions.getTemplates(config).forEach(sneaky(t -> {
 			TemplateContext templateContext = new TemplateContext(config.getOutDir(), result);
-			t.generate(result.get(0), templateContext);
+			t.generate(first, templateContext);
 		}));
 	}
 

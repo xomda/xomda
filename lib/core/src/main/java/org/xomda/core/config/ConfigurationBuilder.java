@@ -30,7 +30,7 @@ public final class ConfigurationBuilder implements Loggable {
 	private Set<String> models = ConcurrentHashMap.newKeySet();
 	private Set<String> dependentModels = ConcurrentHashMap.newKeySet();
 	private String outDir = System.getProperty("user.dir");
-	private Level logLevel;
+	private Level logLevel = Configuration.DEFAULT_LOG_LEVEL;
 
 	public ConfigurationBuilder create() {
 		return new ConfigurationBuilder();
@@ -46,6 +46,7 @@ public final class ConfigurationBuilder implements Loggable {
 		impl.dependentModels = dependentModels.toArray(String[]::new);
 		impl.outDir = outDir;
 		impl.logLevel = logLevel;
+		impl.plugins = new PluginManager(extensions);
 		return impl;
 	}
 
@@ -65,7 +66,11 @@ public final class ConfigurationBuilder implements Loggable {
 	}
 
 	public ConfigurationBuilder addExtensions(final Collection<Object> extensions) {
-		this.extensions.addAll(extensions.stream().map(this::toExtension).filter(Objects::nonNull).distinct().toList());
+		this.extensions.addAll(extensions.stream()
+				.map(this::toExtension)
+				.filter(Objects::nonNull)
+				.distinct()
+				.toList());
 		return this;
 	}
 
@@ -210,6 +215,7 @@ public final class ConfigurationBuilder implements Loggable {
 		private Level logLevel;
 		private String[] models;
 		private String[] dependentModels;
+		private PluginManager plugins;
 
 		private Class<? extends XOMDAExtension>[] extensions;
 
@@ -219,30 +225,12 @@ public final class ConfigurationBuilder implements Loggable {
 		}
 
 		@Override
-		public void setClasspath(final String[] classpath) {
-			this.classpath = classpath;
-		}
-
-		@Override
 		public Level getLogLevel() {
 			return logLevel;
 		}
 
-		@Override
-		public void setLogLevel(final Level logLevel) {
-			if (null != logLevel) {
-				this.logLevel = logLevel;
-			}
-		}
-
-		@Override
-		public Class<? extends XOMDAExtension>[] getExtensions() {
-			return extensions;
-		}
-
-		@Override
-		public void setExtensions(final Class<? extends XOMDAExtension>[] extensions) {
-			this.extensions = extensions;
+		public PluginManager getPlugins() {
+			return plugins;
 		}
 
 		@Override
@@ -251,28 +239,13 @@ public final class ConfigurationBuilder implements Loggable {
 		}
 
 		@Override
-		public void setModels(final String[] models) {
-			this.models = models;
-		}
-
-		@Override
 		public String[] getDependentModels() {
 			return dependentModels;
 		}
 
 		@Override
-		public void setDependentModels(final String[] models) {
-			this.dependentModels = models;
-		}
-
-		@Override
 		public String getOutDir() {
 			return outDir;
-		}
-
-		@Override
-		public void setOutDir(final String outDir) {
-			this.outDir = outDir;
 		}
 
 	}

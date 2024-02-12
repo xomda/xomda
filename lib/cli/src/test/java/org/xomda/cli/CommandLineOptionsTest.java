@@ -16,8 +16,10 @@ public class CommandLineOptionsTest {
 
 	@Test
 	public void testCommandLineOptions() throws ParseException {
-		final String extensions = Stream.of(XOMDAReverseEntity.class, XOMDATypeRefs.class, XOMDACodeTemplate.class)
-				.map(Class::getName).collect(Collectors.joining(","));
+		final String extensions = Stream
+				.of(XOMDAReverseEntity.class, XOMDATypeRefs.class, XOMDACodeTemplate.class)
+				.map(Class::getName)
+				.collect(Collectors.joining(","));
 
 		final String out = "../../xomda";
 
