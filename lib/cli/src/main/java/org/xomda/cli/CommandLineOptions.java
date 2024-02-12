@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -34,42 +35,56 @@ public class CommandLineOptions extends Options {
 
 	private static final String COMMAND = "xomda";
 
-	private final static Option OPT_EXTENSION = Option.builder("e")
+	private final static Option OPT_EXTENSION = Option
+			.builder("e")
 			.longOpt("extensions")
 			.hasArg(true)
 			.argName("EXTENSIONS")
 			.desc("Specify a comma-separated list of extensions.")
 			.build();
 
-	private final static Option OPT_MODELS = Option.builder("m")
+	private final static Option OPT_MODELS = Option
+			.builder("m")
 			.longOpt("models")
 			.hasArg(true)
 			.argName("MODELS")
 			.desc("Specify one or more model files, separated by comma.")
 			.build();
 
-	private final static Option OPT_OUT_DIR = Option.builder("o")
+	private final static Option OPT_MODEL_DEPENDENCIES = Option
+			.builder("d")
+			.longOpt("model-deps")
+			.hasArg(true)
+			.argName("MODEL-DEPENDENCIES")
+			.desc("Specify one or more model files upon which the given --models depend, separated by comma.")
+			.build();
+
+	private final static Option OPT_OUT_DIR = Option
+			.builder("o")
 			.longOpt("out")
 			.hasArg(true)
 			.argName("DIR")
 			.desc("Specify the output directory.")
 			.build();
 
-	private final static Option OPT_CLASSPATHS = Option.builder("c")
+	private final static Option OPT_CLASSPATHS = Option
+			.builder("c")
 			.longOpt("classpath")
 			.hasArg(true)
 			.argName("CLASSPATH")
 			.desc("Specify one or more packages to scan for interfaces, separated by comma.")
 			.build();
 
-	private final static Option OPT_LOG_LEVEL = Option.builder("l")
+	private final static Option OPT_LOG_LEVEL = Option
+			.builder("l")
 			.longOpt("level")
 			.hasArg(true)
 			.argName("LOG-LEVEL")
 			.desc("Specify the log-level.")
 			.build();
 
-	private final static Option OPT_HELP = Option.builder("h")
+	private final static Option OPT_HELP = Option
+			.builder("h")
 			.longOpt("help")
 			.desc("Show this help.")
 			.build();
@@ -77,6 +92,7 @@ public class CommandLineOptions extends Options {
 	public CommandLineOptions() {
 		addOption(OPT_EXTENSION);
 		addOption(OPT_MODELS);
+		addOption(OPT_MODEL_DEPENDENCIES);
 		addOption(OPT_OUT_DIR);
 		addOption(OPT_CLASSPATHS);
 		addOption(OPT_LOG_LEVEL);
@@ -130,20 +146,25 @@ public class CommandLineOptions extends Options {
 							.toArray(Object[]::new));
 		}
 
-		builder.withModels(
-				line.hasOption(OPT_MODELS)
-						? stream(line.getOptionValues(OPT_MODELS)).toList()
-						: Stream.of(
-										Constants.XOMDA_DOT_PATH,
-										Constants.XOMDA_CSV_CONFIG_PATH
-								)
-								.filter(Files::exists)
-								.flatMap(SneakyThrow.sneaky(Files::list))
-								.filter(Predicate.not(Files::isDirectory))
-								.filter(p -> p.getFileName().toString().endsWith(".csv"))
-								.map(Path::toAbsolutePath)
-								.map(Path::toString)
-								.toList());
+		builder.withModels(line.hasOption(OPT_MODELS)
+				? stream(line.getOptionValues(OPT_MODELS)).toList()
+				: Stream.of(
+								Constants.XOMDA_DOT_PATH,
+								Constants.XOMDA_CSV_CONFIG_PATH
+						)
+						.filter(Files::exists)
+						.flatMap(SneakyThrow.sneaky(Files::list))
+						.filter(Predicate.not(Files::isDirectory))
+						.filter(p -> p.getFileName().toString().endsWith(".csv"))
+						.map(Path::toAbsolutePath)
+						.map(Path::toString)
+						.toList()
+		);
+
+		builder.withDependentModels(line.hasOption(OPT_MODEL_DEPENDENCIES)
+				? stream(line.getOptionValues(OPT_MODEL_DEPENDENCIES)).toList()
+				: Collections.emptyList()
+		);
 
 		if (line.hasOption(OPT_LOG_LEVEL)) {
 			Optional
