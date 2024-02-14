@@ -15,6 +15,7 @@ import org.xomda.core.extension.XOMDAModule;
  */
 public class PluginManager implements Iterable<XOMDAExtension>, Loggable {
 
+	// LinkedHashMap because it preserves insertion order
 	private final Map<Class<? extends XOMDAExtension>, XOMDAExtension> extensions = new LinkedHashMap<>();
 
 	PluginManager(Class<? extends XOMDAExtension>[] extensions) {
@@ -33,10 +34,10 @@ public class PluginManager implements Iterable<XOMDAExtension>, Loggable {
 	public boolean add(XOMDAExtension extension) {
 		Class<? extends XOMDAExtension> clazz = extension.getClass();
 		if (extensions.containsKey(clazz)) {
-			getLogger().warn("Plugin already loaded: {}", clazz);
+			getLogger().warn("Plugin already loaded: {}", clazz.getName());
 			return false;
 		}
-		
+
 		extensions.put(clazz, extension);
 
 		if (extension instanceof XOMDAModule module) {

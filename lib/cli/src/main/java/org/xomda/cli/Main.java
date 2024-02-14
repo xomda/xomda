@@ -22,7 +22,7 @@ public class Main {
 		// parse the config (from the command-line)
 		Configuration config = CommandLineOptions
 				.tryBuild(args)
-				.withDefaultOmdaExtensions()
+				.withDefaultXOMDAExtensions()
 				.build();
 
 		// set the log level

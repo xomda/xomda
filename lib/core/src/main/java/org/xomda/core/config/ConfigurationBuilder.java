@@ -19,7 +19,7 @@ import org.xomda.shared.util.ReflectionUtils;
  */
 public final class ConfigurationBuilder implements Loggable {
 
-	private static final Collection<Object> DEFAULT_OMDA_EXTENSIONS = Set.of(XOMDACore.class);
+	private static final Collection<Object> DEFAULT_XOMDA_EXTENSIONS = Set.of(XOMDACore.class);
 
 	private Collection<Class<? extends XOMDAExtension>> extensions = ConcurrentHashMap.newKeySet();
 	private Set<String> classpath = ConcurrentHashMap.newKeySet();
@@ -46,9 +46,9 @@ public final class ConfigurationBuilder implements Loggable {
 		return impl;
 	}
 
-	public ConfigurationBuilder withDefaultOmdaExtensions() {
+	public ConfigurationBuilder withDefaultXOMDAExtensions() {
 		addClassPath(Configuration.DEFAULT_CLASSPATH);
-		return addExtensions(DEFAULT_OMDA_EXTENSIONS);
+		return addExtensions(DEFAULT_XOMDA_EXTENSIONS);
 	}
 
 	public ConfigurationBuilder withExtensions(final Object... extensions) {

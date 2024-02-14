@@ -79,7 +79,7 @@ public class CsvService implements Parser {
 
 				final Iterator<CSVRecord> it = parser.iterator();
 
-				// init the schema and let the extensions know
+				// init the schema
 				final CsvSchema schema = CsvSchema.load(it, context);
 
 				// check if the schemas are compatible

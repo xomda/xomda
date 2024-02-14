@@ -12,6 +12,13 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.xomda.plugin.gradle.task.XOMDACompileTask;
 
+/**
+ * The class loader for XOMDA templates.
+ * These templates may have complete different dependencies than the code they're generating,
+ * so they have nothing to do with the actual java dependencies of the project itself.
+ * <p>
+ * In order to correctly run these templates, we'll have to provide them this classloader.
+ */
 public class XOMDATemplateClassLoader extends URLClassLoader {
 
 	public XOMDATemplateClassLoader(final JavaCompile task) {
@@ -23,8 +30,8 @@ public class XOMDATemplateClassLoader extends URLClassLoader {
 	}
 
 	private static URL[] getUrls(final JavaCompile task) {
+		URL[] urls;
 		final Project project = task.getProject();
-		URL[] urls = null;
 		try {
 			urls = Stream
 					.concat(
