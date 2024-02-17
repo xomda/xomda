@@ -1,0 +1,9 @@
+plugins {
+    id 'xomda-maven-plugin'
+}
+
+dependencies {
+    implementation project(":lib:core")
+}
+
+

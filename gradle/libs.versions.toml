@@ -10,6 +10,9 @@ guava = "33.0.0-jre"
 junit-jupiter = "5.10.2"
 log4j = "2.22.1"
 slf4j = "2.0.11"
+maven-plugin-api = "3.9.6"
+maven-plugin-annotations = "3.11.0"
+maven-project = "2.2.1"
 
 [libraries]
 commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }
@@ -19,3 +22,6 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 log4j = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j = { module = 'org.apache.logging.log4j:log4j-slf4j2-impl', version.ref = "log4j" }
+maven-plugin-api = { module = "org.apache.maven:maven-plugin-api", version.ref = "maven-plugin-api" }
+maven-plugin-annotations = { module = "org.apache.maven.plugin-tools:maven-plugin-annotations", version.ref = "maven-plugin-annotations" }
+maven-project = { module = "org.apache.maven:maven-project", version.ref = "maven-project" }
