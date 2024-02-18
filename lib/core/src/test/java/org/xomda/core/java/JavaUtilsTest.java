@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class JavaUtilsTest {
 
@@ -87,4 +89,11 @@ public class JavaUtilsTest {
 	public void testGetJavaFile() {
 		assertEquals(Paths.get("java", "lang", "Long.java"), JavaUtils.toJavaPath("java.lang.Long"));
 	}
+
+	@ParameterizedTest
+	@CsvSource({ "foo,FOO", "fOo,FOO", "f-o,FO", "鵺 BAR,鵺_BAR", "one9,ONE9", "9one,_9ONE", "$,$", "#,_", "#\",_" })
+	void testToEnumValue_produceValidValues(String input, String expected) {
+		assertEquals(expected, JavaUtils.toEnumValue(input));
+	}
+
 }

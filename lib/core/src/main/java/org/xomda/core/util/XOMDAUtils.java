@@ -25,7 +25,7 @@ public class XOMDAUtils {
 			root = root.getPackage();
 		}
 		return getAllEntities(entity.getPackage()).filter(e -> stream(e::getAttributeList)
-				.anyMatch(a -> Dependency.Composite.equals(a.getDependency()) && entity.equals(a.getEntityRef())));
+				.anyMatch(a -> Dependency.COMPOSITE.equals(a.getDependency()) && entity.equals(a.getEntityRef())));
 	}
 
 	private static Stream<Entity> getAllEntities(final Package pkg) {

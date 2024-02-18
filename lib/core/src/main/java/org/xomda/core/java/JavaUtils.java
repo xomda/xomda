@@ -129,7 +129,29 @@ public class JavaUtils {
 
 	public static Path toJavaPath(final String className) {
 		return Paths.get(className.replaceAll("\\.", File.separator) + ".java");
+	}
 
+	/**
+	 * Converts a string to a valid Java enum value (ENUM_VALUE).
+	 *
+	 * Invalid characters are omitted, whitespace is replaced with underscores, and a leading underscore is added in case the first character is not a valid starting point.
+	 */
+	public static String toEnumValue(final String name) {
+		StringBuilder output = new StringBuilder();
+		for (char c : name.toCharArray()) {
+			if (output.length() == 0) {
+				if (!Character.isJavaIdentifierStart(c)) {
+					output.append('_');
+				}
+			}
+
+			if (Character.isJavaIdentifierPart(c)) {
+				output.append(Character.toUpperCase(c));
+			} else if (Character.isWhitespace(c)) {
+				output.append('_');
+			}
+		}
+		return output.toString();
 	}
 
 }

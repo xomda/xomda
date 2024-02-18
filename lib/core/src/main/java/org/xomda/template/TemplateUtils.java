@@ -77,17 +77,18 @@ public class TemplateUtils {
 
 	public static String getJavaType(final Attribute attribute) {
 		final AttributeType type = attribute.getType();
+		// TODO: Type is always null, probably because attribute type names don't match anymore.
 		if (null == type) {
 			return "java.lang.Object";
 		}
 		return switch (type) {
-			case String, Text -> "java.lang.String";
-			case Boolean -> "java.lang.Boolean";
-			case Integer -> "java.lang.Long";
-			case Decimal -> "java.lang.Double";
-			case Date, Time, Timestamp -> "java.util.Date";
-			case Entity -> getType(attribute.getEntityRef());
-			case Enum -> getJavaType(attribute.getEnumRef());
+			case STRING, TEXT -> "java.lang.String";
+			case BOOLEAN -> "java.lang.Boolean";
+			case INTEGER -> "java.lang.Long";
+			case DECIMAL -> "java.lang.Double";
+			case DATE, TIME, TIMESTAMP -> "java.util.Date";
+			case ENTITY -> getType(attribute.getEntityRef());
+			case ENUM -> getJavaType(attribute.getEnumRef());
 			default -> "java.lang.Object";
 		};
 	}

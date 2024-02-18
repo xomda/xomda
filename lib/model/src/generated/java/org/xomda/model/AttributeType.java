@@ -3,15 +3,15 @@
 package org.xomda.model;
 
 public enum AttributeType {
-	String, 
-	Text, 
-	Integer, 
-	Decimal, 
-	Boolean, 
-	Date, 
-	Timestamp, 
-	Time, 
-	Entity, 
-	Enum, 
-	Blob, 
+	STRING, 
+	TEXT, 
+	INTEGER, 
+	DECIMAL, 
+	BOOLEAN, 
+	DATE, 
+	TIMESTAMP, 
+	TIME, 
+	ENTITY, 
+	ENUM, 
+	BLOB, 
 }

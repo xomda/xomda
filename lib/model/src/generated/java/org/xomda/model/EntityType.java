@@ -3,7 +3,7 @@
 package org.xomda.model;
 
 public enum EntityType {
-	Static, 
-	Dynamic, 
-	Singleton, 
+	STATIC, 
+	DYNAMIC, 
+	SINGLETON, 
 }
