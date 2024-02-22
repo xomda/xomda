@@ -1,13 +1,10 @@
 package org.xomda.parser.csv;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -16,8 +13,6 @@ import org.slf4j.Logger;
 import org.xomda.parser.ParseContext;
 import org.xomda.parser.csv.type.ValueParser;
 import org.xomda.shared.logging.LogService;
-import org.xomda.shared.util.ReflectionUtils;
-import org.xomda.shared.util.StringUtils;
 
 /**
  * The CSV Schema is parsed out of the first lines of a CSV file (followed by a
@@ -29,8 +24,6 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 	private static final Logger logger = LogService.getLogger(CsvSchema.class);
 
 	private final List<CsvSchemaObject> objects = new ArrayList<>();
-
-	private final Map<CsvSchemaObject, List<CsvSchemaObject>> rev = new ConcurrentHashMap<>();
 
 	@Override
 	public Iterator<CsvSchemaObject> iterator() {
@@ -97,18 +90,6 @@ public class CsvSchema implements Iterable<CsvSchemaObject> {
 			logger.debug("Found {} ({})", schemaObject.getName(), schemaObject.getObjectClass());
 			schema.addModel(schemaObject);
 		} while (it.hasNext() && !CsvService.isEmpty(record = it.next()));
-
-		// reverse master
-		schema.objects.forEach((final CsvSchemaObject schemaObject) -> {
-			final String name = schemaObject.getName();
-			final String identifier = StringUtils.toPascalCase(name + " List");
-			schema.objects.forEach((final CsvSchemaObject otherObject) -> ReflectionUtils
-					.getGetter(otherObject.getObjectClass(), identifier)
-					.ifPresent((final Method method) -> schema.rev
-							.computeIfAbsent(schemaObject, o -> new ArrayList<>()).add(otherObject)
-					)
-			);
-		});
 
 		// return the schema
 		return schema;
