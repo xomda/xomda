@@ -26,11 +26,20 @@ import org.xomda.shared.registry.Registry;
  */
 public class TypeFactory {
 
-	private static final Set<ValueParserProvider> converters = Set.of(new StringParserProvider(),
-			new PrimitiveBooleanParserProvider(), new PrimitiveDoubleParserProvider(),
-			new PrimitiveFloatParserProvider(), new PrimitiveIntegerParserProvider(), new PrimitiveLongParserProvider(),
-			new BooleanParserProvider(), new DateParserProvider(), new DoubleParserProvider(),
-			new FloatParserProvider(), new IntegerParserProvider(), new LongParserProvider(), new EnumParserProvider()
+	private static final Set<ValueParserProvider> converters = Set.of(
+			new StringParserProvider(),
+			new PrimitiveBooleanParserProvider(),
+			new PrimitiveDoubleParserProvider(),
+			new PrimitiveFloatParserProvider(),
+			new PrimitiveIntegerParserProvider(),
+			new PrimitiveLongParserProvider(),
+			new BooleanParserProvider(),
+			new DateParserProvider(),
+			new DoubleParserProvider(),
+			new FloatParserProvider(),
+			new IntegerParserProvider(),
+			new LongParserProvider(),
+			new EnumParserProvider()
 	);
 	private final Registry<ValueParserProvider> registry = new Registry<>(ConcurrentHashMap::newKeySet);
 
@@ -55,7 +64,8 @@ public class TypeFactory {
 		}
 		return Stream.concat(registry.stream(), converters.stream())
 				.filter((final ValueParserProvider parser) -> parser.test(type))
-				.map((final ValueParserProvider parser) -> parser.apply(type)).filter(Objects::nonNull).findFirst()
+				.map((final ValueParserProvider parser) -> parser.apply(type))
+				.filter(Objects::nonNull).findFirst()
 				.orElseGet(() -> s -> s);
 	}
 
