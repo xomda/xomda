@@ -30,6 +30,10 @@ public class SneakyThrow {
 		return c;
 	}
 
+	public static <E extends Throwable> Runnable sneaky(final ThrowingRunnable<E> c) {
+		return c;
+	}
+
 	// use the methods below when ambiguous
 	public static <T, E extends Throwable> Consumer<T> sneakyConsumer(final ThrowingConsumer<T, E> c) {
 		return c;
@@ -52,6 +56,22 @@ public class SneakyThrow {
 		@SuppressWarnings("unchecked")
 		final E genericException = (E) e;
 		throw genericException;
+	}
+
+	@FunctionalInterface
+	public interface ThrowingRunnable<E extends Throwable> extends Runnable {
+
+		@Override
+		default void run() {
+			try {
+				runThrowing();
+			} catch (final Throwable e) {
+				throwSneaky(e);
+			}
+		}
+
+		void runThrowing() throws E;
+
 	}
 
 	@FunctionalInterface
@@ -104,10 +124,10 @@ public class SneakyThrow {
 	}
 
 	@FunctionalInterface
-	public interface ThrowingSupplier<T, E extends Throwable> extends Supplier<T> {
+	public interface ThrowingSupplier<R, E extends Throwable> extends Supplier<R> {
 
 		@Override
-		default T get() {
+		default R get() {
 			try {
 				return getThrowing();
 			} catch (final Throwable e) {
@@ -116,7 +136,7 @@ public class SneakyThrow {
 			}
 		}
 
-		T getThrowing() throws E;
+		R getThrowing() throws E;
 
 	}
 

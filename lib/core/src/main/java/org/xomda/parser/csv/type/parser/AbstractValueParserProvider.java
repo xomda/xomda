@@ -34,16 +34,11 @@ public abstract class AbstractValueParserProvider implements ValueParserProvider
 
 	@SuppressWarnings("unchecked")
 	static Predicate<Class<?>> createPredicate(final Class<?>... classes) {
-		return Stream.of(classes).map(Predicate::isEqual).reduce(Predicate::or)
-				.map(Predicate.class::cast).orElseGet(Predicates::alwaysFalse);
-	}
-
-	static ValueParser asParser(final ValueParser p) {
-		return p;
-	}
-
-	static ValueParser asParser(final ValueParser p, final Object defaultValue) {
-		return (final String s) -> null == s || s.isBlank() ? defaultValue : p.apply(s);
+		return Stream.of(classes)
+				.map(Predicate::isEqual)
+				.reduce(Predicate::or)
+				.map(Predicate.class::cast)
+				.orElseGet(Predicates::alwaysFalse);
 	}
 
 	static ValueParser.Primitive asPrimitiveParser(final ValueParser.Primitive p) {
@@ -51,7 +46,9 @@ public abstract class AbstractValueParserProvider implements ValueParserProvider
 	}
 
 	static ValueParser.Primitive asPrimitiveParser(final ValueParser.Primitive p, final Object defaultValue) {
-		return (final String s) -> null == s || s.isBlank() ? defaultValue : p.apply(s);
+		return (final String s) -> null == s || s.isBlank()
+				? defaultValue
+				: p.apply(s);
 	}
 
 	static abstract class Nullable extends AbstractValueParserProvider {

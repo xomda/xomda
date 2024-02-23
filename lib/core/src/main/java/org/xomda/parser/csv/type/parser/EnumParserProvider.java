@@ -1,6 +1,7 @@
 package org.xomda.parser.csv.type.parser;
 
-import java.lang.reflect.InvocationTargetException;
+import static org.xomda.shared.exception.SneakyThrow.sneaky;
+
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
@@ -28,13 +29,10 @@ public class EnumParserProvider extends AbstractValueParserProvider.Nullable {
 		final Object[] enumValues = enumClazz.getEnumConstants();
 		try {
 			final Method m = enumClazz.getMethod("name");
-			return Stream.of(enumValues).collect(Collectors.toMap(v -> {
-				try {
-					return (String) m.invoke(v);
-				} catch (final IllegalAccessException | InvocationTargetException e) {
-					throw new RuntimeException(e);
-				}
-			}, Function.identity()));
+			return Stream.of(enumValues).collect(Collectors.toMap(
+					sneaky(v -> (String) m.invoke(v)),
+					Function.identity()
+			));
 		} catch (final NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
