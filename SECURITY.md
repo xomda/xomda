@@ -6,7 +6,8 @@ This is a fresh project. We still support all versions. 🙂
 
 | Version | Supported          |
 |---------|--------------------|
-| 0.0.x   | :white_check_mark: |
+| 0.x.x   | :white_check_mark: |
+| older   | :x:                |
 
 ## Reporting a Vulnerability
 
