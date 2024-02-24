@@ -8,10 +8,12 @@ import java.util.regex.Pattern;
 public class TemplateFormat {
 
 	// The regex pattern used to escape a format pattern.
-	private static final Pattern rxBrackets = Pattern
-			.compile(new StringJoiner("|", "(", ")").add("([\\{]+)(?!\\d+[^}]*\\})") // {{ -> {'{'
+	private static final Pattern rxBrackets = Pattern.compile(
+			new StringJoiner("|", "(", ")")
+					.add("([\\{]+)(?!\\d+[^}]*\\})") // {{ -> {'{'
 					.add("(?<!\\{\\d[^}]*)([\\}]+)") // }} -> }'}'
-					.toString());
+					.toString()
+	);
 
 	/**
 	 * The patterns we're going to provide will typically contain a lot of curly

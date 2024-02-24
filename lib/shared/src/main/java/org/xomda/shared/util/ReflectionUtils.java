@@ -48,12 +48,9 @@ public class ReflectionUtils {
 			try {
 				return method.invoke(obj);
 			} catch (final IllegalAccessException | InvocationTargetException e) {
-				// throw new RuntimeException(e);
 				return null;
 			}
-		}).orElseGet(() -> (final Object obj) -> {
-			return null;
-		});
+		}).orElseGet(() -> (final Object obj) -> null);
 
 	}
 
@@ -65,8 +62,13 @@ public class ReflectionUtils {
 	@SuppressWarnings({ "rawtypes" })
 	public static boolean extendsFrom(final Class clz, final Class generic) {
 		return clz == generic
-				|| Stream.concat(Stream.of(clz.getGenericSuperclass()), Stream.of(clz.getGenericInterfaces()))
-				.filter(Objects::nonNull).filter(Class.class::isInstance).map(Class.class::cast)
+				|| Stream.concat(
+						Stream.of(clz.getGenericSuperclass()),
+						Stream.of(clz.getGenericInterfaces())
+				)
+				.filter(Objects::nonNull)
+				.filter(Class.class::isInstance)
+				.map(Class.class::cast)
 				.anyMatch(extendsFrom(generic));
 	}
 
@@ -76,7 +78,10 @@ public class ReflectionUtils {
 		}
 		final String trimmed = name.trim();
 		final String getterName = "get" + Character.toUpperCase(trimmed.charAt(0)) + trimmed.substring(1);
-		return Arrays.stream(clazz.getDeclaredMethods()).filter(isGetter(getterName)).findFirst();
+		return Arrays
+				.stream(clazz.getDeclaredMethods())
+				.filter(isGetter(getterName))
+				.findFirst();
 	}
 
 	public static <T> Supplier<T> getGetterSupplier(final Object obj, final String name) {

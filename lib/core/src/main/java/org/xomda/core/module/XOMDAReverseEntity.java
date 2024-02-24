@@ -45,10 +45,13 @@ public class XOMDAReverseEntity implements CsvObjectProcessor, CsvSchemaProcesso
 				// getChildList()
 				ReflectionUtils.getGetter(otherObject.getObjectClass(), listIdentifier)
 						// getParent()
-						.filter(l -> ReflectionUtils.getGetter(schemaObject.getObjectClass(), parentIdentifier)
+						.filter(l -> ReflectionUtils
+								.getGetter(schemaObject.getObjectClass(), parentIdentifier)
 								.isPresent())
-						.ifPresent((final Method method) -> rev.computeIfAbsent(schemaObject, o -> new ArrayList<>())
-								.add(otherObject));
+						.ifPresent((final Method method) -> rev
+								.computeIfAbsent(schemaObject, o -> new ArrayList<>())
+								.add(otherObject)
+						);
 
 			});
 		});
