@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.xomda.core.java.DeferredContext;
@@ -63,6 +65,8 @@ public class PojoWriter {
 	}
 
 	private String getClassExtensions(JavaClassWriter ctx) {
+		Set<String> extendList = new LinkedHashSet<>(this.extendList);
+		Set<String> implementList = new LinkedHashSet<>(this.implementList);
 		if (extendList.isEmpty() && implementList.isEmpty()) {
 			return "";
 		}
@@ -82,8 +86,19 @@ public class PojoWriter {
 		return sb.toString();
 	}
 
+	private void addInterfaceAndSuperClass(Entity entity) {
+		if (!declareOnly) {
+			return;
+		}
+
+		if (null != entity.getParent()) {
+			extendList.add(TemplateUtils.getJavaInterfaceName(entity));
+		}
+	}
+
 	public void write(final Entity entity) throws IOException {
 		boolean declareOnly = getDeclareOnly();
+		addInterfaceAndSuperClass(entity);
 		String type = declareOnly ? "interface" : "class";
 		try (final JavaClassWriter ctx = new JavaClassWriter(getClassName())) {
 			ctx

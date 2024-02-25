@@ -71,10 +71,6 @@ public class TemplateUtils {
 		return getJavaPackage(enm.getPackage()) + "." + StringUtils.toPascalCase(enm.getName());
 	}
 
-	public static String getType(final Entity entity) {
-		return getJavaPackage(entity.getPackage()) + "." + StringUtils.toPascalCase(entity.getName());
-	}
-
 	public static String getJavaType(final Attribute attribute) {
 		final AttributeType type = attribute.getType();
 		if (null == type) {
@@ -86,7 +82,7 @@ public class TemplateUtils {
 			case Integer -> "java.lang.Long";
 			case Decimal -> "java.lang.Double";
 			case Date, Time, Timestamp -> "java.util.Date";
-			case Entity -> getType(attribute.getEntityRef());
+			case Entity -> getJavaInterfaceName(attribute.getEntityRef());
 			case Enum -> getJavaType(attribute.getEnumRef());
 			default -> "java.lang.Object";
 		};
