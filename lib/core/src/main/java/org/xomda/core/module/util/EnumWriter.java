@@ -62,7 +62,13 @@ public class EnumWriter {
 					.println("public enum {0}{1} {", ctx.getClassName(), getClassExtensions(ctx))
 					.tab(tabbed -> tabbed.forEach(
 							enm::getValueList,
-							(final Value value) -> tabbed.println("{0}, ", StringUtils.toPascalCase(value.getName()))
+							(final Value value) -> tabbed
+									.addDocs(docs -> Optional
+											.ofNullable(value.getDescription())
+											.filter(not(String::isBlank))
+											.ifPresent(docs::printlnEscaped)
+									)
+									.println("{0}, ", StringUtils.toPascalCase(value.getName()))
 					))
 					.println("}");
 			ctx.writeFile(getOutputPath());
