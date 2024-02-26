@@ -135,7 +135,7 @@ public class JavaTemplateContext implements DefaultContext<JavaTemplateContext>,
 		return new TabbedContext(this, count);
 	}
 
-	public JavaTemplateContext addDocs(final Consumer<JavaDocWriter> docWriterConsumer) {
+	public JavaTemplateContext withJavaDoc(final Consumer<JavaDocWriter> docWriterConsumer) {
 		try (JavaDocWriter docCtx = new JavaDocWriter(this);) {
 			docWriterConsumer.accept(docCtx);
 		}

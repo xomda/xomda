@@ -54,7 +54,7 @@ public class EnumWriter {
 		try (final JavaClassWriter ctx = new JavaClassWriter(getClassName())) {
 			ctx
 					.withHeaders(banner)
-					.addDocs(docs -> Optional
+					.withJavaDoc(docs -> Optional
 							.ofNullable(enm.getDescription())
 							.filter(not(String::isBlank))
 							.ifPresent(docs::printlnEscaped)
@@ -63,7 +63,7 @@ public class EnumWriter {
 					.tab(tabbed -> tabbed.forEach(
 							enm::getValueList,
 							(final Value value) -> tabbed
-									.addDocs(docs -> Optional
+									.withJavaDoc(docs -> Optional
 											.ofNullable(value.getDescription())
 											.filter(not(String::isBlank))
 											.ifPresent(docs::printlnEscaped)

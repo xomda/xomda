@@ -91,7 +91,7 @@ public class GetterSetter {
 
 		if (!setOnly) {
 			ctx
-					.addDocs(doc -> {
+					.withJavaDoc(doc -> {
 						if (hasJavaDoc) {
 							doc.printlnEscaped(javadoc);
 						}
@@ -111,7 +111,7 @@ public class GetterSetter {
 
 		if (!getOnly) {
 			ctx
-					.addDocs(doc -> {
+					.withJavaDoc(doc -> {
 						if (hasJavaDoc) {
 							doc.printlnEscaped(javadoc);
 						}

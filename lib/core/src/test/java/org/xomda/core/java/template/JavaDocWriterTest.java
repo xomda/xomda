@@ -32,7 +32,7 @@ public class JavaDocWriterTest {
 						void test() {}
 						""",
 				withContext(ctx -> ctx
-						.println("void test() {}").println().addDocs(doc -> {
+						.println("void test() {}").println().withJavaDoc(doc -> {
 							// make sure we got a JavaDocWriter
 							assertInstanceOf(JavaDocWriter.class, doc);
 							doc
@@ -56,7 +56,7 @@ public class JavaDocWriterTest {
 						""
 				),
 				withContext(ctx -> ctx.tab(tab1 -> tab1.tab(tab2 -> tab2.tab(tab3 -> tab3
-						.addDocs(doc -> doc
+						.withJavaDoc(doc -> doc
 								// make sure we got a JavaDocWriter
 								.println("Test 123")
 								.println("Test 456")
@@ -69,7 +69,7 @@ public class JavaDocWriterTest {
 	public void testLooselyWithTabs() {
 		final int tabCount = 2;
 		final String actual = withContext(ctx -> ctx.tab(tabCount, tab -> tab
-				.addDocs(doc -> {
+				.withJavaDoc(doc -> {
 					// make sure we got a JavaDocWriter
 					assertInstanceOf(JavaDocWriter.class, doc);
 					final JavaTemplateContext res = doc

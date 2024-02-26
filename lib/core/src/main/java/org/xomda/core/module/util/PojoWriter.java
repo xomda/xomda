@@ -88,7 +88,7 @@ public class PojoWriter {
 		try (final JavaClassWriter ctx = new JavaClassWriter(getClassName())) {
 			ctx
 					.withHeaders(banner)
-					.addDocs(docs -> Optional
+					.withJavaDoc(docs -> Optional
 							.ofNullable(entity.getDescription())
 							.filter(not(String::isBlank))
 							.ifPresent(docs::printlnEscaped)
