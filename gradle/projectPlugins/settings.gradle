@@ -1,5 +1,10 @@
 dependencyResolutionManagement {
-	repositories.gradlePluginPortal()
+    repositories.gradlePluginPortal()
+
+    // Reuse version catalog from the main build.
+    versionCatalogs {
+        create('libs', { from(files("../libs.versions.toml")) })
+    }
 }
 
 include("xomda-convention-plugins")
