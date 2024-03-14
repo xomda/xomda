@@ -5,11 +5,11 @@ import static org.xomda.plugin.gradle.Constants.XOMDA_TASK_GENERATE_TEMPLATE_DES
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.logging.LogLevel;
@@ -52,9 +52,8 @@ public class XOMDAGenerateTask implements Action<Task> {
 
 			return new CsvService().parse(file, config);
 		} catch (final IOException e) {
-			project.getLogger().error("", e);
+			throw new GradleException("Failed to load the Model: %s".formatted(file), e);
 		}
-		return Collections.emptyList();
 	}
 
 	private String[] getModelFiles(final Project project) {
@@ -96,7 +95,7 @@ public class XOMDAGenerateTask implements Action<Task> {
 				XOMDACompileTask.executeTemplates(task, objects);
 				// job done.
 			} catch (final IOException e) {
-				project.getLogger().error("", e);
+				throw new GradleException("Template generation failed", e);
 			}
 
 		});

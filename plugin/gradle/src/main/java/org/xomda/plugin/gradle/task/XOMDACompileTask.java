@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.gradle.api.Action;
+import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.tasks.SourceSet;
@@ -90,7 +91,7 @@ public class XOMDACompileTask implements Action<JavaCompile> {
 					final Template<T> t = (Template<T>) template;
 					executeTemplate(t, cwd, objects);
 				} catch (Exception e) {
-					project.getLogger().error("Failed to process template", e);
+					throw new GradleException("Execution of template \"%s\" threw an error".formatted(template.getClass()), e);
 				}
 			});
 		});
