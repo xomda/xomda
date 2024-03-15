@@ -45,9 +45,39 @@ class CsvProxyObject implements InvocationHandler {
 		if (name.startsWith("get") && name.length() > 3) {
 			final String propName = StringUtils.toLower1(name.substring(3));
 			final Object result = state.get(propName);
-			return result instanceof final CsvObject csvObject ? csvObject.getProxy() : result;
+			return cast(result, method.getReturnType());
 		}
 		return null;
+	}
+
+	private static Object cast(Object object, Class<?> type) {
+		if (null == object) {
+			/*
+			if (type.isAssignableFrom(List.class)) {
+				return Collections.emptyList();
+			}
+			if (type.isAssignableFrom(Set.class)) {
+				return Collections.emptySet();
+			}
+			if (type.isAssignableFrom(Map.class)) {
+				return Collections.emptyMap();
+			}
+			if (type.isAssignableFrom(Iterable.class)) {
+				return Collections.emptyIterator();
+			}
+			if (type.isAssignableFrom(Stream.class)) {
+				return Stream.empty();
+			}
+			if (type.isAssignableFrom(Optional.class)) {
+				return Optional.empty();
+			}
+			*/
+			return object;
+		}
+		if (object instanceof final CsvObject csvObject) {
+			return csvObject.getProxy();
+		}
+		return object;
 	}
 
 }
