@@ -1,28 +1,29 @@
 pluginManagement {
-	includeBuild('gradle/projectPlugins')
+    includeBuild('gradle/projectPlugins')
 }
 
 plugins {
-	// Apply the foojay-resolver plugin to allow automatic download of JDKs
-	id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
+    // Apply the foojay-resolver plugin to allow automatic download of JDKs
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
 rootProject.name = 'xomda'
 
 dependencyResolutionManagement {
-	repositories.mavenLocal()
-	repositories.mavenCentral()
+    repositories.mavenLocal()
+    repositories.mavenCentral()
 }
 
-include(
-		'lib:api',
-		'lib:cli',
-		'lib:core',
-		'lib:model',
-		'lib:shared',
-		'plugin:gradle'
-)
+void includeDir(String dir) {
+    file(dir).listFiles().each { it ->
+        if (!it.isDirectory() || !new File(it, "build.gradle").exists()) return
+        include "${dir}:${it.name}"
+    }
+}
+
+includeDir('lib')
+// includeDir('plugin')
 
 // update the plugin names
-project(":plugin").children.each { p -> p.name = "plugin-" + p.name }
+// project(":plugin").children.each { p -> p.name = "plugin-" + p.name }
 

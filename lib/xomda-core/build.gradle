@@ -9,7 +9,7 @@ dependencies {
     api libs.log4j
     api libs.log4j.slf4j
 
-    api project(":lib:api")
+    api project(":lib:xomda-api")
 
     api libs.bundles.graalvm.js
 }

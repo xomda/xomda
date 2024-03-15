@@ -1,8 +1,0 @@
-plugins {
-	id 'xomda-java-library'
-}
-
-dependencies {
-	api project(":lib:model")
-	api project(":lib:shared")
-}

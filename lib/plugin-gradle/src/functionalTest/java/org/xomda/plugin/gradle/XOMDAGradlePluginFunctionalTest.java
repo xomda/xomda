@@ -31,7 +31,7 @@ class XOMDAGradlePluginFunctionalTest {
 	@Test
 	void canRunTask() throws IOException {
 		writeString(getSettingsFile(), "");
-		writeString(getBuildFile(), "plugins {" + "  id('org.xomda.plugin-gradle')" + "}");
+		writeString(getBuildFile(), "plugins {" + "  id('org.xomda.xomda.plugin-gradle')" + "}");
 
 		// Run the build
 		final GradleRunner runner = GradleRunner.create();

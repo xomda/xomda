@@ -7,14 +7,14 @@ dependencies {
     implementation libs.log4j
     implementation libs.log4j.slf4j
 
-    implementation project(":lib:api")
-    implementation project(":lib:core")
+    implementation project(":lib:xomda-api")
+    implementation project(":lib:xomda-core")
 }
 
 final String GENERATE_MODEL_NAME = "xomdaGenerateModel"
 
 tasks.register(GENERATE_MODEL_NAME, JavaExec) {
-    Project modelProject = project(":lib:model")
+    Project modelProject = project(":lib:xomda-model")
     group = "XOMDA"
     description = "Generate the XOMDA object model."
     classpath = sourceSets.main.runtimeClasspath

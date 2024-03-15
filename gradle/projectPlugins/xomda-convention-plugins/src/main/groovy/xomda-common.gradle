@@ -4,6 +4,8 @@ plugins {
     id('idea')
 }
 
+group = 'org.xomda.xomda'
+
 eclipse {
     classpath {
         defaultOutputDir = file("build/eclipse-bin/default")

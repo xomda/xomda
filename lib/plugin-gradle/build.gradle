@@ -3,20 +3,20 @@ plugins {
 }
 
 dependencies {
-    implementation project(":lib:core")
+    implementation project(":lib:xomda-core")
 }
 
-group = "org.xomda"
+group = "org.xomda.xomda"
 
 gradlePlugin {
     // Define the plugin
     plugins {
         xomda {
-            id = "org.xomda.plugin-gradle"
+            id = "org.xomda.xomda.plugin-gradle"
             displayName = "XOMDA Gradle Plugin"
             description = "Generate models with XOMDA in a Gradle build"
             website = "http://xomda.org"
-            group "org.xomda"
+            group "org.xomda.xomda"
             version = libs.versions.xomda.get()
             implementationClass = "org.xomda.plugin.gradle.XOMDAGradlePlugin"
             tags = ['object-model', 'abstraction', 'templates', 'xomda']
