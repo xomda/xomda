@@ -6,6 +6,8 @@ dependencies {
     implementation project(":lib:core")
 }
 
+group = "org.xomda"
+
 gradlePlugin {
     // Define the plugin
     plugins {
@@ -17,6 +19,7 @@ gradlePlugin {
             group "org.xomda"
             version = libs.versions.xomda.get()
             implementationClass = "org.xomda.plugin.gradle.XOMDAGradlePlugin"
+            tags = ['object-model', 'abstraction', 'templates', 'xomda']
         }
     }
 }
