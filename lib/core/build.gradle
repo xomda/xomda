@@ -1,23 +1,25 @@
 plugins {
-	id 'xomda-java-library'
+    id 'xomda-java-library'
 }
 
 dependencies {
-	api libs.commons.math3
-	api libs.commons.csv
+    api libs.commons.math3
+    api libs.commons.csv
 
-	api libs.log4j
-	api libs.log4j.slf4j
+    api libs.log4j
+    api libs.log4j.slf4j
 
-	api project(":lib:api")
+    api project(":lib:api")
+
+    api libs.bundles.graalvm.js
 }
 
 sourceSets {
-	main {
-		java {
-			srcDirs 'src/generated/java'
-		}
-	}
+    main {
+        java {
+            srcDirs 'src/generated/java'
+        }
+    }
 }
 
 tasks.withType(JavaCompile) { options.compilerArgs += ['-Xlint:unchecked'] }

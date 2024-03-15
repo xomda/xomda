@@ -7,9 +7,13 @@ commons-math3 = "3.6.1"
 commons-csv = "1.10.0"
 commons-cli = "1.6.0"
 guava = "33.0.0-jre"
+graalvm-js = "23.0.3"
+graalvm-js-scriptengine = "23.1.2"
 junit-jupiter = "5.10.2"
 log4j = "2.23.0"
 slf4j = "2.0.11"
+
+
 
 [libraries]
 commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }
@@ -19,3 +23,8 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 log4j = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j" }
 log4j-slf4j = { module = 'org.apache.logging.log4j:log4j-slf4j2-impl', version.ref = "log4j" }
+graalvm-js = { module = 'org.graalvm.js:js', version.ref = "graalvm-js" }
+graalvm-js-scriptengine = { module = 'org.graalvm.js:js-scriptengine', version.ref = "graalvm-js-scriptengine" }
+
+[bundles]
+graalvm-js = ["graalvm-js", "graalvm-js-scriptengine"]
