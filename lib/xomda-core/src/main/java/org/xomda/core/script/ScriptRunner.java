@@ -1,7 +1,8 @@
 package org.xomda.core.script;
 
+import static org.xomda.shared.util.ReflectionUtils.unchecked;
+
 import java.util.Map;
-import java.util.function.Supplier;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -28,53 +29,34 @@ public class ScriptRunner {
 		engine = createEngine();
 	}
 
-	public static CompiledScript compile(final String script) throws ScriptException {
-		return ((Compilable) engine).compile(script);
-	}
-
-	public static <T> Supplier<T> callable(final String script) {
-		final Logger logger = logger();
-		try {
-			final CompiledScript compiled = compile(script);
-			return (() -> {
-				final ScriptEngine engine = createEngine();
-				try {
-					@SuppressWarnings("unchecked")
-					T result = (T) compiled.eval(engine.getContext());
-					return result;
-				} catch (ScriptException e) {
-					logger.error("Failed to invoke script", e);
-					return null;
-				}
-			});
-		} catch (ScriptException e) {
-			logger.error("Failed to load script: %s".formatted(script), e);
-			return () -> null;
-		}
-	}
-
-	public static <T> Supplier<T> callable(final String script, final Map<String, Object> bindings) {
+	public static <T> ScriptInvoker<T> parse(final String script) {
 		final Logger logger = logger();
 		try {
 			CompiledScript compiled = compile(script);
-			return (() -> {
-				final ScriptEngine engine = createEngine();
-				Bindings bindingContext = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-				if (null != bindings) {
-					bindingContext.putAll(bindings);
-				}
-				try {
-					@SuppressWarnings("unchecked")
-					T result = (T) compiled.eval(bindingContext);
-					return result;
-				} catch (ScriptException e) {
-					logger.error("Failed to invoke script", e);
-					return null;
-				}
-			});
+			return ((final Map<String, Object> bindings) -> evaluate(compiled, bindings));
 		} catch (ScriptException e) {
 			logger.error("Failed to load script: %s".formatted(script), e);
-			return () -> null;
+			return null;
+		}
+	}
+
+	private static CompiledScript compile(final String script) throws ScriptException {
+		return ((Compilable) engine).compile(script);
+	}
+
+	private static <T> T evaluate(CompiledScript compiled, final Map<String, Object> bindings) {
+		try {
+			final ScriptEngine engine = createEngine();
+			if (null == bindings) {
+				return unchecked(compiled.eval(engine.getContext()));
+			} else {
+				Bindings bindingContext = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+				bindingContext.putAll(bindings);
+				return unchecked(compiled.eval(bindingContext));
+			}
+		} catch (ScriptException e) {
+			logger().error("Failed to invoke script", e);
+			return null;
 		}
 	}
 

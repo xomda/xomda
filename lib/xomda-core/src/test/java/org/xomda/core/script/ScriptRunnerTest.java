@@ -1,6 +1,7 @@
 package org.xomda.core.script;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -12,29 +13,35 @@ public class ScriptRunnerTest {
 
 	@Test
 	public void testScript() {
-		Supplier<String> supplier = ScriptRunner.callable("'Hello world!'");
-		assertEquals("Hello world!", supplier.get());
+		ScriptInvoker<String> invoker = ScriptRunner.parse("'Hello world!'");
+		assertNotNull(invoker);
+		assertEquals("Hello world!", invoker.invoke());
 	}
 
 	@Test
 	public void testScriptWithBindings() {
-		Supplier<String> test1 = ScriptRunner.callable("hello", Map.of("hello", "Hello world!"));
-		assertEquals("Hello world!", test1.get());
+		ScriptInvoker<String> test1 = ScriptRunner.parse("hello");
+		assertNotNull(test1);
+		assertEquals("Hello world!", test1.invoke(Map.of("hello", "Hello world!")));
 
-		Supplier<String> test2 = ScriptRunner.callable("test()", Map.of("test", (Supplier<String>) () -> "Hello world!"));
-		assertEquals("Hello world!", test2.get());
+		ScriptInvoker<String> test2 = ScriptRunner.parse("test()");
+		assertNotNull(test2);
+		assertEquals("Hello world!", test2.invoke(Map.of("test", (Supplier<String>) () -> "Hello world!")));
 
 		// single quote
-		Supplier<String> test3 = ScriptRunner.callable("test('Hello world!')", Map.of("test", Function.identity()));
-		assertEquals("Hello world!", test3.get());
+		ScriptInvoker<String> test3 = ScriptRunner.parse("test('Hello world!')");
+		assertNotNull(test3);
+		assertEquals("Hello world!", test3.invoke(Map.of("test", Function.identity())));
 
 		// double quote
-		Supplier<String> test4 = ScriptRunner.callable("test(\"Hello world!\")", Map.of("test", Function.identity()));
-		assertEquals("Hello world!", test4.get());
+		ScriptInvoker<String> test4 = ScriptRunner.parse("test(\"Hello world!\")");
+		assertNotNull(test4);
+		assertEquals("Hello world!", test4.invoke(Map.of("test", Function.identity())));
 
 		// backtick quote
-		Supplier<String> test5 = ScriptRunner.callable("test(`Hello world!`)", Map.of("test", Function.identity()));
-		assertEquals("Hello world!", test5.get());
+		ScriptInvoker<String> test5 = ScriptRunner.parse("test(`Hello world!`)");
+		assertNotNull(test5);
+		assertEquals("Hello world!", test5.invoke(Map.of("test", Function.identity())));
 	}
 
 }
