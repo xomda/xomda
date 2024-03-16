@@ -21,7 +21,7 @@ subprojects {
 
         publications {
             // will be published be "pluginMaven"
-            if (project.name.equals("plugin-gradle")) return
+            if (project.name.equals("xomda-plugin-gradle")) return
             maven(MavenPublication) {
                 version = libs.versions.xomda.get()
                 group 'org.xomda'

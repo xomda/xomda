@@ -40,7 +40,7 @@ public class XOMDAGradlePlugin implements Plugin<Project> {
 		// the version should be the same as the version of the plugin
 		project.getBuildscript().getConfigurations().stream().flatMap(c -> c.getDependencies().stream())
 				.filter((final Dependency dep) -> dep.getName().startsWith(XOMDA_GROUP)).findFirst().ifPresent(d -> {
-					Stream.of(XOMDA_GROUP + ":core", XOMDA_GROUP + ":api")
+					Stream.of(XOMDA_GROUP + ":xomda-core", XOMDA_GROUP + ":xomda-api")
 							.map(s -> s + ":" + d.getVersion())
 							.forEach(xomdaDependency -> {
 								final Dependency dep = project.getDependencies().create(xomdaDependency);

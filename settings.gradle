@@ -22,8 +22,4 @@ void includeDir(String dir) {
 }
 
 includeDir('lib')
-// includeDir('plugin')
-
-// update the plugin names
-// project(":plugin").children.each { p -> p.name = "plugin-" + p.name }
 
