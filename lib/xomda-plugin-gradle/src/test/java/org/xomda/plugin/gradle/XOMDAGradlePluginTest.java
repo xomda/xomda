@@ -14,7 +14,7 @@ class XOMDAGradlePluginTest {
 	void pluginRegistersATask() {
 		// Create a test project and apply the plugin
 		final Project project = ProjectBuilder.builder().build();
-		project.getPlugins().apply("org.xomda.xomda.plugin-gradle");
+		project.getPlugins().apply("org.xomda.xomda-plugin-gradle");
 
 		// Verify the result
 		assertNotNull(project.getTasks().findByName("xomdaGenerate"));

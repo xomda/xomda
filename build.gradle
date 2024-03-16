@@ -3,7 +3,7 @@ plugins {
 }
 
 allprojects {
-    group "org.xomda.xomda"
+    group "org.xomda"
     repositories {
         mavenLocal()
         mavenCentral()
@@ -24,7 +24,7 @@ subprojects {
             if (project.name.equals("plugin-gradle")) return
             maven(MavenPublication) {
                 version = libs.versions.xomda.get()
-                group 'org.xomda.xomda'
+                group 'org.xomda'
                 from components.java
             }
         }

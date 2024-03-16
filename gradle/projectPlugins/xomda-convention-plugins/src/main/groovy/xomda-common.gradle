@@ -4,7 +4,7 @@ plugins {
     id('idea')
 }
 
-group = 'org.xomda.xomda'
+group = 'org.xomda'
 
 eclipse {
     classpath {

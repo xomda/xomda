@@ -22,5 +22,5 @@ tasks.withType(Test) {
     useJUnitPlatform()
 }
 
-group "org.xomda.xomda"
+group "org.xomda"
 
