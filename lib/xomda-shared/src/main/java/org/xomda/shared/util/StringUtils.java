@@ -18,7 +18,7 @@ public class StringUtils {
 		return null == in || in.isEmpty()
 				? in
 				: Arrays
-						.stream(in.split("\\s+"))
+						.stream(in.split("\\W+"))
 						.map(String::toLowerCase)
 						.map(StringUtils::toUpper1)
 						.collect(Collectors.joining());

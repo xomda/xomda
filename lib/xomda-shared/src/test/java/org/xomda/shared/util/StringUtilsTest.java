@@ -13,6 +13,8 @@ class StringUtilsTest {
 
 		assertEquals("JorisAerts", StringUtils.toPascalCase("Joris Aerts"));
 		assertEquals("Jorisaerts", StringUtils.toPascalCase("JorisAerts"));
+
+		assertEquals("EMail", StringUtils.toPascalCase("E-Mail"));
 	}
 
 	@Test
@@ -22,6 +24,9 @@ class StringUtilsTest {
 
 		assertEquals("jorisAerts", StringUtils.toCamelCase("Joris Aerts"));
 		assertEquals("jorisaerts", StringUtils.toCamelCase("JorisAerts"));
+
+		assertEquals("eMail", StringUtils.toCamelCase("E-Mail"));
+
 	}
 
 	@Test
