@@ -17,6 +17,13 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
 
+    javadoc.options.addStringOption('Xdoclint:none', '-quiet')
+
+    java {
+        withSourcesJar()
+        withJavadocJar()
+    }
+
     publishing {
 
         publications {
