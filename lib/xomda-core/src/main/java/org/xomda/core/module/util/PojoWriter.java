@@ -37,12 +37,23 @@ public class PojoWriter {
 	private final List<String> extendList = new ArrayList<>();
 	private final List<String> implementList = new ArrayList<>();
 
+	private Class<?> idAttr;
+
 	public String getClassName() {
 		return className;
 	}
 
 	public String getOutputPath() {
 		return outputPath;
+	}
+
+	public PojoWriter withId(Class<?> idType) {
+		this.idAttr = idType;
+		return this;
+	}
+
+	public PojoWriter withId() {
+		return withId(long.class);
 	}
 
 	public PojoWriter withExtends(String... ext) {
@@ -113,6 +124,17 @@ public class PojoWriter {
 						final JavaTemplateContext bodyContext = tabbed.deferred();
 						tabbed
 								.println()
+
+								.consume(() -> {
+									if (null == idAttr) {
+										return;
+									}
+									GetterSetter.create(idAttr.getName(), "Id")
+											.declareOnly(declareOnly)
+											.withModifiers(Modifier.PUBLIC)
+											.writeTo(globalContext, bodyContext);
+								})
+
 								// generate the regular attributes
 								.forEach(entity::getAttributeList, (final Attribute attribute) -> {
 									final String attributeName = StringUtils.toPascalCase(attribute.getName());
