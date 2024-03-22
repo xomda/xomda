@@ -1,0 +1,63 @@
+Package;name;packageName;;;;;;;;;description
+Enum;name;identifier;;;;;;;;;description
+Value;name;;;;;;;;;;description
+Entity;name;identifier;parent;type;;dependency;transient;;;;description
+Attribute;name;identifier;type;size;scale;enumRef;entityRef;dependency;multiValued;required;description
+;;;;;;;;;;;
+Package;XOMDA;org.xomda;;;;;;;;;The XOMDA root package.
+;;;;;;;;;;;
+;;;;;;;;;;;
+Package;Library;lib;;;;;;;;;
+;;;;;;;;;;;
+Package;Java;java.ast;;;;;;;;;
+;;;;;;;;;;;
+Entity;Declaration;dec;;;;;;;;;
+Attribute;Identifier;idr;String;256;;;;;;;
+;;;;;;;;;;;
+Entity;Program;prg;;;;;;;;;
+Attribute;Identifier;idr;String;256;;;;;;;
+;;;;;;;;;;;
+Entity;Modifier;mod;;Static;;;;;;;
+Attribute;Identifier;idr;Integer;;;;;;;;
+Attribute;Name;nm;String;256;;;;;;;
+;;;;;;;;;;;
+Entity;Package;dec_pkg;XOMDA/Library/Java/Declaration;;;;;;;;
+;;;;;;;;;;;
+Entity;Import;dec_imp;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Package;pkg;Entity;;;;XOMDA/Library/Java/Package;Composite;;;
+;;;;;;;;;;;
+Entity;Class;dec_clz;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Package;pkg;Entity;;;;XOMDA/Library/Java/Package;Composite;;;
+Attribute;Parent Class;clz;Entity;;;;XOMDA/Library/Java/Class;Composite;;;
+Attribute;Modifier;mod;Entity;;;;XOMDA/Library/Java/Modifier;;TRUE;;
+Attribute;Extends;ext;Entity;;;;XOMDA/Library/Java/Class;;TRUE;;
+Attribute;Implements;imp;Entity;;;;XOMDA/Library/Java/Class;;TRUE;;
+;;;;;;;;;;;
+Entity;Field;dec_fld;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Parent Class;dec_clz;Entity;;;;XOMDA/Library/Java/Class;Composite;;;
+Attribute;Modifier;mod;Entity;;;;XOMDA/Library/Java/Modifier;;TRUE;;
+Attribute;Type;tp;Entity;;;;XOMDA/Library/Java/Class;;;;
+;;;;;;;;;;;
+Entity;Variable;dec_var;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Field;dec_fld;Entity;;;;XOMDA/Library/Java/Field;Composite;;;
+Attribute;Expression;expr;Text;;;;;;;;
+;;;;;;;;;;;
+Entity;Parameter;dec_prm;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Modifier;mod;Entity;;;;XOMDA/Library/Java/Modifier;;TRUE;;
+Attribute;Type;tp;Entity;;;;XOMDA/Library/Java/Class;;;;
+;;;;;;;;;;;
+Entity;Constructor;dec_fld;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Parent Class;dec_clz;Entity;;;;XOMDA/Library/Java/Class;Composite;;;
+Attribute;Modifier;mod;Entity;;;;XOMDA/Library/Java/Modifier;;TRUE;;
+Attribute;Type;tp;Entity;;;;XOMDA/Library/Java/Class;;;;
+Attribute;Parameter;prm;Entity;;;;XOMDA/Library/Java/Parameter;;TRUE;;
+;;;;;;;;;;;
+Entity;Block;blck;;;;;;;;;
+Attribute;Text;txt;Text;;;;;;TRUE;;
+;;;;;;;;;;;
+Entity;Method;dec_mth;XOMDA/Library/Java/Declaration;;;;;;;;
+Attribute;Parent Class;dec_clz;Entity;;;;XOMDA/Library/Java/Class;Composite;;;
+Attribute;Modifier;mod;Entity;;;;XOMDA/Library/Java/Modifier;;TRUE;;
+Attribute;ReturnType;ret_tp;Entity;;;;XOMDA/Library/Java/Class;;;;
+Attribute;Parameter;prm;Entity;;;;XOMDA/Library/Java/Parameter;;TRUE;;
+Attribute;Block;blck;Entity;;;;XOMDA/Library/Java/Block;;;;

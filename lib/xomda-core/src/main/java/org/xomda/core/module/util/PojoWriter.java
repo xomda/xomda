@@ -103,7 +103,7 @@ public class PojoWriter {
 		}
 
 		if (null != entity.getParent()) {
-			extendList.add(TemplateUtils.getJavaInterfaceName(entity));
+			extendList.add(TemplateUtils.getJavaInterfaceName(entity.getParent()));
 		}
 	}
 

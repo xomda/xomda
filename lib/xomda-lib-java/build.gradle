@@ -1,0 +1,52 @@
+plugins {
+    id 'xomda-java-library'
+    //id "org.xomda.plugin.gradle.XOMDAGradlePlugin" version "latest.release"
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/generated/java'
+        }
+    }
+    xomda {}
+}
+
+configurations.xomdaImplementation.extendsFrom(configurations.implementation)
+configurations.xomdaRuntimeOnly.extendsFrom(configurations.runtimeOnly)
+
+
+dependencies {
+    implementation libs.commons.cli
+    implementation libs.log4j
+    implementation libs.log4j.slf4j
+
+    runtimeOnly project(":lib:xomda-plugin-gradle")
+    runtimeOnly project(":lib:xomda-core")
+    runtimeOnly project(":lib:xomda-cli")
+
+    xomdaImplementation project(":lib:xomda-cli")
+    xomdaImplementation project(":lib:xomda-core")
+    xomdaImplementation project(":lib:xomda-model")
+}
+
+
+final String GENERATE_MODEL_NAME = "xomdaGenerateModel"
+
+tasks.register(GENERATE_MODEL_NAME, JavaExec) {
+    configurations { xomda }
+    Project javaLibProject = project(":lib:xomda-lib-java")
+    group = "XOMDA"
+    description = "Generate the XOMDA object model."
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.xomda.runtimeClasspath
+    mainClass = "org.xomda.cli.Main"
+    workingDir = javaLibProject.projectDir
+
+    args = [
+            "--extensions", "org.xomda.lib.java.TestModelTemplate",
+            "--models", javaLibProject.file("src/xomda/config/Model.csv"),
+    ]
+}
+
+tasks.named("build") { finalizedBy(GENERATE_MODEL_NAME) }
