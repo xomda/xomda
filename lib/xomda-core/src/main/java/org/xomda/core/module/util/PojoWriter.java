@@ -137,10 +137,15 @@ public class PojoWriter {
 
 								// generate the regular attributes
 								.forEach(entity::getAttributeList, (final Attribute attribute) -> {
-									final String attributeName = StringUtils.toPascalCase(attribute.getName());
-									final String fullyQualifiedType = ctx.addImport(TemplateUtils.getJavaType(attribute));
+									boolean multiValued = Boolean.TRUE.equals(attribute.getMultiValued());
+									String suffix = multiValued ? " List" : "";
+									final String attributeName = StringUtils.toPascalCase(attribute.getName() + suffix);
+									final String fullyQualifiedType = multiValued
+											? ctx.addGenericImport(List.class, TemplateUtils.getJavaType(attribute))
+											: ctx.addImport(TemplateUtils.getJavaType(attribute));
 									GetterSetter.create(fullyQualifiedType, attributeName)
 											.declareOnly(declareOnly)
+											.withDefaultValue(multiValued ? "new " + ctx.addImport(ArrayList.class) + "<>()" : null)
 											.withModifiers(Modifier.PUBLIC)
 											.withJavaDoc(attribute.getDescription())
 											.writeTo(globalContext, bodyContext);
