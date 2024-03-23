@@ -14,6 +14,7 @@ public class GetterSetter {
 	private String name;
 	private String type;
 	private int modifiers;
+	private String defaultValue;
 
 	private boolean getOnly;
 	private boolean setOnly;
@@ -21,6 +22,11 @@ public class GetterSetter {
 
 	public GetterSetter withName(final String name) {
 		this.name = name;
+		return this;
+	}
+
+	public GetterSetter withDefaultValue(final String defaultValue) {
+		this.defaultValue = defaultValue;
 		return this;
 	}
 
@@ -83,7 +89,12 @@ public class GetterSetter {
 		if (withBody) {
 			final String modifiers = "private" + (isStatic ? " static" : "");
 			// declare the variable
-			globalsCtx.println("{0} {1} {2};", modifiers, type, variableName);
+			globalsCtx.print("{0} {1} {2}", modifiers, type, variableName);
+			if (null != defaultValue) {
+				globalsCtx.print("= {0}", defaultValue);
+			}
+			globalsCtx.println(";");
+
 			if (globalsCtx == ctx) {
 				globalsCtx.println();
 			}
