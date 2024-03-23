@@ -35,10 +35,20 @@ dependencies {
 
 
 final String GENERATE_MODEL_NAME = "xomdaGenerateModel"
+final String GENERATE_COMPILE = "xomdaCompile"
+
+tasks.register(GENERATE_COMPILE, JavaCompile) {
+    options.fork = true
+    classpath = configurations.runtimeClasspath
+    destinationDirectory = sourceSets.xomda.java.destinationDirectory
+    source sourceSets.xomda.java
+}
 
 tasks.register(GENERATE_MODEL_NAME, JavaExec) {
     configurations { xomda }
     Project javaLibProject = project(":lib:xomda-lib-java")
+
+    dependsOn GENERATE_COMPILE
     group = "XOMDA"
     description = "Generate the XOMDA object model."
     classpath = sourceSets.main.runtimeClasspath + sourceSets.xomda.runtimeClasspath
@@ -51,4 +61,4 @@ tasks.register(GENERATE_MODEL_NAME, JavaExec) {
     ]
 }
 
-tasks.named("build") { finalizedBy(GENERATE_MODEL_NAME) }
+tasks.named("build") { dependsOn GENERATE_MODEL_NAME }
