@@ -18,6 +18,8 @@ import org.xomda.lib.java.ast.Import;
 import org.xomda.lib.java.ast.Method;
 import org.xomda.lib.java.ast.Type;
 import org.xomda.lib.java.ast.Variable;
+import org.xomda.lib.java.formatter.DefaultJavaFormatter;
+import org.xomda.lib.java.formatter.JavaFormatter;
 import org.xomda.shared.exception.SneakyThrow;
 
 public class JavaRenderer {
@@ -26,6 +28,16 @@ public class JavaRenderer {
 	private static final char NEW_LINE = '\n';
 	private static final char TAB = '\t';
 	private int tabs = 0;
+
+	JavaFormatter formatter;
+
+	public JavaRenderer(JavaFormatter formatter) {
+		this.formatter = formatter;
+	}
+
+	public JavaRenderer() {
+		this(new DefaultJavaFormatter());
+	}
 
 	public <T> void render(T obj, Appendable app) throws IOException {
 		if (obj instanceof CompilationUnit unit) {
