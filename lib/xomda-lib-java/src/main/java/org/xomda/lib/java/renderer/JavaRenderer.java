@@ -4,7 +4,10 @@ import static org.xomda.shared.exception.SneakyThrow.sneakyConsumer;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.function.Supplier;
 
 import org.xomda.lib.java.ast.Block;
 import org.xomda.lib.java.ast.Class;
@@ -43,12 +46,8 @@ public class JavaRenderer {
 	public void render(CompilationUnit unit, Appendable app) throws IOException {
 		app.append("package ").append(unit.getPackage().getIdentifier()).append(END_OF_STATEMENT);
 		nextLine(app);
-
-		unit.getImportList().forEach(SneakyThrow.sneakyConsumer(obj -> render(obj, app)));
-		nextLine(app);
-
-		unit.getClassList().forEach(SneakyThrow.sneakyConsumer(obj -> render(obj, app)));
-		nextLine(app);
+		each(unit::getImportList, obj -> render(obj, app), () -> nextLine(app));
+		each(unit::getClassList, obj -> render(obj, app), () -> nextLine(app));
 	}
 
 	public void render(Import imp, Appendable app) throws IOException {
@@ -59,54 +58,20 @@ public class JavaRenderer {
 	}
 
 	public void render(org.xomda.lib.java.ast.Modifier mod, Appendable app) throws IOException {
-		StringJoiner sj = new StringJoiner(" ");
-		if (Modifier.isPrivate(mod.getIdentifier().intValue())) {
-			sj.add("private");
+		if (null == mod) {
+			return;
 		}
-		if (Modifier.isPublic(mod.getIdentifier().intValue())) {
-			sj.add("public");
-		}
-		if (Modifier.isProtected(mod.getIdentifier().intValue())) {
-			sj.add("protected");
-		}
-		if (Modifier.isStatic(mod.getIdentifier().intValue())) {
-			sj.add("static");
-		}
-		if (Modifier.isFinal(mod.getIdentifier().intValue())) {
-			sj.add("final");
-		}
-		if (Modifier.isAbstract(mod.getIdentifier().intValue())) {
-			sj.add("abstract");
-		}
-		if (Modifier.isInterface(mod.getIdentifier().intValue())) {
-			sj.add("interface");
-		}
-		if (Modifier.isNative(mod.getIdentifier().intValue())) {
-			sj.add("native");
-		}
-		if (Modifier.isStrict(mod.getIdentifier().intValue())) {
-			sj.add("strict");
-		}
-		if (Modifier.isSynchronized(mod.getIdentifier().intValue())) {
-			sj.add("synchronized");
-		}
-		if (Modifier.isTransient(mod.getIdentifier().intValue())) {
-			sj.add("transient");
-		}
-		if (Modifier.isVolatile(mod.getIdentifier().intValue())) {
-			sj.add("volatile");
-		}
-		app.append(sj.toString());
+		app.append(Modifier.toString(mod.getIdentifier().intValue()));
 	}
 
 	public void render(Type type, Appendable app) throws IOException {
 		app.append(type.getIdentifier());
 		StringJoiner sj = new StringJoiner(", ", "<", ">");
-		type.getTypeList().forEach(sneakyConsumer(t -> {
+		each(type::getTypeList, t -> {
 			StringBuilder sb = new StringBuilder();
 			render(t, app);
 			sj.add(sb);
-		}));
+		});
 		app.append(sj.toString());
 	}
 
@@ -119,8 +84,7 @@ public class JavaRenderer {
 	}
 
 	public void render(Field field, Appendable app) throws IOException {
-		field.getModifierList().forEach(sneakyConsumer(m -> render(m, app)));
-		app.append(' ');
+		each(field::getModifierList, obj -> render(obj, app), () -> app.append(' '));
 
 		app.append(field.getIdentifier());
 		render(field.getVariable(), app);
@@ -128,83 +92,67 @@ public class JavaRenderer {
 	}
 
 	public void render(Class clazz, Appendable app) throws IOException {
-		clazz.getModifierList().forEach(sneakyConsumer(m -> render(m, app)));
-		app.append(' ');
-
-		app.append(clazz.getModifierList().stream().anyMatch(m -> Modifier.isInterface(m.getIdentifier().intValue()))
-				? "interface"
-				: "class"
+		each(clazz::getModifierList, obj -> render(obj, app), () -> app.append(' '));
+		app.append(clazz.getModifierList() != null && clazz.getModifierList().stream().anyMatch(m -> Modifier.isInterface(m.getIdentifier().intValue()))
+				? " " // written by the modifier
+				: "class "
 		);
-		app.append(' ');
-
 		app.append(clazz.getIdentifier());
 		app.append(' ');
 
 		StringJoiner sj1 = new StringJoiner(", ", "extends ", " ");
-		clazz.getExtendsList().forEach(sneakyConsumer(obj -> {
+		sj1.setEmptyValue("");
+		each(clazz::getExtendsList, obj -> {
 			StringBuilder sb = new StringBuilder();
 			render(obj, app);
 			sj1.add(sb);
-		}));
+		});
 		app.append(sj1.toString());
 
 		StringJoiner sj2 = new StringJoiner(", ", "implements ", " ");
-		clazz.getImplementsList().forEach(sneakyConsumer(obj -> {
+		sj2.setEmptyValue("");
+		each(clazz::getImplementsList, obj -> {
 			StringBuilder sb = new StringBuilder();
 			render(obj, app);
-			sj2.add(sb);
-		}));
+			sj1.add(sb);
+		});
 		app.append(sj2.toString());
 
 		app.append('{');
 
 		tabs++;
-		nextLine(app);
 
-		if (!clazz.getClassList().isEmpty()) {
-			clazz.getClassList().forEach(sneakyConsumer(c -> {
-				render(c, app);
-				nextLine(app);
-			}));
+		each(clazz::getClassList, c -> {
 			nextLine(app);
-		}
+			render(c, app);
+		}, () -> nextLine(app));
 
-		if (!clazz.getFieldList().isEmpty()) {
-			clazz.getFieldList().forEach(sneakyConsumer(field -> {
-				render(field, app);
-				nextLine(app);
-			}));
+		each(clazz::getFieldList, c -> {
 			nextLine(app);
-		}
+			render(c, app);
+		}, () -> nextLine(app));
 
-		if (!clazz.getConstructorList().isEmpty()) {
-			clazz.getConstructorList().forEach(sneakyConsumer(field -> {
-				render(field, app);
-				nextLine(app);
-			}));
+		each(clazz::getConstructorList, c -> {
 			nextLine(app);
-		}
+			render(c, app);
+		}, () -> nextLine(app));
 
-		if (!clazz.getMethodList().isEmpty()) {
-			clazz.getMethodList().forEach(sneakyConsumer(field -> {
-				render(field, app);
-				nextLine(app);
-			}));
+		each(clazz::getMethodList, c -> {
 			nextLine(app);
-		}
+			render(c, app);
+		}, () -> nextLine(app));
 
 		tabs--;
-		app.append('}');
 		nextLine(app);
+		app.append('}');
 	}
 
 	public void render(Constructor constructor, Appendable app) throws IOException {
-		constructor.getModifierList().forEach(sneakyConsumer(m -> render(m, app)));
-		app.append(' ');
+		each(constructor::getModifierList, m -> render(m, app), () -> app.append(' '));
 
 		app.append(constructor.getParentClass().getIdentifier());
 		app.append('(');
-		constructor.getParameterList().forEach(sneakyConsumer(m -> render(m, app)));
+		each(constructor::getParameterList, obj -> render(obj, app));
 		app.append(')');
 
 		app.append(' ');
@@ -219,10 +167,10 @@ public class JavaRenderer {
 	}
 
 	public void render(Method method, Appendable app) throws IOException {
-		method.getModifierList().forEach(sneakyConsumer(m -> render(m, app)));
-		app.append(' ');
 
-		if (!method.getGenericList().isEmpty()) {
+		each(method::getModifierList, m -> render(m, app), () -> app.append(' '));
+
+		if (method.getGenericList() != null && !method.getGenericList().isEmpty()) {
 			app.append('<');
 			StringJoiner sj = new StringJoiner(", ");
 			method.getGenericList().forEach(sj::add);
@@ -231,23 +179,41 @@ public class JavaRenderer {
 			app.append(' ');
 		}
 
-		app.append(method.getReturntype().getIdentifier());
-		app.append(' ');
+		app.append(Optional.ofNullable(method.getReturntype())
+						.map(Type::getIdentifier)
+						.orElse("void")
+				)
+				.append(' ');
+
+		app.append(method.getIdentifier());
 
 		app.append('(');
-		method.getParameterList().forEach(sneakyConsumer(m -> render(m, app)));
+		each(method::getParameterList, obj -> render(obj, app));
 		app.append(')');
 
-		if (null != method.getBlock()) {
+		StringJoiner sj1 = new StringJoiner(", ", " throws ", " ");
+		sj1.setEmptyValue("");
+		each(method::getThrowsList, obj -> {
+			StringBuilder sb = new StringBuilder();
+			render(obj, app);
+			sj1.add(sb);
+		});
+		app.append(sj1.toString());
 
+		if (null == method.getParentClass() || !RenderUtils.isInterface(method.getParentClass().getModifierList())) {
 			app.append(' ');
 			app.append('{');
-			tabs++;
+
+			if (null != method.getBlock()) {
+				tabs++;
+
+				render(method.getBlock(), app);
+
+				tabs--;
+
+			}
+
 			nextLine(app);
-
-			render(method.getBlock(), app);
-
-			tabs--;
 			app.append('}');
 		} else {
 			app.append(END_OF_STATEMENT);
@@ -256,9 +222,23 @@ public class JavaRenderer {
 
 	public void render(Block block, Appendable app) throws IOException {
 		block.getTextList().forEach(sneakyConsumer(t -> {
-			app.append(t);
 			nextLine(app);
+			app.append(t);
 		}));
+	}
+
+	public <T, E extends Throwable> void each(Supplier<Collection<T>> supplier, SneakyThrow.ThrowingConsumer<T, E> consumer) {
+		each(supplier, consumer, null);
+	}
+
+	public <T, E extends Throwable> void each(Supplier<Collection<T>> supplier, SneakyThrow.ThrowingConsumer<T, E> consumer, SneakyThrow.ThrowingRunnable<E> ifPresent) {
+		Optional.ofNullable(supplier.get())
+				.ifPresent((Collection<T> col) -> {
+					if (null != ifPresent && !col.isEmpty()) {
+						ifPresent.run();
+					}
+					col.forEach(consumer);
+				});
 	}
 
 }

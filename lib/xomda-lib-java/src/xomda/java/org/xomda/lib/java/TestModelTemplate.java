@@ -28,6 +28,7 @@ public class TestModelTemplate extends PackageTemplate {
 		PojoWriter
 				.createInterface(newContext.cwd(), javaInterface)
 				.write(entity);
+		
 		PojoWriter
 				.create(newContext.cwd(), javaClass)
 				.withImplements(javaInterface)
