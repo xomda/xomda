@@ -1,13 +1,12 @@
 package org.xomda.lib.java.renderer;
 
-import static org.xomda.shared.exception.SneakyThrow.sneakyConsumer;
-
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import org.xomda.lib.java.ast.Block;
 import org.xomda.lib.java.ast.Class;
@@ -17,6 +16,7 @@ import org.xomda.lib.java.ast.Field;
 import org.xomda.lib.java.ast.Import;
 import org.xomda.lib.java.ast.Method;
 import org.xomda.lib.java.ast.Package;
+import org.xomda.lib.java.ast.Parameter;
 import org.xomda.lib.java.ast.Type;
 import org.xomda.lib.java.ast.Variable;
 import org.xomda.lib.java.formatter.DefaultJavaFormatter;
@@ -24,6 +24,8 @@ import org.xomda.lib.java.formatter.JavaFormatter;
 import org.xomda.shared.exception.SneakyThrow;
 
 public class JavaRenderer {
+
+	private static final Pattern RX_NEWLINE = Pattern.compile("[\\r\\n]+");
 
 	private static final char END_OF_STATEMENT = ';';
 
@@ -42,92 +44,87 @@ public class JavaRenderer {
 		this(appendable, new DefaultJavaFormatter(appendable));
 	}
 
-	public <T> void render(T obj) throws IOException {
-		if (obj instanceof CompilationUnit unit) {
-			render(unit);
-
-		} else {
-			appendable.append(obj.toString());
-		}
+	public boolean render(CompilationUnit unit) throws IOException {
+		return render(unit, appendable);
 	}
 
-	public void nextLine() throws IOException {
-		// formatter();
-		// appendable.append(NEW_LINE);
-		// for (int i = 0; i < tabs; i++) {
-		//	appendable.append(TAB);
-		//}
-	}
-
-	public void render(CompilationUnit unit) throws IOException {
+	public boolean render(CompilationUnit unit, Appendable appendable) throws IOException {
 		formatter.startObject(unit);
-		render(unit.getPackage());
-		nextLine();
-		each(unit::getImportList, this::render, this::nextLine);
-		each(unit::getClassList, this::render, this::nextLine);
+		render(unit.getPackage(), appendable);
+		each(appendable, unit::getImportList, this::render);
+		each(appendable, unit::getClassList, this::render);
 		formatter.endObject(unit);
+		return true;
 	}
 
-	public void render(Package pkg) throws IOException {
+	public boolean render(Package pkg, Appendable appendable) throws IOException {
 		formatter.startObject(pkg);
 		appendable.append("package ").append(pkg.getIdentifier()).append(END_OF_STATEMENT);
 		formatter.endObject(pkg);
+		return true;
 	}
 
-	public void render(Import imp) throws IOException {
+	public boolean render(Import imp, Appendable appendable) throws IOException {
 		formatter.startObject(imp);
 		appendable.append("import ");
-		render(imp.getModifier());
-		appendable.append(' ');
+		if (render(imp.getModifier(), appendable)) {
+			appendable.append(' ');
+		}
 		appendable.append(imp.getIdentifier()).append(END_OF_STATEMENT);
 		formatter.endObject(imp);
+		return true;
 	}
 
-	public void render(org.xomda.lib.java.ast.Modifier mod) throws IOException {
+	public boolean render(org.xomda.lib.java.ast.Modifier mod, Appendable appendable) throws IOException {
 		formatter.startObject(mod);
 		if (null == mod) {
-			return;
+			return false;
 		}
-		appendable.append(Modifier.toString(mod.getIdentifier().intValue()));
+		String mods = Modifier.toString(mod.getIdentifier().intValue());
+		appendable.append(mods);
 		formatter.endObject(mod);
+		return !mods.isEmpty();
 	}
 
-	public void render(Type type) throws IOException {
+	public boolean render(Type type, Appendable appendable) throws IOException {
 		formatter.startObject(type);
 		appendable.append(type.getIdentifier());
-		StringJoiner sj = new StringJoiner(", ", "<", ">");
-		each(type::getTypeList, t -> {
-			StringBuilder sb = new StringBuilder();
-			render(t);
-			sj.add(sb);
-		});
-		appendable.append(sj.toString());
+		each(appendable, type::getTypeList, this::render);
 		formatter.endObject(type);
+		return true;
 	}
 
-	public void render(Variable variable) throws IOException {
-		formatter.startObject(variable);
+	public boolean render(Variable variable, Appendable appendable) throws IOException {
 		if (null == variable) {
-			return;
+			return false;
 		}
+		formatter.startObject(variable);
 		appendable.append(' ').append('=').append(' ');
 		appendable.append(variable.getExpression());
 		formatter.endObject(variable);
+		return true;
 	}
 
-	public void render(Field field) throws IOException {
+	public boolean render(Field field, Appendable appendable) throws IOException {
 		formatter.startObject(field);
-		each(field::getModifierList, this::render, () -> appendable.append(' '));
+
+		if (each(appendable, field::getModifierList, this::render)) {
+			appendable.append(' ');
+		}
 
 		appendable.append(field.getIdentifier());
-		render(field.getVariable());
+		render(field.getVariable(), appendable);
 		appendable.append(END_OF_STATEMENT);
 		formatter.endObject(field);
+
+		return true;
 	}
 
-	public void render(Class clazz) throws IOException {
+	public boolean render(Class clazz, Appendable appendable) throws IOException {
 		formatter.startObject(clazz);
-		each(clazz::getModifierList, this::render, () -> appendable.append(' '));
+		if (each(appendable, clazz::getModifierList, this::render)) {
+			appendable.append(' ');
+		}
 		appendable.append(clazz.getModifierList() != null && clazz.getModifierList().stream().anyMatch(m -> Modifier.isInterface(m.getIdentifier().intValue()))
 				? " " // written by the modifier
 				: "class "
@@ -137,84 +134,85 @@ public class JavaRenderer {
 
 		StringJoiner sj1 = new StringJoiner(", ", "extends ", " ");
 		sj1.setEmptyValue("");
-		each(clazz::getExtendsList, obj -> {
+		each(appendable, clazz::getExtendsList, (obj, app) -> {
 			StringBuilder sb = new StringBuilder();
-			render(obj);
+			render(obj, sb);
 			sj1.add(sb);
 		});
 		appendable.append(sj1.toString());
 
 		StringJoiner sj2 = new StringJoiner(", ", "implements ", " ");
 		sj2.setEmptyValue("");
-		each(clazz::getImplementsList, obj -> {
+		each(appendable, clazz::getImplementsList, (obj, app) -> {
 			StringBuilder sb = new StringBuilder();
-			render(obj);
+			render(obj, sb);
 			sj1.add(sb);
 		});
 		appendable.append(sj2.toString());
 
-		appendable.append('{');
+		openGroup('{', appendable);
+		each(appendable, clazz::getClassList, this::render);
+		each(appendable, clazz::getFieldList, this::render);
+		each(appendable, clazz::getConstructorList, this::render);
+		each(appendable, clazz::getMethodList, this::render);
+		closeGroup('}', appendable);
 
-		// tabs++;
-
-		each(clazz::getClassList, c -> {
-			nextLine();
-			render(c);
-		}, this::nextLine);
-
-		each(clazz::getFieldList, c -> {
-			nextLine();
-			render(c);
-		}, this::nextLine);
-
-		each(clazz::getConstructorList, c -> {
-			nextLine();
-			render(c);
-		}, this::nextLine);
-
-		each(clazz::getMethodList, c -> {
-			nextLine();
-			render(c);
-		}, this::nextLine);
-
-		// tabs--;
-		nextLine();
-		appendable.append('}');
 		formatter.endObject(clazz);
+
+		return true;
 	}
 
-	public void render(Constructor constructor) throws IOException {
+	public boolean render(Constructor constructor, Appendable appendable) throws IOException {
 		formatter.startObject(constructor);
-		each(constructor::getModifierList, this::render, () -> appendable.append(' '));
+		if (each(appendable, constructor::getModifierList, this::render)) {
+			appendable.append(' ');
+		}
 
 		appendable.append(constructor.getParentClass().getIdentifier());
-		appendable.append('(');
-		each(constructor::getParameterList, this::render);
-		appendable.append(')');
+		openGroup('(', appendable);
+		each(appendable, constructor::getParameterList, this::render);
+		closeGroup(')', appendable);
 
 		appendable.append(' ');
-		appendable.append('{');
-		// tabs++;
-		nextLine();
 
-		render(constructor.getBlock());
+		openGroup('{', appendable);
+		render(constructor.getBlock(), appendable);
+		closeGroup('}', appendable);
 
-		// tabs--;
-		appendable.append('}');
 		formatter.endObject(constructor);
+
+		return true;
 	}
 
-	public void render(Method method) throws IOException {
+	public boolean render(Parameter parameter, Appendable appendable) throws IOException {
+		if (null == parameter) {
+			return false;
+		}
+		formatter.startObject(parameter);
+		if (each(appendable, parameter::getModifierList, this::render)) {
+			appendable.append(' ');
+		}
+		render(parameter.getType(), appendable);
+		appendable.append(parameter.getIdentifier());
+		formatter.endObject(parameter);
+		return true;
+	}
+
+	public boolean render(Method method, Appendable appendable) throws IOException {
 		formatter.startObject(method);
 
-		each(method::getModifierList, this::render);
+		if (each(appendable, method::getModifierList, this::render)) {
+			appendable.append(' ');
+		}
 
 		if (method.getGenericList() != null && !method.getGenericList().isEmpty()) {
-			appendable.append('<');
+
+			openGroup('<', appendable);
 			StringJoiner sj = new StringJoiner(", ");
 			method.getGenericList().forEach(sj::add);
 			appendable.append(sj.toString());
-			appendable.append('>');
+			closeGroup('>', appendable);
+
 			appendable.append(' ');
 		}
 
@@ -227,57 +225,72 @@ public class JavaRenderer {
 		appendable.append(method.getIdentifier());
 
 		appendable.append('(');
-		each(method::getParameterList, this::render);
+		each(appendable, method::getParameterList, this::render);
 		appendable.append(')');
 
 		StringJoiner sj1 = new StringJoiner(", ", " throws ", " ");
 		sj1.setEmptyValue("");
-		each(method::getThrowsList, obj -> {
+		each(appendable, method::getThrowsList, (obj, app) -> {
 			StringBuilder sb = new StringBuilder();
-			render(obj);
+			render(obj, sb);
 			sj1.add(sb);
 		});
 		appendable.append(sj1.toString());
 
 		if (null == method.getParentClass() || !RenderUtils.isInterface(method.getParentClass().getModifierList())) {
 			appendable.append(' ');
-			appendable.append('{');
+
+			openGroup('{', appendable);
 			if (null != method.getBlock()) {
-				// tabs++;
-				render(method.getBlock());
-				// tabs--;
+				render(method.getBlock(), appendable);
 			}
-			nextLine();
-			appendable.append('}');
+			closeGroup('}', appendable);
+
 		} else {
 			appendable.append(END_OF_STATEMENT);
 		}
 		formatter.endObject(method);
+
+		return true;
 	}
 
-	public void render(Block block) throws IOException {
+	public boolean render(String obj, Appendable appendable) throws IOException {
+		if (null == obj || obj.isEmpty()) {
+			return false;
+		}
+		String[] lines = RX_NEWLINE.split(obj);
+		for (String line : lines) {
+			formatter.startObject(line);
+			appendable.append(line);
+			formatter.endObject(line);
+		}
+		return true;
+	}
+
+	public boolean render(Block block, Appendable appendable) throws IOException {
 		formatter.startObject(block);
-		block.getTextList().forEach(sneakyConsumer(t -> {
-			nextLine();
-			formatter.startObject(t);
-			appendable.append(t);
-			formatter.endObject(t);
-		}));
+		each(appendable, block::getTextList, this::render);
 		formatter.endObject(block);
+		return true;
 	}
 
-	public <T, E extends Throwable> void each(Supplier<Collection<T>> supplier, SneakyThrow.ThrowingConsumer<T, E> consumer) {
-		each(supplier, consumer, null);
+	private void openGroup(char c, Appendable appendable) throws IOException {
+		appendable.append(c);
+		formatter.startGroup(c);
 	}
 
-	public <T, E extends Throwable> void each(Supplier<Collection<T>> supplier, SneakyThrow.ThrowingConsumer<T, E> consumer, SneakyThrow.ThrowingRunnable<E> ifPresent) {
-		Optional.ofNullable(supplier.get())
-				.ifPresent((Collection<T> col) -> {
-					if (null != ifPresent && !col.isEmpty()) {
-						ifPresent.run();
-					}
-					col.forEach(consumer);
-				});
+	private void closeGroup(char c, Appendable appendable) throws IOException {
+		formatter.endGroup(c);
+		appendable.append(c);
+	}
+
+	private <T, E extends Throwable> boolean each(Appendable appendable, Supplier<Collection<T>> supplier, SneakyThrow.ThrowingBiConsumer<T, Appendable, E> consumer) {
+		Collection<T> col = supplier.get();
+		if (null == col || col.isEmpty()) {
+			return false;
+		}
+		col.forEach(c -> consumer.accept(c, appendable));
+		return true;
 	}
 
 }

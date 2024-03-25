@@ -19,11 +19,45 @@ public class DefaultJavaFormatter implements JavaFormatter {
 	private final int nextIndent = 0;
 	private int indent = 0;
 
+	private boolean emptyGroup;
+
 	private final Appendable appendable;
 
 	private final Stack<Object> queue;
 
-	private Object last;
+	public DefaultJavaFormatter(Appendable appendable) {
+		this.queue = new Stack<>();
+		this.appendable = appendable;
+	}
+
+	public <T> void startObject(T obj) throws IOException {
+		emptyGroup = false;
+		queue.add(obj);
+		if (isIndent(peek(-1))) {
+			this.indent++;
+		}
+		addNewLine(getNewLinesBefore(obj));
+	}
+
+	public void startGroup(String obj) throws IOException {
+		emptyGroup = true;
+	}
+
+	public void endGroup(String obj) throws IOException {
+		if (emptyGroup) {
+			return;
+		}
+		if (isIndent(queue.peek())) {
+			addNewLine(1);
+		}
+	}
+
+	public <T> void endObject(T obj) throws IOException {
+		if (isIndent(peek(-1))) {
+			this.indent--;
+		}
+		queue.pop();
+	}
 
 	public Object peek(int count) {
 		return queue.size() > -count
@@ -31,67 +65,35 @@ public class DefaultJavaFormatter implements JavaFormatter {
 				: null;
 	}
 
-	public Object peek() {
-		return peek(0);
-	}
-
-	public DefaultJavaFormatter(Appendable appendable) {
-		this.queue = new Stack<>();
-		this.appendable = appendable;
-	}
-
 	private <T> boolean isIndent(T obj) {
-		Object peek = peek(-1);
-		return (obj instanceof String && peek instanceof Block)
-				|| obj instanceof Method
-				|| peek instanceof Class
+		return obj instanceof Method
+				|| obj instanceof Class
 				;
 	}
 
-	private <T> boolean isNewLineBefore(T obj) {
-		return obj instanceof Class
-				|| obj instanceof Import
+	private int getNewLinesBefore(Object obj) {
+		if (obj instanceof Class) {
+			return 2;
+		}
+		if (obj instanceof Import
 				// class internals
 				|| obj instanceof Constructor
 				|| obj instanceof Method
 				|| obj instanceof Field
 
 				|| obj instanceof String && peek(-1) instanceof Block
-				;
+		) {
+			return 1;
+		}
+
+		return 0;
 	}
 
-	private <T> boolean isNewLineAfter(T obj) {
-		Object parent = peek(-1);
-
-		return (obj instanceof String && parent instanceof Block)
-				|| (obj instanceof Method)
-				;
-	}
-
-	private void addNewLine() throws IOException {
-		appendable.append(NEW_LINE);
-		appendable.append(this.tabCharacter.repeat(this.indent));
-	}
-
-	public <T> void startObject(T obj) throws IOException {
-		queue.add(obj);
-		if (isIndent(obj)) {
-			this.indent++;
+	private void addNewLine(int repeat) throws IOException {
+		for (int i = 0; i < repeat; i++) {
+			appendable.append(NEW_LINE);
+			appendable.append(this.tabCharacter.repeat(this.indent));
 		}
-		if (isNewLineBefore(obj)) {
-			addNewLine();
-		}
-		this.last = obj;
-	}
-
-	public <T> void endObject(T obj) throws IOException {
-		if (isIndent(obj)) {
-			this.indent--;
-		}
-		if (isNewLineAfter(obj)) {
-			addNewLine();
-		}
-		queue.pop();
 	}
 
 	public DefaultJavaFormatter withTabCharacter(String tabCharacters) {
