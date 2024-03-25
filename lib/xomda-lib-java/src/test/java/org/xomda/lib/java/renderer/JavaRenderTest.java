@@ -1,7 +1,11 @@
 package org.xomda.lib.java.renderer;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.xomda.lib.java.ast.Class;
@@ -37,23 +41,32 @@ public class JavaRenderTest {
 			clz.setIdentifier("TestClass");
 			getClassList().add(clz);
 
-			Method method = new MethodBean();
-			method.setIdentifier("test");
-			CreationUtils.addBodyText(method, "return;");
+			Method m1 = new MethodBean();
+			m1.setIdentifier("test");
+			CreationUtils.addBodyText(m1, "return;");
+			clz.getMethodList().add(m1);
 
-			clz.getMethodList().add(method);
+			org.xomda.lib.java.ast.Modifier staticModifier = new org.xomda.lib.java.ast.ModifierBean();
+			staticModifier.setIdentifier(Long.valueOf(Modifier.STATIC | Modifier.PUBLIC));
+
+			Method m2 = new MethodBean();
+			m2.setIdentifier("main");
+			m2.setModifierList(List.of(staticModifier));
+			CreationUtils.addBodyText(m2, "return;");
+			clz.getMethodList().add(m2);
 		}
 
 	}
 
 	@Test
 	public void test() throws IOException {
-		JavaRenderer renderer = new JavaRenderer();
+		StringBuilder sb = new StringBuilder();
+		JavaRenderer renderer = new JavaRenderer(sb);
 		CompilationUnit unit = new TestCompilationUnit();
 
-		StringBuilder sb = new StringBuilder();
-		renderer.render(unit, sb);
+		renderer.render(unit);
 
+		assertFalse(sb.isEmpty());
 		String s = sb.toString();
 
 		System.out.println(s);

@@ -16,6 +16,7 @@ import org.xomda.lib.java.ast.Constructor;
 import org.xomda.lib.java.ast.Field;
 import org.xomda.lib.java.ast.Import;
 import org.xomda.lib.java.ast.Method;
+import org.xomda.lib.java.ast.Package;
 import org.xomda.lib.java.ast.Type;
 import org.xomda.lib.java.ast.Variable;
 import org.xomda.lib.java.formatter.DefaultJavaFormatter;
@@ -25,218 +26,244 @@ import org.xomda.shared.exception.SneakyThrow;
 public class JavaRenderer {
 
 	private static final char END_OF_STATEMENT = ';';
-	private static final char NEW_LINE = '\n';
-	private static final char TAB = '\t';
-	private int tabs = 0;
 
-	JavaFormatter formatter;
+	// only if needed
+	private static final char SEPARATOR = ' ';
 
-	public JavaRenderer(JavaFormatter formatter) {
+	private final Appendable appendable;
+	private final JavaFormatter formatter;
+
+	public JavaRenderer(Appendable appendable, JavaFormatter formatter) {
+		this.appendable = appendable;
 		this.formatter = formatter;
 	}
 
-	public JavaRenderer() {
-		this(new DefaultJavaFormatter());
+	public JavaRenderer(Appendable appendable) {
+		this(appendable, new DefaultJavaFormatter(appendable));
 	}
 
-	public <T> void render(T obj, Appendable app) throws IOException {
+	public <T> void render(T obj) throws IOException {
 		if (obj instanceof CompilationUnit unit) {
-			render(unit, app);
+			render(unit);
 
 		} else {
-			app.append(obj.toString());
+			appendable.append(obj.toString());
 		}
 	}
 
-	public void nextLine(Appendable app) throws IOException {
-		app.append(NEW_LINE);
-		for (int i = 0; i < tabs; i++) {
-			app.append(TAB);
-		}
+	public void nextLine() throws IOException {
+		// formatter();
+		// appendable.append(NEW_LINE);
+		// for (int i = 0; i < tabs; i++) {
+		//	appendable.append(TAB);
+		//}
 	}
 
-	public void render(CompilationUnit unit, Appendable app) throws IOException {
-		app.append("package ").append(unit.getPackage().getIdentifier()).append(END_OF_STATEMENT);
-		nextLine(app);
-		each(unit::getImportList, obj -> render(obj, app), () -> nextLine(app));
-		each(unit::getClassList, obj -> render(obj, app), () -> nextLine(app));
+	public void render(CompilationUnit unit) throws IOException {
+		formatter.startObject(unit);
+		render(unit.getPackage());
+		nextLine();
+		each(unit::getImportList, this::render, this::nextLine);
+		each(unit::getClassList, this::render, this::nextLine);
+		formatter.endObject(unit);
 	}
 
-	public void render(Import imp, Appendable app) throws IOException {
-		app.append("import ");
-		render(imp.getModifier(), app);
-		app.append(' ');
-		app.append(imp.getIdentifier()).append(END_OF_STATEMENT);
+	public void render(Package pkg) throws IOException {
+		formatter.startObject(pkg);
+		appendable.append("package ").append(pkg.getIdentifier()).append(END_OF_STATEMENT);
+		formatter.endObject(pkg);
 	}
 
-	public void render(org.xomda.lib.java.ast.Modifier mod, Appendable app) throws IOException {
+	public void render(Import imp) throws IOException {
+		formatter.startObject(imp);
+		appendable.append("import ");
+		render(imp.getModifier());
+		appendable.append(' ');
+		appendable.append(imp.getIdentifier()).append(END_OF_STATEMENT);
+		formatter.endObject(imp);
+	}
+
+	public void render(org.xomda.lib.java.ast.Modifier mod) throws IOException {
+		formatter.startObject(mod);
 		if (null == mod) {
 			return;
 		}
-		app.append(Modifier.toString(mod.getIdentifier().intValue()));
+		appendable.append(Modifier.toString(mod.getIdentifier().intValue()));
+		formatter.endObject(mod);
 	}
 
-	public void render(Type type, Appendable app) throws IOException {
-		app.append(type.getIdentifier());
+	public void render(Type type) throws IOException {
+		formatter.startObject(type);
+		appendable.append(type.getIdentifier());
 		StringJoiner sj = new StringJoiner(", ", "<", ">");
 		each(type::getTypeList, t -> {
 			StringBuilder sb = new StringBuilder();
-			render(t, app);
+			render(t);
 			sj.add(sb);
 		});
-		app.append(sj.toString());
+		appendable.append(sj.toString());
+		formatter.endObject(type);
 	}
 
-	public void render(Variable variable, Appendable app) throws IOException {
+	public void render(Variable variable) throws IOException {
+		formatter.startObject(variable);
 		if (null == variable) {
 			return;
 		}
-		app.append(' ').append('=').append(' ');
-		app.append(variable.getExpression());
+		appendable.append(' ').append('=').append(' ');
+		appendable.append(variable.getExpression());
+		formatter.endObject(variable);
 	}
 
-	public void render(Field field, Appendable app) throws IOException {
-		each(field::getModifierList, obj -> render(obj, app), () -> app.append(' '));
+	public void render(Field field) throws IOException {
+		formatter.startObject(field);
+		each(field::getModifierList, this::render, () -> appendable.append(' '));
 
-		app.append(field.getIdentifier());
-		render(field.getVariable(), app);
-		app.append(END_OF_STATEMENT);
+		appendable.append(field.getIdentifier());
+		render(field.getVariable());
+		appendable.append(END_OF_STATEMENT);
+		formatter.endObject(field);
 	}
 
-	public void render(Class clazz, Appendable app) throws IOException {
-		each(clazz::getModifierList, obj -> render(obj, app), () -> app.append(' '));
-		app.append(clazz.getModifierList() != null && clazz.getModifierList().stream().anyMatch(m -> Modifier.isInterface(m.getIdentifier().intValue()))
+	public void render(Class clazz) throws IOException {
+		formatter.startObject(clazz);
+		each(clazz::getModifierList, this::render, () -> appendable.append(' '));
+		appendable.append(clazz.getModifierList() != null && clazz.getModifierList().stream().anyMatch(m -> Modifier.isInterface(m.getIdentifier().intValue()))
 				? " " // written by the modifier
 				: "class "
 		);
-		app.append(clazz.getIdentifier());
-		app.append(' ');
+		appendable.append(clazz.getIdentifier());
+		appendable.append(' ');
 
 		StringJoiner sj1 = new StringJoiner(", ", "extends ", " ");
 		sj1.setEmptyValue("");
 		each(clazz::getExtendsList, obj -> {
 			StringBuilder sb = new StringBuilder();
-			render(obj, app);
+			render(obj);
 			sj1.add(sb);
 		});
-		app.append(sj1.toString());
+		appendable.append(sj1.toString());
 
 		StringJoiner sj2 = new StringJoiner(", ", "implements ", " ");
 		sj2.setEmptyValue("");
 		each(clazz::getImplementsList, obj -> {
 			StringBuilder sb = new StringBuilder();
-			render(obj, app);
+			render(obj);
 			sj1.add(sb);
 		});
-		app.append(sj2.toString());
+		appendable.append(sj2.toString());
 
-		app.append('{');
+		appendable.append('{');
 
-		tabs++;
+		// tabs++;
 
 		each(clazz::getClassList, c -> {
-			nextLine(app);
-			render(c, app);
-		}, () -> nextLine(app));
+			nextLine();
+			render(c);
+		}, this::nextLine);
 
 		each(clazz::getFieldList, c -> {
-			nextLine(app);
-			render(c, app);
-		}, () -> nextLine(app));
+			nextLine();
+			render(c);
+		}, this::nextLine);
 
 		each(clazz::getConstructorList, c -> {
-			nextLine(app);
-			render(c, app);
-		}, () -> nextLine(app));
+			nextLine();
+			render(c);
+		}, this::nextLine);
 
 		each(clazz::getMethodList, c -> {
-			nextLine(app);
-			render(c, app);
-		}, () -> nextLine(app));
+			nextLine();
+			render(c);
+		}, this::nextLine);
 
-		tabs--;
-		nextLine(app);
-		app.append('}');
+		// tabs--;
+		nextLine();
+		appendable.append('}');
+		formatter.endObject(clazz);
 	}
 
-	public void render(Constructor constructor, Appendable app) throws IOException {
-		each(constructor::getModifierList, m -> render(m, app), () -> app.append(' '));
+	public void render(Constructor constructor) throws IOException {
+		formatter.startObject(constructor);
+		each(constructor::getModifierList, this::render, () -> appendable.append(' '));
 
-		app.append(constructor.getParentClass().getIdentifier());
-		app.append('(');
-		each(constructor::getParameterList, obj -> render(obj, app));
-		app.append(')');
+		appendable.append(constructor.getParentClass().getIdentifier());
+		appendable.append('(');
+		each(constructor::getParameterList, this::render);
+		appendable.append(')');
 
-		app.append(' ');
-		app.append('{');
-		tabs++;
-		nextLine(app);
+		appendable.append(' ');
+		appendable.append('{');
+		// tabs++;
+		nextLine();
 
-		render(constructor.getBlock(), app);
+		render(constructor.getBlock());
 
-		tabs--;
-		app.append('}');
+		// tabs--;
+		appendable.append('}');
+		formatter.endObject(constructor);
 	}
 
-	public void render(Method method, Appendable app) throws IOException {
+	public void render(Method method) throws IOException {
+		formatter.startObject(method);
 
-		each(method::getModifierList, m -> render(m, app), () -> app.append(' '));
+		each(method::getModifierList, this::render);
 
 		if (method.getGenericList() != null && !method.getGenericList().isEmpty()) {
-			app.append('<');
+			appendable.append('<');
 			StringJoiner sj = new StringJoiner(", ");
 			method.getGenericList().forEach(sj::add);
-			app.append(sj.toString());
-			app.append('>');
-			app.append(' ');
+			appendable.append(sj.toString());
+			appendable.append('>');
+			appendable.append(' ');
 		}
 
-		app.append(Optional.ofNullable(method.getReturntype())
+		appendable.append(Optional.ofNullable(method.getReturntype())
 						.map(Type::getIdentifier)
 						.orElse("void")
 				)
 				.append(' ');
 
-		app.append(method.getIdentifier());
+		appendable.append(method.getIdentifier());
 
-		app.append('(');
-		each(method::getParameterList, obj -> render(obj, app));
-		app.append(')');
+		appendable.append('(');
+		each(method::getParameterList, this::render);
+		appendable.append(')');
 
 		StringJoiner sj1 = new StringJoiner(", ", " throws ", " ");
 		sj1.setEmptyValue("");
 		each(method::getThrowsList, obj -> {
 			StringBuilder sb = new StringBuilder();
-			render(obj, app);
+			render(obj);
 			sj1.add(sb);
 		});
-		app.append(sj1.toString());
+		appendable.append(sj1.toString());
 
 		if (null == method.getParentClass() || !RenderUtils.isInterface(method.getParentClass().getModifierList())) {
-			app.append(' ');
-			app.append('{');
-
+			appendable.append(' ');
+			appendable.append('{');
 			if (null != method.getBlock()) {
-				tabs++;
-
-				render(method.getBlock(), app);
-
-				tabs--;
-
+				// tabs++;
+				render(method.getBlock());
+				// tabs--;
 			}
-
-			nextLine(app);
-			app.append('}');
+			nextLine();
+			appendable.append('}');
 		} else {
-			app.append(END_OF_STATEMENT);
+			appendable.append(END_OF_STATEMENT);
 		}
+		formatter.endObject(method);
 	}
 
-	public void render(Block block, Appendable app) throws IOException {
+	public void render(Block block) throws IOException {
+		formatter.startObject(block);
 		block.getTextList().forEach(sneakyConsumer(t -> {
-			nextLine(app);
-			app.append(t);
+			nextLine();
+			formatter.startObject(t);
+			appendable.append(t);
+			formatter.endObject(t);
 		}));
+		formatter.endObject(block);
 	}
 
 	public <T, E extends Throwable> void each(Supplier<Collection<T>> supplier, SneakyThrow.ThrowingConsumer<T, E> consumer) {
