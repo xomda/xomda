@@ -68,7 +68,7 @@ public class JavaRenderer {
 		formatter.startObject(imp);
 		appendable.append("import ");
 		if (render(imp.getModifier(), appendable)) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 		appendable.append(imp.getIdentifier()).append(END_OF_STATEMENT);
 		formatter.endObject(imp);
@@ -99,17 +99,23 @@ public class JavaRenderer {
 			return false;
 		}
 		formatter.startObject(variable);
-		appendable.append(' ').append('=').append(' ');
-		appendable.append(variable.getExpression());
+		appendable
+				.append(SEPARATOR)
+				.append('=')
+				.append(SEPARATOR)
+				.append(variable.getExpression());
 		formatter.endObject(variable);
 		return true;
 	}
 
 	public boolean render(Field field, Appendable appendable) throws IOException {
+		if (null == field) {
+			return false;
+		}
 		formatter.startObject(field);
 
 		if (each(appendable, field::getModifierList, this::render)) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 
 		appendable.append(field.getIdentifier());
@@ -121,16 +127,19 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Class clazz, Appendable appendable) throws IOException {
+		if (null == clazz) {
+			return false;
+		}
 		formatter.startObject(clazz);
 		if (each(appendable, clazz::getModifierList, this::render)) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 		appendable.append(clazz.getModifierList() != null && clazz.getModifierList().stream().anyMatch(m -> Modifier.isInterface(m.getIdentifier().intValue()))
 				? " " // written by the modifier
 				: "class "
 		);
 		appendable.append(clazz.getIdentifier());
-		appendable.append(' ');
+		appendable.append(SEPARATOR);
 
 		StringJoiner sj1 = new StringJoiner(", ", "extends ", " ");
 		sj1.setEmptyValue("");
@@ -163,9 +172,12 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Constructor constructor, Appendable appendable) throws IOException {
+		if (null == constructor) {
+			return false;
+		}
 		formatter.startObject(constructor);
 		if (each(appendable, constructor::getModifierList, this::render)) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 
 		appendable.append(constructor.getParentClass().getIdentifier());
@@ -173,7 +185,7 @@ public class JavaRenderer {
 		each(appendable, constructor::getParameterList, this::render);
 		closeGroup(')', appendable);
 
-		appendable.append(' ');
+		appendable.append(SEPARATOR);
 
 		openGroup('{', appendable);
 		render(constructor.getBlock(), appendable);
@@ -188,9 +200,12 @@ public class JavaRenderer {
 		if (null == parameter) {
 			return false;
 		}
+		if (null == parameter) {
+			return false;
+		}
 		formatter.startObject(parameter);
 		if (each(appendable, parameter::getModifierList, this::render)) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 		render(parameter.getType(), appendable);
 		appendable.append(parameter.getIdentifier());
@@ -199,10 +214,13 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Method method, Appendable appendable) throws IOException {
+		if (null == method) {
+			return false;
+		}
 		formatter.startObject(method);
 
 		if (each(appendable, method::getModifierList, this::render)) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 
 		if (method.getGenericList() != null && !method.getGenericList().isEmpty()) {
@@ -213,14 +231,14 @@ public class JavaRenderer {
 			appendable.append(sj.toString());
 			closeGroup('>', appendable);
 
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 		}
 
 		appendable.append(Optional.ofNullable(method.getReturntype())
 						.map(Type::getIdentifier)
 						.orElse("void")
 				)
-				.append(' ');
+				.append(SEPARATOR);
 
 		appendable.append(method.getIdentifier());
 
@@ -238,7 +256,7 @@ public class JavaRenderer {
 		appendable.append(sj1.toString());
 
 		if (null == method.getParentClass() || !RenderUtils.isInterface(method.getParentClass().getModifierList())) {
-			appendable.append(' ');
+			appendable.append(SEPARATOR);
 
 			openGroup('{', appendable);
 			if (null != method.getBlock()) {
@@ -268,6 +286,9 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Block block, Appendable appendable) throws IOException {
+		if (null == block) {
+			return false;
+		}
 		formatter.startObject(block);
 		each(appendable, block::getTextList, this::render);
 		formatter.endObject(block);

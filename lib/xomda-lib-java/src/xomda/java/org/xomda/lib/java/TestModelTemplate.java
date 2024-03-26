@@ -3,6 +3,7 @@ package org.xomda.lib.java;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+import org.xomda.core.java.JavaUtils;
 import org.xomda.core.module.template.PackageTemplate;
 import org.xomda.core.module.util.EnumWriter;
 import org.xomda.core.module.util.PojoWriter;
@@ -15,7 +16,13 @@ public class TestModelTemplate extends PackageTemplate {
 	@Override
 	public void generate(final org.xomda.model.Package pkg, final TemplateContext context) throws IOException {
 		getLogger().info("Generating multi-model (" + pkg.getName() + ")");
-		super.generate((org.xomda.model.Package) pkg, context);
+		super.generate(pkg, context);
+	}
+
+	private String getJavaImpl(Entity entity) {
+		String javaInterface = TemplateUtils.getJavaInterfaceName(entity);
+		String interfaceName = JavaUtils.getClassName(javaInterface);
+		return TemplateUtils.getJavaPackage(entity.getPackage()) + ".impl." + interfaceName + "Impl";
 	}
 
 	@Override
@@ -24,15 +31,16 @@ public class TestModelTemplate extends PackageTemplate {
 		TemplateContext newContext = new TemplateContext(newPath, context.getParseResults());
 
 		String javaInterface = TemplateUtils.getJavaInterfaceName(entity);
-		String javaClass = TemplateUtils.getJavaBeanName(entity);
+		String javaClass = getJavaImpl(entity);
+
 		PojoWriter
 				.createInterface(newContext.cwd(), javaInterface)
 				.write(entity);
-		
+
 		PojoWriter
 				.create(newContext.cwd(), javaClass)
 				.withImplements(javaInterface)
-				.withExtends(entity.getParent() != null ? new String[] { TemplateUtils.getJavaBeanName(entity.getParent()) } : new String[0])
+				.withExtends(entity.getParent() != null ? new String[] { getJavaImpl(entity.getParent()) } : new String[0])
 				.write(entity);
 	}
 

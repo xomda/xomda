@@ -80,7 +80,6 @@ public class DefaultJavaFormatter implements JavaFormatter {
 				|| obj instanceof Constructor
 				|| obj instanceof Method
 				|| obj instanceof Field
-
 				|| obj instanceof String && peek(-1) instanceof Block
 		) {
 			return 1;

@@ -24,11 +24,8 @@ dependencies {
 
     implementation project(":lib:xomda-shared")
 
-    runtimeOnly project(":lib:xomda-plugin-gradle")
-    runtimeOnly project(":lib:xomda-core")
     runtimeOnly project(":lib:xomda-cli")
 
-    xomdaImplementation project(":lib:xomda-cli")
     xomdaImplementation project(":lib:xomda-core")
     xomdaImplementation project(":lib:xomda-model")
 }
