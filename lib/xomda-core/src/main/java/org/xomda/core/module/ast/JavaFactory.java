@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.xomda.lib.java.ast.Class;
 import org.xomda.lib.java.ast.CompilationUnit;
 import org.xomda.lib.java.ast.Type;
+import org.xomda.lib.java.ast.impl.PackageImpl;
 import org.xomda.lib.java.ast.impl.TypeImpl;
 import org.xomda.model.Entity;
 
@@ -22,14 +23,32 @@ public class JavaFactory {
 
 		@Override
 		public String getIdentifier() {
-			return naming.getFullyQualifiedInterfaceName(entity);
+			return naming.getType(entity);
 		}
 
 	}
 
 	public CompilationUnit create(Entity entity) {
-		CompilationUnit unit = new EntityCompilationUnit(entity);
-		Class clz = new EntityClass(entity);
+		String name = naming.getClassName(entity);
+		CompilationUnit unit = new EntityCompilationUnit(entity) {
+			@Override
+			public String getIdentifier() {
+				return name;
+			}
+		};
+		unit.setPackage(new PackageImpl() {
+			@Override
+			public String getIdentifier() {
+				return naming.getClassPackage(entity);
+			}
+		});
+
+		Class clz = new EntityClass(entity) {
+			@Override
+			public String getIdentifier() {
+				return name;
+			}
+		};
 
 		unit.setClassList(List.of(clz));
 

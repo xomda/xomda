@@ -6,24 +6,16 @@ import org.xomda.template.TemplateUtils;
 
 public interface NamingConventions {
 
-	default String getFullyQualifiedInterfaceName(Entity entity) {
-		return getInterfacePackage(entity) + "." + getInterfaceName(entity);
-	}
-
 	default String getFullyQualifiedClassName(Entity entity) {
 		return getClassPackage(entity) + "." + getClassName(entity);
 	}
 
-	default String getInterfaceName(Entity entity) {
-		return StringUtils.toPascalCase(entity.getName());
+	default String getType(Entity entity) {
+		return getClassPackage(entity) + "." + getClassName(entity);
 	}
 
 	default String getClassName(Entity entity) {
 		return StringUtils.toPascalCase(entity.getName());
-	}
-
-	default String getInterfacePackage(Entity entity) {
-		return TemplateUtils.getJavaPackage(entity.getPackage());
 	}
 
 	default String getClassPackage(Entity entity) {

@@ -49,6 +49,9 @@ public class JavaRenderer {
 	}
 
 	public boolean render(CompilationUnit unit, Appendable appendable) throws IOException {
+		if (null == unit) {
+			return false;
+		}
 		formatter.startObject(unit);
 		render(unit.getPackage(), appendable);
 		each(appendable, unit::getImportList, this::render);
@@ -58,6 +61,9 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Package pkg, Appendable appendable) throws IOException {
+		if (null == pkg) {
+			return false;
+		}
 		formatter.startObject(pkg);
 		appendable.append("package ").append(pkg.getIdentifier()).append(END_OF_STATEMENT);
 		formatter.endObject(pkg);
@@ -65,6 +71,9 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Import imp, Appendable appendable) throws IOException {
+		if (null == imp) {
+			return false;
+		}
 		formatter.startObject(imp);
 		appendable.append("import ");
 		if (render(imp.getModifier(), appendable)) {
@@ -76,10 +85,10 @@ public class JavaRenderer {
 	}
 
 	public boolean render(org.xomda.lib.java.ast.Modifier mod, Appendable appendable) throws IOException {
-		formatter.startObject(mod);
 		if (null == mod) {
 			return false;
 		}
+		formatter.startObject(mod);
 		String mods = Modifier.toString(mod.getIdentifier().intValue());
 		appendable.append(mods);
 		formatter.endObject(mod);
@@ -87,6 +96,9 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Type type, Appendable appendable) throws IOException {
+		if (null == type) {
+			return false;
+		}
 		formatter.startObject(type);
 		appendable.append(type.getIdentifier());
 		each(appendable, type::getTypeList, this::render);
@@ -197,9 +209,6 @@ public class JavaRenderer {
 	}
 
 	public boolean render(Parameter parameter, Appendable appendable) throws IOException {
-		if (null == parameter) {
-			return false;
-		}
 		if (null == parameter) {
 			return false;
 		}
