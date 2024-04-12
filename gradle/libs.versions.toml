@@ -1,7 +1,7 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-xomda-xomda = "0.3.2"
+xomda-xomda = "0.3.3"
 xomda-common-java = "latest.release"
 commons-math3 = "3.6.1"
 commons-csv = "1.10.0"
